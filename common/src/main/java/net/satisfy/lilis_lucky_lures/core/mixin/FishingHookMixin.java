@@ -1,0 +1,87 @@
+package net.satisfy.lilis_lucky_lures.core.mixin;
+
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.FishingHook;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.satisfy.lilis_lucky_lures.core.entity.FloatingDebrisEntity;
+import net.satisfy.lilis_lucky_lures.core.init.ObjectRegistry;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.List;
+
+@Mixin(FishingHook.class)
+public class FishingHookMixin {
+
+    @Unique
+    private boolean isMainHand;
+
+    @Inject(method = "<init>(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/level/Level;II)V", at = @At("TAIL"))
+    private void modifyFishingHookConstructor(Player player, net.minecraft.world.level.Level level, int luck, int lureSpeed, CallbackInfo ci) {
+        ItemStack mainHandStack = player.getMainHandItem();
+        ItemStack offHandStack = player.getOffhandItem();
+
+        isMainHand = mainHandStack.is(ObjectRegistry.BAMBOO_FISHING_ROD.get());
+        boolean isOffHand = offHandStack.is(ObjectRegistry.BAMBOO_FISHING_ROD.get());
+
+        if (isMainHand || isOffHand) {
+            float rotationY = player.getYRot();
+            float offset = isMainHand ? -0.4f : 0.4f;
+
+            double hookX = player.getX() + offset * net.minecraft.util.Mth.cos(-rotationY * 0.017453292F);
+            double hookZ = player.getZ() + offset * net.minecraft.util.Mth.sin(-rotationY * 0.017453292F);
+            double hookY = player.getEyeY() - 0.1;
+
+            ((FishingHook) (Object) this).moveTo(hookX, hookY, hookZ, rotationY, player.getXRot());
+        }
+    }
+
+    @Inject(method = "shouldStopFishing", at = @At("HEAD"), cancellable = true)
+    private void injectedShouldStopFishing(Player player, CallbackInfoReturnable<Boolean> cir) {
+        ItemStack mainHandStack = player.getMainHandItem();
+        ItemStack offHandStack = player.getOffhandItem();
+
+        boolean isUsingMainHand = mainHandStack.is(ObjectRegistry.BAMBOO_FISHING_ROD.get());
+        boolean isUsingOffHand = offHandStack.is(ObjectRegistry.BAMBOO_FISHING_ROD.get());
+
+        if (isUsingMainHand || isUsingOffHand) {
+            if (!player.isRemoved() && player.isAlive() && !(((FishingHook) (Object) this).distanceToSqr(player) > 1024.0)) {
+                cir.setReturnValue(false);
+            } else {
+                ((FishingHook) (Object) this).discard();
+                cir.setReturnValue(true);
+            }
+        }
+    }
+
+    @Inject(method = "retrieve", at = @At("HEAD"), cancellable = true)
+    private void onRetrieve(ItemStack itemStack, CallbackInfoReturnable<Integer> cir) {
+        FishingHook fishingHook = (FishingHook) (Object) this;
+        if (!fishingHook.level().isClientSide) {
+            Player owner = fishingHook.getPlayerOwner();
+            if (owner != null) {
+                Vec3 hookPosition = fishingHook.position();
+
+                AABB hookBoundingBox = new AABB(
+                        hookPosition.x - 0.9, hookPosition.y - 1.1, hookPosition.z - 0.9,
+                        hookPosition.x + 0.9, hookPosition.y + 1.1, hookPosition.z + 0.9
+                );
+
+                List<FloatingDebrisEntity> debrisEntities = fishingHook.level().getEntitiesOfClass(FloatingDebrisEntity.class, hookBoundingBox);
+                if (!debrisEntities.isEmpty()) {
+                    FloatingDebrisEntity debrisEntity = debrisEntities.get(0);
+
+                    debrisEntity.onFishHookInteract(owner);
+                    cir.setReturnValue(1);
+                    cir.cancel();
+                }
+            }
+        }
+    }
+}
