@@ -1,4 +1,4 @@
-package net.satisfy.lilis_lucky_lures.fabric;
+package net.satisfy.lilis_lucky_lures.platform.fabric;
 
 import net.fabricmc.loader.api.FabricLoader;
 

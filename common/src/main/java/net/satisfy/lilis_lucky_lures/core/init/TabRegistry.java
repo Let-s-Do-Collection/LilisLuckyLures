@@ -17,9 +17,9 @@ public class TabRegistry {
             .title(Component.translatable("creativetab.lilis_lucky_lures.tab"))
             .displayItems((parameters, output) -> {
                 output.accept(ObjectRegistry.DYNAMITE.get());
-        
-
-
+                output.accept(ObjectRegistry.SPEAR.get());
+                output.accept(ObjectRegistry.FISHING_NET.get());
+                output.accept(ObjectRegistry.BAMBOO_FISHING_ROD.get());
             })
             .build());
 

@@ -4,6 +4,7 @@ import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.FishingRodItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TridentItem;
@@ -13,6 +14,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.satisfy.lilis_lucky_lures.LilisLuckyLures;
 import net.satisfy.lilis_lucky_lures.core.item.DynamiteItem;
+import net.satisfy.lilis_lucky_lures.core.item.SpearItem;
 import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresIdentifier;
 import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresUtil;
 
@@ -26,15 +28,15 @@ public class ObjectRegistry {
     public static final Registrar<Block> BLOCK_REGISTRAR = BLOCKS.getRegistrar();
 
     public static final RegistrySupplier<Block> REDSTONE_COIL = registerWithItem("redstone_coil", () -> new Block(BlockBehaviour.Properties.copy(Blocks.REDSTONE_BLOCK)));
-    public static final RegistrySupplier<Block> FISH_TRAP = registerWithItem("fish_trap", () -> new Block(BlockBehaviour.Properties.copy(Blocks.BAMBOO_BLOCK)));
+    public static final RegistrySupplier<Block> FISH_TRAP = registerWithItem("fish_trap", () -> new Block(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
     public static final RegistrySupplier<Block> FISH_BARREL = registerWithItem("fish_barrel", () -> new BarrelBlock(BlockBehaviour.Properties.copy(Blocks.BARREL)));
     public static final RegistrySupplier<Block> BAG = registerWithItem("bag", () -> new Block(BlockBehaviour.Properties.copy(Blocks.RED_WOOL)));
-    public static final RegistrySupplier<Block> FISH_NET = registerWithItem("fish_net", () -> new Block(BlockBehaviour.Properties.copy(Blocks.RED_WOOL)));
 
 
-    public static final RegistrySupplier<Item> SPEAR = registerItem("spear", () -> new TridentItem(getSettings()));
+    public static final RegistrySupplier<Item> SPEAR = registerItem("spear", () -> new SpearItem(getSettings()));
     public static final RegistrySupplier<Item> DYNAMITE = registerItem("dynamite", () -> new DynamiteItem(getSettings()));
     public static final RegistrySupplier<Item> BAMBOO_FISHING_ROD = registerItem("bamboo_fishing_rod", () -> new FishingRodItem(getSettings()));
+    public static final RegistrySupplier<Item> FISHING_NET = registerItem("fishing_net", () -> new Item(getSettings()));
 
 
 

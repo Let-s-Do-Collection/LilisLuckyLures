@@ -17,6 +17,9 @@
   "entrypoints": {
     "main": [
       "net.satisfy.lilis_lucky_lures.fabric.LilisLuckyLuresFabric"
+    ],
+    "client": [
+      "net.satisfy.lilis_lucky_lures.fabric.client.LilisLuckyLuresClientFabric"
     ]
   },
   "mixins": [
