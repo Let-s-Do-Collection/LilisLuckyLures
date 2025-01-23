@@ -3,6 +3,7 @@ package net.satisfy.lilis_lucky_lures.core.mixin;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.satisfy.lilis_lucky_lures.core.entity.FloatingDebrisEntity;
@@ -20,19 +21,19 @@ import java.util.List;
 public class FishingHookMixin {
 
     @Unique
-    private boolean isMainHand;
+    private boolean lilis_lucky_lures$isMainHand;
 
     @Inject(method = "<init>(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/level/Level;II)V", at = @At("TAIL"))
-    private void modifyFishingHookConstructor(Player player, net.minecraft.world.level.Level level, int luck, int lureSpeed, CallbackInfo ci) {
+    private void modifyFishingHookConstructor(Player player, Level level, int i, int j, CallbackInfo ci) {
         ItemStack mainHandStack = player.getMainHandItem();
         ItemStack offHandStack = player.getOffhandItem();
 
-        isMainHand = mainHandStack.is(ObjectRegistry.BAMBOO_FISHING_ROD.get());
+        lilis_lucky_lures$isMainHand = mainHandStack.is(ObjectRegistry.BAMBOO_FISHING_ROD.get());
         boolean isOffHand = offHandStack.is(ObjectRegistry.BAMBOO_FISHING_ROD.get());
 
-        if (isMainHand || isOffHand) {
+        if (lilis_lucky_lures$isMainHand || isOffHand) {
             float rotationY = player.getYRot();
-            float offset = isMainHand ? -0.4f : 0.4f;
+            float offset = lilis_lucky_lures$isMainHand ? -0.4f : 0.4f;
 
             double hookX = player.getX() + offset * net.minecraft.util.Mth.cos(-rotationY * 0.017453292F);
             double hookZ = player.getZ() + offset * net.minecraft.util.Mth.sin(-rotationY * 0.017453292F);
@@ -61,26 +62,26 @@ public class FishingHookMixin {
         }
     }
 
-    @Inject(method = "retrieve", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "retrieve", at = @At("TAIL"))
     private void onRetrieve(ItemStack itemStack, CallbackInfoReturnable<Integer> cir) {
         FishingHook fishingHook = (FishingHook) (Object) this;
         if (!fishingHook.level().isClientSide) {
             Player owner = fishingHook.getPlayerOwner();
             if (owner != null) {
-                Vec3 hookPosition = fishingHook.position();
+                int returnValue = cir.getReturnValue();
+                if (returnValue > 0) {
+                    Vec3 hookPosition = fishingHook.position();
 
-                AABB hookBoundingBox = new AABB(
-                        hookPosition.x - 0.9, hookPosition.y - 1.1, hookPosition.z - 0.9,
-                        hookPosition.x + 0.9, hookPosition.y + 1.1, hookPosition.z + 0.9
-                );
+                    AABB hookBoundingBox = new AABB(
+                            hookPosition.x - 1.0, hookPosition.y - 1.0, hookPosition.z - 1.0,
+                            hookPosition.x + 1.0, hookPosition.y + 1.0, hookPosition.z + 1.0
+                    );
 
-                List<FloatingDebrisEntity> debrisEntities = fishingHook.level().getEntitiesOfClass(FloatingDebrisEntity.class, hookBoundingBox);
-                if (!debrisEntities.isEmpty()) {
-                    FloatingDebrisEntity debrisEntity = debrisEntities.get(0);
-                    debrisEntity.onFishHookInteract(owner);
-                    fishingHook.discard();
-                    cir.setReturnValue(1);
-                    cir.cancel();
+                    List<FloatingDebrisEntity> debrisEntities = fishingHook.level().getEntitiesOfClass(FloatingDebrisEntity.class, hookBoundingBox);
+                    if (!debrisEntities.isEmpty()) {
+                        FloatingDebrisEntity debrisEntity = debrisEntities.get(0);
+                        debrisEntity.onFishHookInteract(owner);
+                    }
                 }
             }
         }

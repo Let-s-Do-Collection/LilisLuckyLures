@@ -25,11 +25,15 @@ import java.util.List;
 import java.util.Random;
 
 public class FloatingDebrisEntity extends Entity {
+    private final float randomRotation;
     private int interactions = 0;
     private static final int MAX_INTERACTIONS = 3;
     private static final float DESTRUCTION_SPEED = 0.05F;
+
     private static final EntityDataAccessor<Boolean> IS_DESTROYING = SynchedEntityData.defineId(FloatingDebrisEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Float> DESTRUCTION_PROGRESS = SynchedEntityData.defineId(FloatingDebrisEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Integer> HURT_TIME = SynchedEntityData.defineId(FloatingDebrisEntity.class, EntityDataSerializers.INT);
+
     public final float planksFrequency;
     public final float planksPhase;
     public final float planksAmplitude;
@@ -37,6 +41,8 @@ public class FloatingDebrisEntity extends Entity {
     public FloatingDebrisEntity(EntityType<? extends FloatingDebrisEntity> type, Level level) {
         super(type, level);
         Random random = new Random();
+        this.setBoundingBox(this.getBoundingBox().move(0, 1, 0));
+        this.randomRotation = random.nextFloat() * 360.0F;
         this.planksFrequency = 0.15F + random.nextFloat() * 0.2F;
         this.planksPhase = random.nextFloat() * (float) Math.PI * 2;
         this.planksAmplitude = 0.3F + random.nextFloat() * 0.4F;
@@ -46,15 +52,23 @@ public class FloatingDebrisEntity extends Entity {
     protected void defineSynchedData() {
         this.entityData.define(IS_DESTROYING, false);
         this.entityData.define(DESTRUCTION_PROGRESS, 0.0F);
+        this.entityData.define(HURT_TIME, 0);
     }
 
     @Override
     public void tick() {
         super.tick();
+
+        int currentHurtTime = this.entityData.get(HURT_TIME);
+        if (currentHurtTime > 0) {
+            this.entityData.set(HURT_TIME, currentHurtTime - 1);
+        }
+
         if (!level().isClientSide && !isAboveWater()) {
             this.remove(RemovalReason.DISCARDED);
             return;
         }
+
         if (this.entityData.get(IS_DESTROYING)) {
             float currentProgress = this.entityData.get(DESTRUCTION_PROGRESS);
             currentProgress += DESTRUCTION_SPEED;
@@ -65,10 +79,9 @@ public class FloatingDebrisEntity extends Entity {
         }
     }
 
-    public boolean canPlace() {
-        return level().getBlockState(this.blockPosition().below()).getFluidState().isSource();
+    public float getRandomRotation() {
+        return randomRotation;
     }
-
 
     private boolean isAboveWater() {
         return level().getBlockState(this.blockPosition().below()).getFluidState().isSource();
@@ -81,6 +94,7 @@ public class FloatingDebrisEntity extends Entity {
         float progress = compound.getFloat("DestructionProgress");
         this.entityData.set(IS_DESTROYING, destroying);
         this.entityData.set(DESTRUCTION_PROGRESS, progress);
+        this.entityData.set(HURT_TIME, compound.getInt("HurtTime"));
     }
 
     @Override
@@ -88,13 +102,20 @@ public class FloatingDebrisEntity extends Entity {
         compound.putInt("Interactions", interactions);
         compound.putBoolean("IsDestroying", this.entityData.get(IS_DESTROYING));
         compound.putFloat("DestructionProgress", this.entityData.get(DESTRUCTION_PROGRESS));
+        compound.putInt("HurtTime", this.entityData.get(HURT_TIME));
+    }
+
+    public void triggerHurt() {
+        this.entityData.set(HURT_TIME, 10);
+    }
+
+    protected LootTable getLootTable(ServerLevel serverLevel) {
+        return serverLevel.getServer().getLootData().getLootTable(new LilisLuckyLuresIdentifier("fishing_pools/floating_debris"));
     }
 
     public void onFishHookInteract(Player player) {
         if (!level().isClientSide && level() instanceof ServerLevel serverLevel) {
-            LootTable lootTable = serverLevel.getServer().getLootData().getLootTable(new LilisLuckyLuresIdentifier("entities/floating_debris"));
-            //TODO
-            // Add: Planks, Sticks, fish, rare fish,
+            LootTable lootTable = getLootTable(serverLevel);
             LootParams lootParams = new LootParams.Builder(serverLevel)
                     .withParameter(LootContextParams.THIS_ENTITY, this)
                     .withParameter(LootContextParams.ORIGIN, position())
@@ -103,6 +124,7 @@ public class FloatingDebrisEntity extends Entity {
                     .create(LootContextParamSets.ENTITY);
             List<ItemStack> loot = lootTable.getRandomItems(lootParams);
             loot.forEach(player::addItem);
+            triggerHurt();
             interactions++;
             if (interactions >= MAX_INTERACTIONS) {
                 removeWithEffects(serverLevel);
@@ -110,34 +132,38 @@ public class FloatingDebrisEntity extends Entity {
         }
     }
 
+
     public void removeWithEffects(ServerLevel serverLevel) {
         serverLevel.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GOAT_SCREAMING_HORN_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
+
         for (int i = 0; i < 500; i++) {
             double yOffset = serverLevel.random.nextDouble() * 15.0;
             double xOffset = 0.25 * (serverLevel.random.nextDouble() - 0.5);
             double zOffset = 0.25 * (serverLevel.random.nextDouble() - 0.5);
             double velocityY = 0.1 + serverLevel.random.nextDouble() * 0.2;
-            serverLevel.sendParticles(ParticleTypes.SPLASH, this.getX() + xOffset + 0.5, this.getY() + yOffset, this.getZ() + zOffset + 0.5, 1, 0.0, velocityY, 0.0, 0.0
-            );
+
+            serverLevel.sendParticles(ParticleTypes.SPLASH, this.getX() + xOffset + 0.5, this.getY() + yOffset, this.getZ() + zOffset + 0.5, 1, 0.0, velocityY, 0.0, 0.0);
         }
+
+        for (int i = 0; i < 125; i++) {
+            double xOffset = serverLevel.random.nextGaussian() * 0.2;
+            double yOffset = serverLevel.random.nextGaussian() * 0.2;
+            double zOffset = serverLevel.random.nextGaussian() * 0.2;
+
+            serverLevel.sendParticles(ParticleTypes.BUBBLE_POP, this.getX(), this.getY(), this.getZ(), 20, xOffset, yOffset, zOffset, 0.1);
+            serverLevel.sendParticles(ParticleTypes.POOF, this.getX(), this.getY() + 1, this.getZ(), 10, xOffset, yOffset, zOffset, 0.1);
+            serverLevel.sendParticles(ParticleTypes.CRIT, this.getX(), this.getY(), this.getZ(), 5, xOffset, yOffset, zOffset, 0.1);
+        }
+
         this.entityData.set(IS_DESTROYING, true);
     }
 
-    //TODO:
-    // * FishPool
-    // * BookDebris
-    // * FishBarrelDebris
+    public int getHurtTime() {
+        return this.entityData.get(HURT_TIME);
+    }
 
     @Override
     public @NotNull AABB getBoundingBoxForCulling() {
         return new AABB(this.getX() - 1, this.getY() - 1, this.getZ() - 1, this.getX() + 1, this.getY() + 1, this.getZ() + 1);
-    }
-
-    public boolean isDestroying() {
-        return this.entityData.get(IS_DESTROYING);
-    }
-
-    public float getDestructionProgress() {
-        return this.entityData.get(DESTRUCTION_PROGRESS);
     }
 }

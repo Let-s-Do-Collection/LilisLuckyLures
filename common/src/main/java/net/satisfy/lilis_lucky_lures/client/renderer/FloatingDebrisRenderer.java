@@ -11,6 +11,7 @@ import net.satisfy.lilis_lucky_lures.LilisLuckyLures;
 import net.satisfy.lilis_lucky_lures.client.model.entity.FloatingDebrisModel;
 import net.satisfy.lilis_lucky_lures.core.entity.FloatingDebrisEntity;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Quaternionf;
 
 public class FloatingDebrisRenderer extends EntityRenderer<FloatingDebrisEntity> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(LilisLuckyLures.MOD_ID, "textures/entity/floating_debris.png");
@@ -29,9 +30,12 @@ public class FloatingDebrisRenderer extends EntityRenderer<FloatingDebrisEntity>
     @Override
     public void render(FloatingDebrisEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         poseStack.pushPose();
+        Quaternionf rotation = new Quaternionf().rotateY((float) Math.toRadians(entity.getRandomRotation()));
+        poseStack.last().pose().rotate(rotation);
         float ageInTicks = entity.tickCount + partialTicks;
         model.setupAnim(entity, 0.0f, 0.0f, ageInTicks, entityYaw, 0.0f);
-        model.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityTranslucent(TEXTURE)), packedLight, OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, 1.0f);
+        int overlay = entity.getHurtTime() > 0 ? OverlayTexture.RED_OVERLAY_V : OverlayTexture.NO_OVERLAY;
+        model.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityTranslucent(TEXTURE)), packedLight, overlay, 1.0f, 1.0f, 1.0f, 1.0f);
         poseStack.popPose();
         super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
     }
