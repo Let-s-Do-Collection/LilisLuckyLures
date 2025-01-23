@@ -51,10 +51,11 @@ public class FishingHookMixin {
         boolean isUsingOffHand = offHandStack.is(ObjectRegistry.BAMBOO_FISHING_ROD.get());
 
         if (isUsingMainHand || isUsingOffHand) {
-            if (!player.isRemoved() && player.isAlive() && !(((FishingHook) (Object) this).distanceToSqr(player) > 1024.0)) {
+            FishingHook fishingHook = (FishingHook) (Object) this;
+            if (!player.isRemoved() && player.isAlive() && fishingHook.distanceToSqr(player) <= 1024.0) {
                 cir.setReturnValue(false);
             } else {
-                ((FishingHook) (Object) this).discard();
+                fishingHook.discard();
                 cir.setReturnValue(true);
             }
         }
@@ -76,8 +77,8 @@ public class FishingHookMixin {
                 List<FloatingDebrisEntity> debrisEntities = fishingHook.level().getEntitiesOfClass(FloatingDebrisEntity.class, hookBoundingBox);
                 if (!debrisEntities.isEmpty()) {
                     FloatingDebrisEntity debrisEntity = debrisEntities.get(0);
-
                     debrisEntity.onFishHookInteract(owner);
+                    fishingHook.discard();
                     cir.setReturnValue(1);
                     cir.cancel();
                 }

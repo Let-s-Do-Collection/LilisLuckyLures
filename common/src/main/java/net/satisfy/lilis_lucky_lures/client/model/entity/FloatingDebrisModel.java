@@ -17,7 +17,6 @@ public class FloatingDebrisModel<T extends Entity> extends EntityModel<T> {
     private final ModelPart planks;
     private final ModelPart barrel;
 
-    @SuppressWarnings("unused")
     public static LayerDefinition getTexturedModelData() {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
@@ -38,29 +37,38 @@ public class FloatingDebrisModel<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (entity instanceof FloatingDebrisEntity) {
-            float buttonOscillation = (float) Math.sin(ageInTicks * 0.1) * 0.3F;
-            button.setPos(0.0F, 24.0F + buttonOscillation, 0.0F);
-            button.setRotation(0.0F, (float) Math.sin(ageInTicks * 0.05) * 0.1F, 0.0F);
+        if (entity instanceof FloatingDebrisEntity debrisEntity) {
+            if (debrisEntity.isDestroying()) {
+                float progress = debrisEntity.getDestructionProgress();
+                button.setPos(0.0F, 24.0F + progress * 2.0F, 0.0F);
+                planks.setPos(0.0F, 24.0F + progress * 2.0F, 0.0F);
+                barrel.setPos(0.0F, 24.0F + progress * 2.0F, 0.0F);
+                button.setRotation(button.xRot + progress, button.yRot, button.zRot);
+                planks.setRotation(planks.xRot + progress, planks.yRot, planks.zRot);
+                barrel.setRotation(barrel.xRot + progress, barrel.yRot, barrel.zRot);
+            } else {
+                float buttonOscillation = (float) Math.sin(ageInTicks * 0.1) * 0.3F;
+                button.setPos(0.0F, 24.0F + buttonOscillation, 0.0F);
+                button.setRotation(0.0F, (float) Math.sin(ageInTicks * 0.05) * 0.1F, 0.0F);
 
-            float planksOscillation = (float) Math.sin(ageInTicks * 0.0125 + Math.sin(ageInTicks * 0.02) * 2.0F) * 0.4F;
-            planks.setPos(0.0F, 24.0F + planksOscillation, 0.0F);
-            planks.setRotation(
-                    (float) Math.sin(ageInTicks * 0.03) * 0.15F,
-                    (float) Math.cos(ageInTicks * 0.05) * 0.2F,
-                    0.0F
-            );
+                float planksOscillation = (float) Math.sin(ageInTicks * 0.0125 + Math.sin(ageInTicks * 0.02) * 2.0F) * 0.4F;
+                planks.setPos(0.0F, 24.0F + planksOscillation, 0.0F);
+                planks.setRotation(
+                        (float) Math.sin(ageInTicks * 0.03) * 0.15F,
+                        (float) Math.cos(ageInTicks * 0.05) * 0.2F,
+                        0.0F
+                );
 
-            float barrelOscillation = (float) Math.sin(ageInTicks * 0.05 + 1.0F) * 0.3F;
-            barrel.setPos(0.0F, 24.0F + barrelOscillation, 0.0F);
-            barrel.setRotation(
-                    (float) Math.sin(ageInTicks * 0.05) * 0.08F,
-                    (float) Math.sin(ageInTicks * 0.03) * 0.08F,
-                    (float) Math.cos(ageInTicks * 0.02) * 0.08F
-            );
+                float barrelOscillation = (float) Math.sin(ageInTicks * 0.05 + 1.0F) * 0.3F;
+                barrel.setPos(0.0F, 24.0F + barrelOscillation, 0.0F);
+                barrel.setRotation(
+                        (float) Math.sin(ageInTicks * 0.05) * 0.08F,
+                        (float) Math.sin(ageInTicks * 0.03) * 0.08F,
+                        (float) Math.cos(ageInTicks * 0.02) * 0.08F
+                );
+            }
         }
     }
-
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {

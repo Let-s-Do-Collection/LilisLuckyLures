@@ -28,14 +28,11 @@ public class FloatingDebrisRenderer extends EntityRenderer<FloatingDebrisEntity>
 
     @Override
     public void render(FloatingDebrisEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-
         poseStack.pushPose();
         float ageInTicks = entity.tickCount + partialTicks;
-        this.model.setupAnim(entity, 0.0f, 0.0f, ageInTicks, entityYaw, 0.0f);
-        this.model.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityTranslucent(TEXTURE)), packedLight, OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, 1.0f);
+        model.setupAnim(entity, 0.0f, 0.0f, ageInTicks, entityYaw, 0.0f);
+        model.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityTranslucent(TEXTURE)), packedLight, OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, 1.0f);
         poseStack.popPose();
-
         super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
     }
-
 }
