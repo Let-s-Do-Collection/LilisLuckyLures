@@ -20,6 +20,7 @@ public class TabRegistry {
                 output.accept(ObjectRegistry.SPEAR.get());
                 output.accept(ObjectRegistry.FISHING_NET.get());
                 output.accept(ObjectRegistry.BAMBOO_FISHING_ROD.get());
+                output.accept(ObjectRegistry.FLOATING_DEBRIS.get());
             })
             .build());
 

@@ -4,16 +4,15 @@ import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.FishingRodItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.level.block.BarrelBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.satisfy.lilis_lucky_lures.LilisLuckyLures;
 import net.satisfy.lilis_lucky_lures.core.item.DynamiteItem;
+import net.satisfy.lilis_lucky_lures.core.item.FloatingDebrisItem;
 import net.satisfy.lilis_lucky_lures.core.item.SpearItem;
 import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresIdentifier;
 import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresUtil;
@@ -37,9 +36,7 @@ public class ObjectRegistry {
     public static final RegistrySupplier<Item> DYNAMITE = registerItem("dynamite", () -> new DynamiteItem(getSettings()));
     public static final RegistrySupplier<Item> BAMBOO_FISHING_ROD = registerItem("bamboo_fishing_rod", () -> new FishingRodItem(getSettings()));
     public static final RegistrySupplier<Item> FISHING_NET = registerItem("fishing_net", () -> new Item(getSettings()));
-
-
-
+    public static final RegistrySupplier<Item> FLOATING_DEBRIS = registerItem("floating_debris", () -> new FloatingDebrisItem(getSettings()));
 
     public static void init() {
         ITEMS.register();

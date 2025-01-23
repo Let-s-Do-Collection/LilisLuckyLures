@@ -20,7 +20,7 @@ public class EntityTypeRegistry {
 
     public static final RegistrySupplier<EntityType<DynamiteEntity>> DYNAMITE = registerEntityType("dynamite", () -> EntityType.Builder.<DynamiteEntity>of(DynamiteEntity::new, MobCategory.MISC).sized(0.25f, 0.25f).build(new LilisLuckyLuresIdentifier("dynamite").toString()));
     public static final RegistrySupplier<EntityType<SpearEntity>> SPEAR = registerEntityType("spear", () -> EntityType.Builder.<SpearEntity>of(SpearEntity::new, MobCategory.MISC).sized(0.25f, 0.25f).build(new LilisLuckyLuresIdentifier("spear").toString()));
-    public static final RegistrySupplier<EntityType<FloatingDebrisEntity>> FLOATING_DEBRIS = registerEntityType("floating_debris", () -> EntityType.Builder.of(FloatingDebrisEntity::new, MobCategory.CREATURE).sized(1.8f, 2.2f).build(new LilisLuckyLuresIdentifier("floating_debris").toString()));
+    public static final RegistrySupplier<EntityType<FloatingDebrisEntity>> FLOATING_DEBRIS = registerEntityType("floating_debris", () -> EntityType.Builder.of(FloatingDebrisEntity::new, MobCategory.CREATURE).sized(2f, 0.4f).build(new LilisLuckyLuresIdentifier("floating_debris").toString()));
 
 
     private static <T extends BlockEntityType<?>> RegistrySupplier<T> registerBlockEntity(String name, final Supplier<T> type) {

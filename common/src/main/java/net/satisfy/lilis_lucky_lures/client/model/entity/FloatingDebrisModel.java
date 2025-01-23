@@ -20,12 +20,25 @@ public class FloatingDebrisModel<T extends Entity> extends EntityModel<T> {
     public static LayerDefinition getTexturedModelData() {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
+
         PartDefinition button = partdefinition.addOrReplaceChild("button", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 0.0F));
-        PartDefinition button_r1 = button.addOrReplaceChild("button_r1", CubeListBuilder.create().texOffs(24, 7).addBox(-3.0F, -4.0F, -1.0F, 4.0F, 4.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(17.0F, 3.0F, 6.0F, 0.0F, -0.7854F, 0.0F));
+        button.addOrReplaceChild("button_r1", CubeListBuilder.create()
+                        .texOffs(24, 7)
+                        .addBox(-3.0F, 1.0F, -1.0F, 4.0F, 4.0F, 8.0F, new CubeDeformation(0.0F)),
+                PartPose.offsetAndRotation(17.0F, 3.0F, 6.0F, 0.0F, -0.7854F, 0.0F));
+
         PartDefinition planks = partdefinition.addOrReplaceChild("planks", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 0.0F));
-        PartDefinition planks_r1 = planks.addOrReplaceChild("planks_r1", CubeListBuilder.create().texOffs(0, 32).addBox(-6.0F, -2.0F, -1.0F, 7.0F, 2.0F, 16.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(12.0F, 1.0F, -15.0F, 0.0F, 0.7854F, 0.0F));
+        planks.addOrReplaceChild("planks_r1", CubeListBuilder.create()
+                        .texOffs(0, 32)
+                        .addBox(-6.0F, 3.0F, -1.0F, 7.0F, 2.0F, 16.0F, new CubeDeformation(0.0F)),
+                PartPose.offsetAndRotation(12.0F, 1.0F, -15.0F, 0.0F, 0.7854F, 0.0F));
+
         PartDefinition barrel = partdefinition.addOrReplaceChild("barrel", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 0.0F));
-        PartDefinition barrel_r1 = barrel.addOrReplaceChild("barrel_r1", CubeListBuilder.create().texOffs(0, 0).addBox(-15.0F, -16.0F, -1.0F, 16.0F, 16.0F, 16.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(7.0F, 16.0F, 3.0F, 0.7854F, 0.0F, 0.0F));
+        barrel.addOrReplaceChild("barrel_r1", CubeListBuilder.create()
+                        .texOffs(0, 0)
+                        .addBox(-15.0F, -11.0F, -1.0F, 16.0F, 16.0F, 16.0F, new CubeDeformation(0.0F)),
+                PartPose.offsetAndRotation(7.0F, 16.0F, 3.0F, 0.7854F, 0.0F, 0.0F));
+
         return LayerDefinition.create(meshdefinition, 64, 64);
     }
 
@@ -40,34 +53,58 @@ public class FloatingDebrisModel<T extends Entity> extends EntityModel<T> {
         if (entity instanceof FloatingDebrisEntity debrisEntity) {
             if (debrisEntity.isDestroying()) {
                 float progress = debrisEntity.getDestructionProgress();
-                button.setPos(0.0F, 24.0F + progress * 2.0F, 0.0F);
-                planks.setPos(0.0F, 24.0F + progress * 2.0F, 0.0F);
-                barrel.setPos(0.0F, 24.0F + progress * 2.0F, 0.0F);
-                button.setRotation(button.xRot + progress, button.yRot, button.zRot);
-                planks.setRotation(planks.xRot + progress, planks.yRot, planks.zRot);
-                barrel.setRotation(barrel.xRot + progress, barrel.yRot, barrel.zRot);
-            } else {
-                float buttonOscillation = (float) Math.sin(ageInTicks * 0.1) * 0.3F;
-                button.setPos(0.0F, 24.0F + buttonOscillation, 0.0F);
-                button.setRotation(0.0F, (float) Math.sin(ageInTicks * 0.05) * 0.1F, 0.0F);
+                float easedProgress = smootherStep(progress);
 
-                float planksOscillation = (float) Math.sin(ageInTicks * 0.0125 + Math.sin(ageInTicks * 0.02) * 2.0F) * 0.4F;
-                planks.setPos(0.0F, 24.0F + planksOscillation, 0.0F);
-                planks.setRotation(
-                        (float) Math.sin(ageInTicks * 0.03) * 0.15F,
-                        (float) Math.cos(ageInTicks * 0.05) * 0.2F,
+                if (progress < 0.5F) {
+                    float pullProgress = easedProgress / 0.5F;
+                    float centerOffset = pullProgress * 5.0F;
+
+                    button.setPos(centerOffset, 24.0F - centerOffset, centerOffset);
+                    planks.setPos(centerOffset, 24.0F - centerOffset, centerOffset);
+                    barrel.setPos(centerOffset, 24.0F - centerOffset, centerOffset);
+
+                    float rotation = pullProgress * (float) Math.PI;
+                    button.setRotation(rotation, rotation, rotation);
+                    planks.setRotation(rotation, rotation, rotation);
+                    barrel.setRotation(rotation, rotation, rotation);
+                } else {
+                    float moveProgress = (easedProgress - 0.5F) / 0.5F;
+                    float downwardOffset = moveProgress * 10.0F;
+
+                    button.setPos(button.x, 24.0F - downwardOffset, button.z);
+                    planks.setPos(planks.x, 24.0F - downwardOffset, planks.z);
+                    barrel.setPos(barrel.x, 24.0F - downwardOffset, barrel.z);
+                }
+            } else {
+                float buttonOscillation = (float) Math.sin(ageInTicks * 0.05) * 0.2F;
+                button.setPos(0.0F, 24.0F + buttonOscillation, 0.0F);
+                button.setRotation(
+                        (float) Math.sin(ageInTicks * 0.1) * 0.1F,
+                        (float) Math.sin(ageInTicks * 0.05) * 0.05F,
                         0.0F
                 );
 
-                float barrelOscillation = (float) Math.sin(ageInTicks * 0.05 + 1.0F) * 0.3F;
+                float planksOscillation = (float) Math.sin(ageInTicks * 0.03 + Math.cos(ageInTicks * 0.02) * 2.0F) * 0.3F;
+                planks.setPos(0.0F, 24.0F + planksOscillation, 0.0F);
+                planks.setRotation(
+                        (float) Math.sin(ageInTicks * 0.02) * 0.12F,
+                        (float) Math.cos(ageInTicks * 0.03) * 0.12F,
+                        0.0F
+                );
+
+                float barrelOscillation = (float) Math.sin(ageInTicks * 0.02 + 1.0F) * 0.15F;
                 barrel.setPos(0.0F, 24.0F + barrelOscillation, 0.0F);
                 barrel.setRotation(
-                        (float) Math.sin(ageInTicks * 0.05) * 0.08F,
-                        (float) Math.sin(ageInTicks * 0.03) * 0.08F,
-                        (float) Math.cos(ageInTicks * 0.02) * 0.08F
+                        (float) Math.sin(ageInTicks * 0.02) * 0.05F,
+                        (float) Math.sin(ageInTicks * 0.015) * 0.05F,
+                        (float) Math.cos(ageInTicks * 0.01) * 0.05F
                 );
             }
         }
+    }
+
+    private float smootherStep(float t) {
+        return t * t * t * (t * (t * 6 - 15) + 10);
     }
 
     @Override
