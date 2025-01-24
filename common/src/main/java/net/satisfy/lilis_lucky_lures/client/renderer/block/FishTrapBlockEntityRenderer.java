@@ -9,6 +9,8 @@ import net.minecraft.world.item.ItemStack;
 import net.satisfy.lilis_lucky_lures.core.block.entity.FishTrapBlockEntity;
 import org.joml.Quaternionf;
 
+import java.util.Objects;
+
 public class FishTrapBlockEntityRenderer implements BlockEntityRenderer<FishTrapBlockEntity> {
 
     public FishTrapBlockEntityRenderer() {
@@ -21,7 +23,7 @@ public class FishTrapBlockEntityRenderer implements BlockEntityRenderer<FishTrap
             if (!itemStack.isEmpty()) {
                 poseStack.pushPose();
 
-                double offset = Math.sin((blockEntity.getLevel().getGameTime() + partialTick) / 8.0) * 0.1;
+                double offset = Math.sin((Objects.requireNonNull(blockEntity.getLevel()).getGameTime() + partialTick) / 8.0) * 0.1;
                 double x = 0.5;
                 double y = 0.6 + offset * 0.05;
                 double z = 0.5;

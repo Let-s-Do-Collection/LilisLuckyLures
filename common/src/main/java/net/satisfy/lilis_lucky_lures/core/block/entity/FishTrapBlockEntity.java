@@ -2,6 +2,8 @@ package net.satisfy.lilis_lucky_lures.core.block.entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
@@ -16,10 +18,11 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.Recipe;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static net.minecraft.world.level.block.Block.popResource;
 
-public class FishTrapBlockEntity extends BlockEntity implements Container {
+public class FishTrapBlockEntity extends BlockEntity implements Container, Clearable {
     private final NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
     private int timer = 0;
     private int duration = 0;
@@ -76,6 +79,7 @@ public class FishTrapBlockEntity extends BlockEntity implements Container {
             assert level != null;
             popResource(level, worldPosition, output);
         }
+        markUpdated();
     }
 
     @Override
@@ -95,12 +99,16 @@ public class FishTrapBlockEntity extends BlockEntity implements Container {
 
     @Override
     public @NotNull ItemStack removeItem(int slot, int amount) {
-        return ContainerHelper.removeItem(inventory, slot, amount);
+        ItemStack removed = ContainerHelper.removeItem(inventory, slot, amount);
+        markUpdated();
+        return removed;
     }
 
     @Override
     public @NotNull ItemStack removeItemNoUpdate(int slot) {
-        return ContainerHelper.takeItem(inventory, slot);
+        ItemStack removed = ContainerHelper.takeItem(inventory, slot);
+        markUpdated();
+        return removed;
     }
 
     @Override
@@ -109,6 +117,7 @@ public class FishTrapBlockEntity extends BlockEntity implements Container {
         if (slot == 0) {
             recipe = null;
         }
+        markUpdated();
     }
 
     @Override
@@ -120,6 +129,7 @@ public class FishTrapBlockEntity extends BlockEntity implements Container {
     public void clearContent() {
         inventory.clear();
         recipe = null;
+        markUpdated();
     }
 
     @Override
@@ -138,5 +148,49 @@ public class FishTrapBlockEntity extends BlockEntity implements Container {
         tag.putInt("Timer", timer);
         tag.putInt("Duration", duration);
         tag.putBoolean("Processing", processing);
+    }
+
+    @Override
+    public @NotNull CompoundTag getUpdateTag() {
+        CompoundTag compoundTag = new CompoundTag();
+        ContainerHelper.saveAllItems(compoundTag, inventory);
+        compoundTag.putInt("Timer", timer);
+        compoundTag.putInt("Duration", duration);
+        compoundTag.putBoolean("Processing", processing);
+        return compoundTag;
+    }
+
+    @Nullable
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    private void markUpdated() {
+        setChanged();
+        if (level != null) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+        }
+    }
+
+    public boolean insertInput(ItemStack stack) {
+        if (inventory.get(0).isEmpty()) {
+            inventory.set(0, stack.copy());
+            if (!stack.isEmpty()) {
+                stack.shrink(1);
+            }
+            markUpdated();
+            return true;
+        }
+        return false;
+    }
+
+    public ItemStack extractOutput() {
+        ItemStack output = inventory.get(1).copy();
+        if (!output.isEmpty()) {
+            inventory.set(1, ItemStack.EMPTY);
+            markUpdated();
+        }
+        return output;
     }
 }
