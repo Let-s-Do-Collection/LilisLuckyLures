@@ -21,6 +21,7 @@ public class TabRegistry {
                 output.accept(ObjectRegistry.FISHING_NET.get());
                 output.accept(ObjectRegistry.BAMBOO_FISHING_ROD.get());
                 output.accept(ObjectRegistry.FLOATING_DEBRIS.get());
+                output.accept(ObjectRegistry.FISH_TRAP.get());
             })
             .build());
 

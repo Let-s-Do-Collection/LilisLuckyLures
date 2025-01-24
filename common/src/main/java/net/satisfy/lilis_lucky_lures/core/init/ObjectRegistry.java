@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.satisfy.lilis_lucky_lures.LilisLuckyLures;
+import net.satisfy.lilis_lucky_lures.core.block.FishTrapBlock;
 import net.satisfy.lilis_lucky_lures.core.item.DynamiteItem;
 import net.satisfy.lilis_lucky_lures.core.item.FloatingDebrisItem;
 import net.satisfy.lilis_lucky_lures.core.item.SpearItem;
@@ -27,7 +28,7 @@ public class ObjectRegistry {
     public static final Registrar<Block> BLOCK_REGISTRAR = BLOCKS.getRegistrar();
 
     public static final RegistrySupplier<Block> REDSTONE_COIL = registerWithItem("redstone_coil", () -> new Block(BlockBehaviour.Properties.copy(Blocks.REDSTONE_BLOCK)));
-    public static final RegistrySupplier<Block> FISH_TRAP = registerWithItem("fish_trap", () -> new Block(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
+    public static final RegistrySupplier<Block> FISH_TRAP = registerWithItem("fish_trap", () -> new FishTrapBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
     public static final RegistrySupplier<Block> FISH_BARREL = registerWithItem("fish_barrel", () -> new BarrelBlock(BlockBehaviour.Properties.copy(Blocks.BARREL)));
     public static final RegistrySupplier<Block> BAG = registerWithItem("bag", () -> new Block(BlockBehaviour.Properties.copy(Blocks.RED_WOOL)));
 

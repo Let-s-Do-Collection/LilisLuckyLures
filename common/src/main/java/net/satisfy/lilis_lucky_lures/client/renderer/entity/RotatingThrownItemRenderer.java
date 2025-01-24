@@ -1,4 +1,4 @@
-package net.satisfy.lilis_lucky_lures.client.renderer;
+package net.satisfy.lilis_lucky_lures.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
