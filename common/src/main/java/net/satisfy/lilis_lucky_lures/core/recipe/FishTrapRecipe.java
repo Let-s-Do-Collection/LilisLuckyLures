@@ -119,7 +119,6 @@ public class FishTrapRecipe implements Recipe<Container> {
             return new FishTrapRecipe(id, baitItem, catchItem, catchCount, minDuration, maxDuration);
         }
 
-
         @Override
         public @NotNull FishTrapRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
             Ingredient baitItem = Ingredient.fromNetwork(buf);

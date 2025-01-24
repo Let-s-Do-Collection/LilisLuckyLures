@@ -18,6 +18,8 @@ import net.satisfy.lilis_lucky_lures.core.init.EntityTypeRegistry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static net.minecraft.world.level.block.Block.popResource;
+
 public class FishTrapBlock extends BaseEntityBlock {
     public FishTrapBlock(Properties properties) {
         super(properties);
@@ -37,16 +39,22 @@ public class FishTrapBlock extends BaseEntityBlock {
             if (!level.isClientSide) {
                 ItemStack heldItem = player.getItemInHand(hand);
                 if (!heldItem.isEmpty()) {
-                    boolean inserted = fishTrap.insertInput(heldItem);
-                    if (inserted && !player.isCreative()) {
-                        heldItem.shrink(1);
+                    if (fishTrap.getItem(0).isEmpty()) {
+                        ItemStack toInsert = heldItem.copy();
+                        if (!player.isCreative()) {
+                            heldItem.shrink(1);
+                        }
+                        fishTrap.setItem(0, toInsert);
                     }
                 } else {
-                    ItemStack output = fishTrap.extractOutput();
+                    ItemStack output = fishTrap.getItem(1);
                     if (!output.isEmpty()) {
                         boolean added = player.getInventory().add(output.copy());
-                        if (!added) {
+                        if (added) {
+                            fishTrap.removeItem(1, output.getCount());
+                        } else {
                             popResource(level, pos, output.copy());
+                            fishTrap.removeItem(1, output.getCount());
                         }
                     }
                 }
