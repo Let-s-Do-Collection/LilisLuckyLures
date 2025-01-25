@@ -2,6 +2,8 @@ package net.satisfy.lilis_lucky_lures.core.block.entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
@@ -9,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.NonNullList;
+import net.satisfy.lilis_lucky_lures.core.block.FishTrapBlock;
 import net.satisfy.lilis_lucky_lures.core.init.EntityTypeRegistry;
 import net.satisfy.lilis_lucky_lures.core.init.RecipeTypeRegistry;
 import net.satisfy.lilis_lucky_lures.core.recipe.FishTrapRecipe;
@@ -17,9 +20,7 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.Recipe;
 import org.jetbrains.annotations.NotNull;
 
-import static net.minecraft.world.level.block.Block.popResource;
-
-public class FishTrapBlockEntity extends BlockEntity implements Container {
+public class FishTrapBlockEntity extends BlockEntity implements Container, Clearable {
     private final NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
     private int timer = 0;
     private int duration = 0;
@@ -33,7 +34,7 @@ public class FishTrapBlockEntity extends BlockEntity implements Container {
     public void tick() {
         if (level != null && !level.isClientSide) {
             ItemStack inputItem = inventory.get(0);
-            
+
             if (recipe == null && !inputItem.isEmpty()) {
                 SimpleContainer container = new SimpleContainer(1);
                 container.setItem(0, inputItem);
@@ -46,7 +47,7 @@ public class FishTrapBlockEntity extends BlockEntity implements Container {
 
             if (recipe == null || inputItem.isEmpty()) {
                 processing = false;
-                timer = 0; 
+                timer = 0;
                 return;
             }
 
@@ -65,13 +66,15 @@ public class FishTrapBlockEntity extends BlockEntity implements Container {
                     }
 
                     addCatchToOutput();
-                    recipe = null; 
+                    recipe = null;
                     setChanged();
                 }
             } else if (recipe.getBaitItem().test(inputItem)) {
                 processing = true;
                 duration = recipe.getRandomDuration();
             }
+
+            updateBlockState();
         }
     }
 
@@ -84,11 +87,49 @@ public class FishTrapBlockEntity extends BlockEntity implements Container {
         } else if (ItemStack.isSameItemSameTags(existingOutput, output)) {
             existingOutput.grow(output.getCount());
             inventory.set(1, existingOutput);
-        } else {
-            if (level != null) {
-                popResource(level, worldPosition, output);
+        }
+        updateBlockState();
+    }
+
+    private void updateBlockState() {
+        if (level != null) {
+            boolean isFull = !inventory.get(1).isEmpty();
+            boolean hasBait = !inventory.get(0).isEmpty();
+            BlockState state = level.getBlockState(worldPosition);
+            if (state.getBlock() instanceof FishTrapBlock fishTrapBlock) {
+                fishTrapBlock.updateBlockState(level, worldPosition, isFull, hasBait);
             }
         }
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        ContainerHelper.loadAllItems(tag, inventory);
+        timer = tag.getInt("Timer");
+        duration = tag.getInt("Duration");
+        processing = tag.getBoolean("Processing");
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        ContainerHelper.saveAllItems(tag, inventory);
+        tag.putInt("Timer", timer);
+        tag.putInt("Duration", duration);
+        tag.putBoolean("Processing", processing);
+    }
+
+    @Override
+    public @NotNull CompoundTag getUpdateTag() {
+        CompoundTag tag = super.getUpdateTag();
+        ContainerHelper.saveAllItems(tag, inventory);
+        return tag;
+    }
+
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
@@ -110,6 +151,7 @@ public class FishTrapBlockEntity extends BlockEntity implements Container {
     public @NotNull ItemStack removeItem(int slot, int amount) {
         ItemStack removed = ContainerHelper.removeItem(inventory, slot, amount);
         setChanged();
+        updateBlockState();
         return removed;
     }
 
@@ -117,21 +159,16 @@ public class FishTrapBlockEntity extends BlockEntity implements Container {
     public @NotNull ItemStack removeItemNoUpdate(int slot) {
         ItemStack removed = ContainerHelper.takeItem(inventory, slot);
         setChanged();
+        updateBlockState();
         return removed;
     }
 
     @Override
     public void setItem(int slot, ItemStack stack) {
-        if (slot == 0) {
-            if (!stack.isEmpty() && stack.getCount() > 1) {
-                stack.setCount(1);
-            }
-            recipe = null; 
-        }
         inventory.set(slot, stack);
         setChanged();
+        updateBlockState();
     }
-
 
     @Override
     public boolean stillValid(Player player) {
@@ -143,23 +180,6 @@ public class FishTrapBlockEntity extends BlockEntity implements Container {
         inventory.clear();
         recipe = null;
         setChanged();
-    }
-
-    @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        ContainerHelper.loadAllItems(tag, inventory);
-        timer = tag.getInt("Timer");
-        duration = tag.getInt("Duration");
-        processing = tag.getBoolean("Processing");
-    }
-
-    @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        ContainerHelper.saveAllItems(tag, inventory);
-        tag.putInt("Timer", timer);
-        tag.putInt("Duration", duration);
-        tag.putBoolean("Processing", processing);
+        updateBlockState();
     }
 }

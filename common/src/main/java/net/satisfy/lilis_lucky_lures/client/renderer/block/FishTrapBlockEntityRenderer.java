@@ -2,44 +2,49 @@ package net.satisfy.lilis_lucky_lures.client.renderer.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.satisfy.lilis_lucky_lures.core.block.FishTrapBlock;
 import net.satisfy.lilis_lucky_lures.core.block.entity.FishTrapBlockEntity;
 import org.joml.Quaternionf;
 
-import java.util.Objects;
-
 public class FishTrapBlockEntityRenderer implements BlockEntityRenderer<FishTrapBlockEntity> {
-
-    public FishTrapBlockEntityRenderer() {
-    }
 
     @Override
     public void render(FishTrapBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
-        ItemStack outputItem = blockEntity.getItem(1);
-        ItemStack inputItem = blockEntity.getItem(0);
+        if (blockEntity.getLevel() == null) return;
 
-        ItemStack itemToRender = outputItem.isEmpty() ? inputItem : outputItem; 
+        BlockState state = blockEntity.getLevel().getBlockState(blockEntity.getBlockPos());
+        if (!(state.getBlock() instanceof FishTrapBlock)) return;
+
+        boolean isFull = state.getValue(FishTrapBlock.FULL);
+        boolean hasBait = state.getValue(FishTrapBlock.HAS_BAIT);
+
+        ItemStack itemToRender = isFull ? blockEntity.getItem(1) : (hasBait ? blockEntity.getItem(0) : ItemStack.EMPTY);
 
         if (!itemToRender.isEmpty()) {
             poseStack.pushPose();
 
-            double offset = Math.sin((Objects.requireNonNull(blockEntity.getLevel()).getGameTime() + partialTick) / 8.0) * 0.1;
-            double x = 0.5;
-            double y = 0.6 + offset * 0.05;
-            double z = 0.5;
+            double gameTime = blockEntity.getLevel().getGameTime() + partialTick;
+            double offsetY = Math.sin(gameTime / 8.0) * 0.05; 
+            double offsetX = Math.cos(gameTime / 10.0) * 0.05;
+            double offsetZ = Math.sin(gameTime / 12.0) * 0.05;
+
+            double x = 0.5 + offsetX;
+            double y = 0.3 + offsetY;
+            double z = 0.5 + offsetZ;
 
             poseStack.translate(x, y, z);
-            poseStack.mulPose(new Quaternionf().rotateXYZ((float) Math.toRadians(45), 0, 0));
-            float scale = 0.75f;
+            poseStack.mulPose(new Quaternionf().rotationX((float) Math.toRadians(90 + Math.sin(gameTime / 20.0) * 15)));
+            float scale = 0.85f;
             poseStack.scale(scale, scale, scale);
 
-            Minecraft.getInstance().getItemRenderer().renderStatic(itemToRender, ItemDisplayContext.GROUND, combinedLight, combinedOverlay, poseStack, bufferSource, blockEntity.getLevel(), 0);
-
+            Minecraft.getInstance().getItemRenderer().renderStatic(itemToRender, ItemDisplayContext.GROUND, LightTexture.FULL_SKY, combinedOverlay, poseStack, bufferSource, blockEntity.getLevel(), 0);
             poseStack.popPose();
         }
     }
-
 }
