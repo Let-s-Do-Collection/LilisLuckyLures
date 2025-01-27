@@ -33,7 +33,7 @@ public class ObjectRegistry {
     public static final RegistrySupplier<Block> BAG = registerWithItem("bag", () -> new Block(BlockBehaviour.Properties.copy(Blocks.RED_WOOL)));
 
 
-    public static final RegistrySupplier<Item> SPEAR = registerItem("spear", () -> new SpearItem(getSettings()));
+    public static final RegistrySupplier<Item> SPEAR = registerItem("spear", () -> new SpearItem(getSettings().durability(124)));
     public static final RegistrySupplier<Item> DYNAMITE = registerItem("dynamite", () -> new DynamiteItem(getSettings()));
     public static final RegistrySupplier<Item> BAMBOO_FISHING_ROD = registerItem("bamboo_fishing_rod", () -> new FishingRodItem(getSettings()));
     public static final RegistrySupplier<Item> FISHING_NET = registerItem("fishing_net", () -> new Item(getSettings()));

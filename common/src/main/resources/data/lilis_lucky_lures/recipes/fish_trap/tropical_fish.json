@@ -10,7 +10,7 @@
     }
   },
   "catch_duration": {
-    "min": 40,
-    "max": 100
+    "min": 900,
+    "max": 1400
   }
 }

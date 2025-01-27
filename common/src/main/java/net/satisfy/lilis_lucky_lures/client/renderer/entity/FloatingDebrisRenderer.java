@@ -7,14 +7,14 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.satisfy.lilis_lucky_lures.LilisLuckyLures;
 import net.satisfy.lilis_lucky_lures.client.model.entity.FloatingDebrisModel;
 import net.satisfy.lilis_lucky_lures.core.entity.FloatingDebrisEntity;
+import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresIdentifier;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 
 public class FloatingDebrisRenderer extends EntityRenderer<FloatingDebrisEntity> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(LilisLuckyLures.MOD_ID, "textures/entity/floating_debris.png");
+    private static final ResourceLocation TEXTURE = new LilisLuckyLuresIdentifier("textures/entity/floating_debris.png");
     private final FloatingDebrisModel<FloatingDebrisEntity> model;
 
     public FloatingDebrisRenderer(EntityRendererProvider.Context context) {
