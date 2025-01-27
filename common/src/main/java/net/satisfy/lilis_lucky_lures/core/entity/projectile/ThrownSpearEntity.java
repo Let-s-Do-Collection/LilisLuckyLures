@@ -121,24 +121,7 @@ public class ThrownSpearEntity extends AbstractArrow {
         this.setDeltaMovement(this.getDeltaMovement().multiply(-0.01, -0.1, -0.01));
         float pitch = 1.0F;
 
-        if (this.level() instanceof ServerLevel serverLevel && serverLevel.isThundering() && this.isChanneling()) {
-            BlockPos targetPos = target.blockPosition();
-            if (serverLevel.canSeeSky(targetPos)) {
-                LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(serverLevel);
-                if (lightning != null) {
-                    lightning.moveTo(Vec3.atBottomCenterOf(targetPos));
-                    lightning.setCause(owner instanceof ServerPlayer ? (ServerPlayer) owner : null);
-                    serverLevel.addFreshEntity(lightning);
-                    sound = SoundEvents.TRIDENT_THUNDER;
-                    pitch = 5.0F;
-                }
-            }
-        }
         this.playSound(sound, pitch, 1.0F);
-    }
-
-    public boolean isChanneling() {
-        return EnchantmentHelper.hasChanneling(this.spearItem);
     }
 
     @Override
