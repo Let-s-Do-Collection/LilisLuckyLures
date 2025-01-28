@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.satisfy.lilis_lucky_lures.LilisLuckyLures;
 import net.satisfy.lilis_lucky_lures.core.block.entity.FishTrapBlockEntity;
 import net.satisfy.lilis_lucky_lures.core.entity.DynamiteEntity;
+import net.satisfy.lilis_lucky_lures.core.entity.FishPoolEntity;
 import net.satisfy.lilis_lucky_lures.core.entity.FloatingDebrisEntity;
 import net.satisfy.lilis_lucky_lures.core.entity.projectile.ThrownSpearEntity;
 import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresIdentifier;
@@ -22,6 +23,7 @@ public class EntityTypeRegistry {
     public static final RegistrySupplier<EntityType<DynamiteEntity>> DYNAMITE = registerEntityType("dynamite", () -> EntityType.Builder.<DynamiteEntity>of(DynamiteEntity::new, MobCategory.MISC).sized(0.25f, 0.25f).build(new LilisLuckyLuresIdentifier("dynamite").toString()));
     public static final RegistrySupplier<EntityType<FloatingDebrisEntity>> FLOATING_DEBRIS = registerEntityType("floating_debris", () -> EntityType.Builder.of(FloatingDebrisEntity::new, MobCategory.CREATURE).sized(2f, 2.5f).build(new LilisLuckyLuresIdentifier("floating_debris").toString()));
     public static final RegistrySupplier<EntityType<ThrownSpearEntity>> THROWN_SPEAR = registerEntityType("thrown_spear", () -> EntityType.Builder.<ThrownSpearEntity>of(ThrownSpearEntity::new, MobCategory.MISC).sized(0.25f, 0.25f).build(new LilisLuckyLuresIdentifier("thrown_spear").toString()));
+    public static final RegistrySupplier<EntityType<FishPoolEntity>> FISH_POOL = registerEntityType("fish_pool", () -> EntityType.Builder.of(FishPoolEntity::new, MobCategory.CREATURE).sized(2f, 2.5f).build(new LilisLuckyLuresIdentifier("fish_pool").toString()));
 
     public static final RegistrySupplier<BlockEntityType<FishTrapBlockEntity>> FISH_TRAP = registerBlockEntity("fish_trap", () -> BlockEntityType.Builder.of(FishTrapBlockEntity::new, ObjectRegistry.FISH_TRAP.get()).build(null));
 
