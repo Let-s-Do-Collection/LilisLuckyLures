@@ -1,6 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "lilis_lucky_lures:item/fish_net_full"
-  }
-}

@@ -13,7 +13,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.satisfy.lilis_lucky_lures.LilisLuckyLures;
 import net.satisfy.lilis_lucky_lures.core.block.FishTrapBlock;
 import net.satisfy.lilis_lucky_lures.core.item.DynamiteItem;
-import net.satisfy.lilis_lucky_lures.core.item.FishNetItem;
 import net.satisfy.lilis_lucky_lures.core.item.FloatingDebrisItem;
 import net.satisfy.lilis_lucky_lures.core.item.SpearItem;
 import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresIdentifier;
@@ -37,10 +36,8 @@ public class ObjectRegistry {
     public static final RegistrySupplier<Item> SPEAR = registerItem("spear", () -> new SpearItem(getSettings().durability(124)));
     public static final RegistrySupplier<Item> DYNAMITE = registerItem("dynamite", () -> new DynamiteItem(getSettings()));
     public static final RegistrySupplier<Item> BAMBOO_FISHING_ROD = registerItem("bamboo_fishing_rod", () -> new FishingRodItem(getSettings()));
-    public static final RegistrySupplier<Item> FISHING_NET = registerItem("fishing_net", () -> new FishNetItem(getSettings()));
+    public static final RegistrySupplier<Item> FISHING_NET = registerItem("fishing_net", () -> new Item(getSettings()));
     public static final RegistrySupplier<Item> FLOATING_DEBRIS = registerItem("floating_debris", () -> new FloatingDebrisItem(getSettings()));
-    public static final RegistrySupplier<Item> FLOATING_BOOKS = registerItem("floating_books", () -> new FloatingDebrisItem(getSettings()));
-    public static final RegistrySupplier<Item> FISH_POOL = registerItem("fish_pool", () -> new FloatingDebrisItem(getSettings()));
 
     public static void init() {
         ITEMS.register();
