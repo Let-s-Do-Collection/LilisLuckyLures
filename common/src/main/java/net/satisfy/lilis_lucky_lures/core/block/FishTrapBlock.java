@@ -6,6 +6,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -136,6 +137,37 @@ public class FishTrapBlock extends BaseEntityBlock {
             }
         }
     }
+
+    @Override
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        super.setPlacedBy(level, pos, state, placer, stack);
+        if (level.isClientSide && state.getValue(WATERLOGGED)) {
+            int particleCount = 10;
+            double centerX = pos.getX() + 0.5;
+            double centerZ = pos.getZ() + 0.5;
+            double centerY = pos.getY() + 0.1;
+            double velocity = 0.05;
+
+            for (int i = 0; i < particleCount; i++) {
+                double angle = (2 * Math.PI / particleCount) * i;
+                double radius = 0.15;
+
+                for (int j = 0; j < 3; j++) {
+                    double x = centerX + radius * Math.cos(angle);
+                    double z = centerZ + radius * Math.sin(angle);
+                    double y = centerY + j * 0.1;
+
+                    double velX = Math.cos(angle) * velocity;
+                    double velZ = Math.sin(angle) * velocity;
+                    double velY = 0.02 + (j * 0.01);
+
+                    level.addParticle(ParticleTypes.BUBBLE, x, y, z, velX, velY, velZ);
+                    radius += 0.4;
+                }
+            }
+        }
+    }
+
 
     @Override
     public @NotNull RenderShape getRenderShape(BlockState blockState) {

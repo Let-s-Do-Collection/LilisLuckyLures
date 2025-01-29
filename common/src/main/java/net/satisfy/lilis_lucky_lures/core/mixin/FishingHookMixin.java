@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.List;
 
 @Mixin(FishingHook.class)
-public class FishingHookMixin {
+public abstract class FishingHookMixin {
 
     @Inject(method = "shouldStopFishing", at = @At("HEAD"), cancellable = true)
     private void injectedShouldStopFishing(Player player, CallbackInfoReturnable<Boolean> cir) {

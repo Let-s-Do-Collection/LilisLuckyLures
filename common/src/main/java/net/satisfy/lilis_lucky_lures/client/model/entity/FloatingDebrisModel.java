@@ -16,6 +16,7 @@ public class FloatingDebrisModel<T extends Entity> extends EntityModel<T> {
     private final ModelPart button;
     private final ModelPart planks;
     private final ModelPart barrel;
+
     private final float baseYButton;
     private final float baseYPlanks;
     private final float baseYBarrel;
@@ -49,6 +50,7 @@ public class FloatingDebrisModel<T extends Entity> extends EntityModel<T> {
         this.button = root.getChild("button");
         this.planks = root.getChild("planks");
         this.barrel = root.getChild("barrel");
+
         this.baseYButton = this.button.y;
         this.baseYPlanks = this.planks.y;
         this.baseYBarrel = this.barrel.y;
@@ -58,10 +60,26 @@ public class FloatingDebrisModel<T extends Entity> extends EntityModel<T> {
     public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         if (entity instanceof FloatingDebrisEntity debrisEntity) {
 
-            float buttonOscillation = (float) Math.sin(ageInTicks * 0.05) * 0.2F;
-            button.setPos(0.0F, baseYButton + buttonOscillation, 0.0F);
-            planks.setPos(0.0F, baseYPlanks + (float) Math.sin(ageInTicks * 0.03) * 0.3F, 0.0F);
-            barrel.setPos(0.0F, baseYBarrel + (float) Math.sin(ageInTicks * 0.04) * 0.2F, 0.0F);
+            float timeFactor = ageInTicks * 0.1F;
+
+            float buttonOscillation = (float) Math.sin(timeFactor + 0.5F) * 0.25F;
+            float planksOscillation = (float) Math.sin(timeFactor + 0.3F) * 0.35F;
+            float barrelOscillation = (float) Math.sin(timeFactor + 0.7F) * 0.3F;
+
+            float buttonRotation = (float) Math.cos(timeFactor * 0.8F) * 0.05F;
+            float planksRotation = (float) Math.sin(timeFactor * 0.7F) * 0.07F;
+            float barrelRotation = (float) Math.cos(timeFactor * 0.6F) * 0.06F;
+
+            float sideDriftX = (float) Math.sin(timeFactor * 0.4F) * 0.2F;
+            float sideDriftZ = (float) Math.cos(timeFactor * 0.4F) * 0.2F;
+
+            button.setPos(sideDriftX, baseYButton + buttonOscillation, sideDriftZ);
+            planks.setPos(-sideDriftX, baseYPlanks + planksOscillation, -sideDriftZ);
+            barrel.setPos(sideDriftZ, baseYBarrel + barrelOscillation, -sideDriftX);
+
+            button.xRot = buttonRotation;
+            planks.zRot = planksRotation;
+            barrel.xRot = barrelRotation;
 
             if (debrisEntity.getHurtTime() > 0) {
                 int hurtTime = debrisEntity.getHurtTime();
@@ -78,6 +96,7 @@ public class FloatingDebrisModel<T extends Entity> extends EntityModel<T> {
             }
         }
     }
+
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {

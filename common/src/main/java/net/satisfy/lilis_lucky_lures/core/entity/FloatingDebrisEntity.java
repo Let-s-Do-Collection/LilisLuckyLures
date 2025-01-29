@@ -25,8 +25,6 @@ import java.util.List;
 import java.util.Random;
 
 public class FloatingDebrisEntity extends Entity {
-    private final float randomRotation;
-    private int interactions = 0;
     private static final int MAX_INTERACTIONS = 3;
     private static final float DESTRUCTION_SPEED = 0.05F;
 
@@ -34,18 +32,14 @@ public class FloatingDebrisEntity extends Entity {
     private static final EntityDataAccessor<Float> DESTRUCTION_PROGRESS = SynchedEntityData.defineId(FloatingDebrisEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> HURT_TIME = SynchedEntityData.defineId(FloatingDebrisEntity.class, EntityDataSerializers.INT);
 
-    public final float planksFrequency;
-    public final float planksPhase;
-    public final float planksAmplitude;
+    private final float randomRotation;
+    private int interactions = 0;
 
     public FloatingDebrisEntity(EntityType<? extends FloatingDebrisEntity> type, Level level) {
         super(type, level);
         Random random = new Random();
         this.setBoundingBox(this.getBoundingBox().move(0, 1, 0));
         this.randomRotation = random.nextFloat() * 360.0F;
-        this.planksFrequency = 0.15F + random.nextFloat() * 0.2F;
-        this.planksPhase = random.nextFloat() * (float) Math.PI * 2;
-        this.planksAmplitude = 0.3F + random.nextFloat() * 0.4F;
     }
 
     @Override
