@@ -168,7 +168,6 @@ public class FishTrapBlock extends BaseEntityBlock {
         }
     }
 
-
     @Override
     public @NotNull RenderShape getRenderShape(BlockState blockState) {
         return RenderShape.MODEL;

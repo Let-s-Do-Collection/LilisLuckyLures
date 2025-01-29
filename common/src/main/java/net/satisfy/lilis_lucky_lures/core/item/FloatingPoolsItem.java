@@ -13,13 +13,14 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.satisfy.lilis_lucky_lures.core.entity.FloatingDebrisEntity;
 import net.satisfy.lilis_lucky_lures.core.init.EntityTypeRegistry;
+import net.satisfy.lilis_lucky_lures.core.init.ObjectRegistry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class FloatingDebrisItem extends Item {
+public class FloatingPoolsItem extends Item {
 
-    public FloatingDebrisItem(Properties properties) {
+    public FloatingPoolsItem(Properties properties) {
         super(properties);
     }
 
@@ -32,29 +33,48 @@ public class FloatingDebrisItem extends Item {
             AABB checkArea = new AABB(hitResult.getLocation().x - 4, hitResult.getLocation().y - 4, hitResult.getLocation().z - 4, hitResult.getLocation().x + 4, hitResult.getLocation().y + 4, hitResult.getLocation().z + 4);
             List<FloatingDebrisEntity> nearbyDebris = level.getEntitiesOfClass(FloatingDebrisEntity.class, checkArea);
             if (!nearbyDebris.isEmpty()) return InteractionResultHolder.fail(itemStack);
+
             if (!level.isClientSide) {
-                FloatingDebrisEntity debris = EntityTypeRegistry.FLOATING_DEBRIS.get().create(level);
+                FloatingDebrisEntity debris;
+
+                if (itemStack.is(ObjectRegistry.FLOATING_BOOKS.get())) {
+                    debris = EntityTypeRegistry.FLOATING_BOOKS.get().create(level);
+                } else if (itemStack.is(ObjectRegistry.RIVER_FISH_POOL.get())) {
+                    debris = EntityTypeRegistry.RIVER_FISH_POOL.get().create(level);
+                } else {
+                    debris = EntityTypeRegistry.FLOATING_DEBRIS.get().create(level);
+                }
+
                 if (debris != null) {
                     debris.setPos(hitResult.getLocation().x, hitResult.getLocation().y - 1.85, hitResult.getLocation().z);
                     debris.setYRot(player.getYRot());
+
                     if (level.noCollision(debris, debris.getBoundingBox())) {
                         level.addFreshEntity(debris);
                         level.gameEvent(player, GameEvent.ENTITY_PLACE, hitResult.getLocation());
                         if (!player.getAbilities().instabuild) itemStack.shrink(1);
+
+                        showParticles(level, hitResult);
+
                         return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
                     }
-                }
-            } else {
-                for (int i = 0; i < 20; i++) {
-                    double xOffset = (level.random.nextDouble() - 0.5) * 2.0;
-                    double yOffset = (level.random.nextDouble() - 0.5) * 2.0;
-                    double zOffset = (level.random.nextDouble() - 0.5) * 2.0;
-                    level.addParticle(ParticleTypes.BUBBLE_POP, hitResult.getLocation().x + xOffset, hitResult.getLocation().y + yOffset, hitResult.getLocation().z + zOffset, 0, 0, 0);
-                    level.addParticle(ParticleTypes.SPLASH, hitResult.getLocation().x + xOffset, hitResult.getLocation().y + yOffset, hitResult.getLocation().z + zOffset, 0, 0, 0);
                 }
             }
             return InteractionResultHolder.fail(itemStack);
         }
         return InteractionResultHolder.pass(itemStack);
     }
+
+    private void showParticles(Level level, HitResult hitResult) {
+        if (level.isClientSide) {
+            for (int i = 0; i < 20; i++) {
+                double xOffset = (level.random.nextDouble() - 0.5) * 2.0;
+                double yOffset = (level.random.nextDouble() - 0.5) * 2.0;
+                double zOffset = (level.random.nextDouble() - 0.5) * 2.0;
+                level.addParticle(ParticleTypes.BUBBLE_POP, hitResult.getLocation().x + xOffset, hitResult.getLocation().y + yOffset, hitResult.getLocation().z + zOffset, 0, 0, 0);
+                level.addParticle(ParticleTypes.SPLASH, hitResult.getLocation().x + xOffset, hitResult.getLocation().y + yOffset, hitResult.getLocation().z + zOffset, 0, 0, 0);
+            }
+        }
+    }
 }
+

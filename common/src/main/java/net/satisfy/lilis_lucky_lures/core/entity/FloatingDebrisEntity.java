@@ -129,7 +129,7 @@ public class FloatingDebrisEntity extends Entity {
     public void removeWithEffects(ServerLevel serverLevel) {
         serverLevel.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GOAT_SCREAMING_HORN_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
 
-        for (int i = 0; i < 500; i++) {
+        for (int i = 0; i < 35; i++) {
             double yOffset = serverLevel.random.nextDouble() * 15.0;
             double xOffset = 0.25 * (serverLevel.random.nextDouble() - 0.5);
             double zOffset = 0.25 * (serverLevel.random.nextDouble() - 0.5);
@@ -138,7 +138,7 @@ public class FloatingDebrisEntity extends Entity {
             serverLevel.sendParticles(ParticleTypes.SPLASH, this.getX() + xOffset + 0.5, this.getY() + yOffset, this.getZ() + zOffset + 0.5, 1, 0.0, velocityY, 0.0, 0.0);
         }
 
-        for (int i = 0; i < 125; i++) {
+        for (int i = 0; i < 18; i++) {
             double xOffset = serverLevel.random.nextGaussian() * 0.2;
             double yOffset = serverLevel.random.nextGaussian() * 0.2;
             double zOffset = serverLevel.random.nextGaussian() * 0.2;

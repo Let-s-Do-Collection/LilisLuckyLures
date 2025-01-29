@@ -26,22 +26,13 @@ public class FloatingDebrisModel<T extends Entity> extends EntityModel<T> {
         PartDefinition partdefinition = meshdefinition.getRoot();
 
         PartDefinition button = partdefinition.addOrReplaceChild("button", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 0.0F));
-        button.addOrReplaceChild("button_r1", CubeListBuilder.create()
-                        .texOffs(24, 7)
-                        .addBox(-3.0F, 1.0F, -1.0F, 4.0F, 4.0F, 8.0F, new CubeDeformation(0.0F)),
-                PartPose.offsetAndRotation(17.0F, 3.0F, 6.0F, 0.0F, -0.7854F, 0.0F));
+        button.addOrReplaceChild("button_r1", CubeListBuilder.create().texOffs(24, 7).addBox(-3.0F, 1.0F, -1.0F, 4.0F, 4.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(17.0F, 3.0F, 6.0F, 0.0F, -0.7854F, 0.0F));
 
         PartDefinition planks = partdefinition.addOrReplaceChild("planks", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 0.0F));
-        planks.addOrReplaceChild("planks_r1", CubeListBuilder.create()
-                        .texOffs(0, 32)
-                        .addBox(-6.0F, 3.0F, -1.0F, 7.0F, 2.0F, 16.0F, new CubeDeformation(0.0F)),
-                PartPose.offsetAndRotation(12.0F, 1.0F, -15.0F, 0.0F, 0.7854F, 0.0F));
+        planks.addOrReplaceChild("planks_r1", CubeListBuilder.create().texOffs(0, 32).addBox(-6.0F, 3.0F, -1.0F, 7.0F, 2.0F, 16.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(12.0F, 1.0F, -15.0F, 0.0F, 0.7854F, 0.0F));
 
         PartDefinition barrel = partdefinition.addOrReplaceChild("barrel", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 0.0F));
-        barrel.addOrReplaceChild("barrel_r1", CubeListBuilder.create()
-                        .texOffs(0, 0)
-                        .addBox(-15.0F, -11.0F, -1.0F, 16.0F, 16.0F, 16.0F, new CubeDeformation(0.0F)),
-                PartPose.offsetAndRotation(7.0F, 11.0F, 3.0F, 0.7854F, 0.0F, 0.0F));
+        barrel.addOrReplaceChild("barrel_r1", CubeListBuilder.create().texOffs(0, 0).addBox(-15.0F, -11.0F, -1.0F, 16.0F, 16.0F, 16.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(7.0F, 11.0F, 3.0F, 0.7854F, 0.0F, 0.0F));
 
         return LayerDefinition.create(meshdefinition, 64, 64);
     }
