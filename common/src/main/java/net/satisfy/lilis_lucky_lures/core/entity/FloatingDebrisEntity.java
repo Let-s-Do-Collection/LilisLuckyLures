@@ -132,7 +132,6 @@ public class FloatingDebrisEntity extends Entity {
         }
     }
 
-
     public void removeWithEffects(ServerLevel serverLevel) {
         serverLevel.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GOAT_SCREAMING_HORN_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
 
@@ -160,6 +159,14 @@ public class FloatingDebrisEntity extends Entity {
 
     public int getHurtTime() {
         return this.entityData.get(HURT_TIME);
+    }
+
+    public void triggerInteraction() {
+        interactions++;
+        triggerHurt();
+        if (interactions >= MAX_INTERACTIONS && !level().isClientSide) {
+            removeWithEffects((ServerLevel) level());
+        }
     }
 
     @Override
