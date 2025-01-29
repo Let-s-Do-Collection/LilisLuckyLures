@@ -30,7 +30,9 @@ public class DynamiteEntity extends ThrowableItemProjectile {
     private static final float EXPLOSION_RADIUS = 1.5F;
     private static final float DAMPING_FACTOR = 0.2F;
     private static final double MIN_VELOCITY = 0.2D;
+    private static final int SMOKE_DURATION = 100;
     private int bounceCount;
+    private int smokeTicksRemaining = 0;
 
     public DynamiteEntity(Level world, LivingEntity owner) {
         super(EntityTypeRegistry.DYNAMITE.get(), owner, world);
@@ -56,12 +58,36 @@ public class DynamiteEntity extends ThrowableItemProjectile {
     }
 
     @Override
-    public void handleEntityEvent(byte b) {
-        if (b == 3) {
-            ParticleOptions p = getParticle();
-            for (int i = 0; i < 8; i++) {
-                level().addParticle(p, getX(), getY(), getZ(), 0.0D, 0.0D, 0.0D);
+    public void handleEntityEvent(byte event) {
+        if (event == 3) {
+            ParticleOptions itemParticle = getParticle();
+            int particleCount = 6;
+            for (int i = 0; i < particleCount; i++) {
+                double theta = random.nextDouble() * 2 * Math.PI;
+                double phi = Math.acos(2 * random.nextDouble() - 1);
+                double x = Math.sin(phi) * Math.cos(theta);
+                double y = Math.sin(phi) * Math.sin(theta);
+                double z = Math.cos(phi);
+                double speed = 0.5D;
+
+                level().addParticle(itemParticle, getX(), getY(), getZ(), x * speed, y * speed, z * speed);
             }
+
+            for (int i = 0; i < 4; i++) {
+                double theta = random.nextDouble() * 2 * Math.PI;
+                double phi = Math.acos(2 * random.nextDouble() - 1);
+                double x = Math.sin(phi) * Math.cos(theta);
+                double y = Math.sin(phi) * Math.sin(theta);
+                double z = Math.cos(phi);
+                double speed = 0.3D;
+
+                level().addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), x * speed, y * speed, z * speed);
+                level().addParticle(ParticleTypes.SMOKE, getX(), getY(), getZ(), x * speed, y * speed, z * speed);
+            }
+
+            smokeTicksRemaining = SMOKE_DURATION;
+        } else {
+            super.handleEntityEvent(event);
         }
     }
 
@@ -75,6 +101,21 @@ public class DynamiteEntity extends ThrowableItemProjectile {
             if (!level().isClientSide) {
                 explode();
                 level().broadcastEntityEvent(this, (byte)3);
+            }
+        }
+
+        if (smokeTicksRemaining > 0) {
+            if (level().isClientSide) {
+                double height = 6.0D;
+                for (int i = 0; i < 5; i++) {
+                    double offsetX = (random.nextDouble() - 0.5) * 0.5;
+                    double offsetZ = (random.nextDouble() - 0.5) * 0.5;
+                    double posY = getY() + height * (1 - (double)smokeTicksRemaining / SMOKE_DURATION) + random.nextDouble() * 0.2;
+                    level().addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, getX() + offsetX, posY, getZ() + offsetZ, 0.0D, 0.1D, 0.0D);
+                }
+            }
+            smokeTicksRemaining--;
+            if (smokeTicksRemaining <= 0) {
                 discard();
             }
         }
@@ -86,7 +127,6 @@ public class DynamiteEntity extends ThrowableItemProjectile {
             if (!level().isClientSide) {
                 explode();
                 level().broadcastEntityEvent(this, (byte)3);
-                discard();
             }
         } else {
             bounceCount++;
@@ -104,7 +144,7 @@ public class DynamiteEntity extends ThrowableItemProjectile {
         BlockPos pos = hit.getBlockPos();
         if (level().getBlockState(pos).blocksMotion()) {
             if (!level().isClientSide && bounceCount < 2) {
-                level().playSound(null, getX(), getY(), getZ(), SoundEvents.METAL_HIT, SoundSource.NEUTRAL, 1.0F, 4.0F);
+                level().playSound(null, getX(), getY(), getZ(), SoundEvents.WOOD_HIT, SoundSource.NEUTRAL, 1.0F, 4.0F);
             }
             if (d == Direction.EAST || d == Direction.WEST) {
                 vx = -vx * DAMPING_FACTOR;

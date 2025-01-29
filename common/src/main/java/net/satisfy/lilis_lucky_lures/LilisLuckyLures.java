@@ -2,6 +2,7 @@ package net.satisfy.lilis_lucky_lures;
 
 import net.satisfy.lilis_lucky_lures.core.init.*;
 
+
 public class LilisLuckyLures {
     public static final String MOD_ID = "lilis_lucky_lures";
 

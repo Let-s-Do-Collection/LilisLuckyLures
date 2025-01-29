@@ -1,6 +1,7 @@
 package net.satisfy.lilis_lucky_lures.core.item;
 
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -28,6 +29,9 @@ public class FishingNetItem extends Item {
     private static final float SUCCESS_CHANCE = 0.8F;
     private static final int USE_DURATION = 100;
     private static final int COOLDOWN_TICKS = 40;
+    private static final String TAG_STATE = "State";
+    private static final int STATE_EMPTY = 0;
+    private static final int STATE_FULL = 1;
 
     public FishingNetItem(Properties properties) {
         super(properties);
@@ -36,13 +40,21 @@ public class FishingNetItem extends Item {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        player.startUsingItem(hand);
-        return InteractionResultHolder.consume(stack);
+        int state = getState(stack);
+        if (state == STATE_EMPTY) {
+            player.startUsingItem(hand);
+            return InteractionResultHolder.consume(stack);
+        } else {
+            if (!level.isClientSide) {
+                retrieveLoot(level, player, stack);
+            }
+            return InteractionResultHolder.success(stack);
+        }
     }
 
     @Override
     public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int remainingUseTicks) {
-        if (!level.isClientSide && entity instanceof Player player) {
+        if (!level.isClientSide && entity instanceof Player player && getState(stack) == STATE_EMPTY) {
             FloatingDebrisEntity targetDebris = getTargetDebris(level, player);
             if (targetDebris != null) {
                 ServerLevel serverLevel = (ServerLevel) level;
@@ -53,32 +65,38 @@ public class FishingNetItem extends Item {
 
     @Override
     public @NotNull ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
-        if (!level.isClientSide && entity instanceof Player player) {
+        if (!level.isClientSide && entity instanceof Player player && getState(stack) == STATE_EMPTY) {
             FloatingDebrisEntity targetDebris = getTargetDebris(level, player);
             if (targetDebris != null) {
                 if (level.getRandom().nextFloat() <= SUCCESS_CHANCE) {
-                    ServerLevel serverLevel = (ServerLevel) level;
-                    LootTable lootTable = serverLevel.getServer().getLootData()
-                            .getLootTable(new LilisLuckyLuresIdentifier("gameplay/fishing_net"));
-
-                    LootParams lootParams = new LootParams.Builder(serverLevel)
-                            .withParameter(LootContextParams.THIS_ENTITY, player)
-                            .withParameter(LootContextParams.ORIGIN, targetDebris.position())
-                            .create(LootContextParamSets.GIFT);
-
-                    lootTable.getRandomItems(lootParams).forEach(player::addItem);
+                    setState(stack, STATE_FULL);
                     level.playSound(null, player.getX(), player.getY(), player.getZ(),
                             SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1.0F, 1.0F);
-
                     targetDebris.triggerInteraction();
                 } else {
                     level.playSound(null, player.getX(), player.getY(), player.getZ(),
                             SoundEvents.BUCKET_EMPTY_FISH, SoundSource.PLAYERS, 0.5F, 0.8F);
                 }
+                player.getCooldowns().addCooldown(this, COOLDOWN_TICKS);
             }
-            player.getCooldowns().addCooldown(this, COOLDOWN_TICKS);
         }
         return stack;
+    }
+
+    private void retrieveLoot(Level level, Player player, ItemStack stack) {
+        ServerLevel serverLevel = (ServerLevel) level;
+        LootTable lootTable = serverLevel.getServer().getLootData()
+                .getLootTable(new LilisLuckyLuresIdentifier("gameplay/fishing_net"));
+
+        LootParams lootParams = new LootParams.Builder(serverLevel)
+                .withParameter(LootContextParams.THIS_ENTITY, player)
+                .withParameter(LootContextParams.ORIGIN, player.position())
+                .create(LootContextParamSets.GIFT);
+
+        lootTable.getRandomItems(lootParams).forEach(player::addItem);
+        level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1.0F, 1.0F);
+        setState(stack, STATE_EMPTY);
     }
 
     private FloatingDebrisEntity getTargetDebris(Level level, Player player) {
@@ -103,7 +121,6 @@ public class FishingNetItem extends Item {
             double offsetX = (random.nextDouble() - 0.5) * 1.5;
             double offsetY = random.nextDouble() + 0.5;
             double offsetZ = (random.nextDouble() - 0.5) * 1.5;
-
             serverLevel.sendParticles(ParticleTypes.BUBBLE, x + offsetX, y + offsetY, z + offsetZ, 2, 0, 0.05, 0, 0.01);
         }
     }
@@ -116,5 +133,24 @@ public class FishingNetItem extends Item {
     @Override
     public @NotNull UseAnim getUseAnimation(ItemStack stack) {
         return UseAnim.BRUSH;
+    }
+
+    private int getState(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        if (tag != null && tag.contains(TAG_STATE)) {
+            return tag.getInt(TAG_STATE);
+        }
+        return STATE_EMPTY;
+    }
+
+    private void setState(ItemStack stack, int state) {
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putInt(TAG_STATE, state);
+        if (state == STATE_FULL) {
+            tag.putInt("CustomModelData", 1);
+        } else {
+            tag.remove("CustomModelData");
+        }
+        stack.setTag(tag);
     }
 }
