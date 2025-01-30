@@ -11,6 +11,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.satisfy.lilis_lucky_lures.LilisLuckyLures;
+import net.satisfy.lilis_lucky_lures.core.block.ElasticFishingNetBlock;
+import net.satisfy.lilis_lucky_lures.core.block.FishBagBlock;
 import net.satisfy.lilis_lucky_lures.core.block.FishTrapBlock;
 import net.satisfy.lilis_lucky_lures.core.block.HangingFrameBlock;
 import net.satisfy.lilis_lucky_lures.core.item.*;
@@ -28,9 +30,10 @@ public class ObjectRegistry {
 
     public static final RegistrySupplier<Block> REDSTONE_COIL = registerWithItem("redstone_coil", () -> new Block(BlockBehaviour.Properties.copy(Blocks.REDSTONE_BLOCK)));
     public static final RegistrySupplier<Block> FISH_TRAP = registerWithItem("fish_trap", () -> new FishTrapBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
-    public static final RegistrySupplier<Block> FISH_BARREL = registerWithItem("fish_barrel", () -> new BarrelBlock(BlockBehaviour.Properties.copy(Blocks.BARREL)));
+    public static final RegistrySupplier<Block> FISH_BAG = registerWithItem("fish_bag", () -> new FishBagBlock(BlockBehaviour.Properties.copy(Blocks.RED_WOOL)));
     public static final RegistrySupplier<Item> SOAKED_BAG = registerItem("soaked_bag", () -> new SoakedBagItem(getSettings()));
     public static final RegistrySupplier<Block> HANGING_FRAME = registerWithItem("hanging_frame", () -> new HangingFrameBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
+    public static final RegistrySupplier<Block> ELASTIC_FISHING_NET = registerWithItem("elastic_fishing_net", () -> new ElasticFishingNetBlock(BlockBehaviour.Properties.copy(Blocks.RED_WOOL)));
 
 
     public static final RegistrySupplier<Item> SPEAR = registerItem("spear", () -> new SpearItem(getSettings().durability(124)));
@@ -40,6 +43,7 @@ public class ObjectRegistry {
     public static final RegistrySupplier<Item> FLOATING_DEBRIS = registerItem("floating_debris", () -> new FloatingPoolsItem(getSettings()));
     public static final RegistrySupplier<Item> FLOATING_BOOKS = registerItem("floating_books", () -> new FloatingPoolsItem(getSettings()));
     public static final RegistrySupplier<Item> RIVER_FISH_POOL = registerItem("river_fish_pool", () -> new FloatingPoolsItem(getSettings()));
+    public static final RegistrySupplier<Item> OCEAN_FISH_POOL = registerItem("ocean_fish_pool", () -> new FloatingPoolsItem(getSettings()));
 
     public static void init() {
         ITEMS.register();

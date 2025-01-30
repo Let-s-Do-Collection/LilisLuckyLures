@@ -9,10 +9,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.satisfy.lilis_lucky_lures.LilisLuckyLures;
 import net.satisfy.lilis_lucky_lures.core.block.entity.FishTrapBlockEntity;
 import net.satisfy.lilis_lucky_lures.core.block.entity.HangingFrameBlockEntity;
-import net.satisfy.lilis_lucky_lures.core.entity.DynamiteEntity;
-import net.satisfy.lilis_lucky_lures.core.entity.FloatingBooksEntity;
-import net.satisfy.lilis_lucky_lures.core.entity.FloatingDebrisEntity;
-import net.satisfy.lilis_lucky_lures.core.entity.RiverFishPoolEntity;
+import net.satisfy.lilis_lucky_lures.core.entity.*;
 import net.satisfy.lilis_lucky_lures.core.entity.projectile.ThrownSpearEntity;
 import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresIdentifier;
 
@@ -28,6 +25,7 @@ public class EntityTypeRegistry {
     public static final RegistrySupplier<EntityType<FloatingDebrisEntity>> FLOATING_DEBRIS = registerEntityType("floating_debris", () -> EntityType.Builder.of(FloatingDebrisEntity::new, MobCategory.CREATURE).sized(2f, 2.5f).build(new LilisLuckyLuresIdentifier("floating_debris").toString()));
     public static final RegistrySupplier<EntityType<FloatingBooksEntity>> FLOATING_BOOKS = registerEntityType("floating_books", () -> EntityType.Builder.of(FloatingBooksEntity::new, MobCategory.CREATURE).sized(2f, 2.5f).build(new LilisLuckyLuresIdentifier("floating_books").toString()));
     public static final RegistrySupplier<EntityType<RiverFishPoolEntity>> RIVER_FISH_POOL = registerEntityType("river_fish_pool", () -> EntityType.Builder.of(RiverFishPoolEntity::new, MobCategory.CREATURE).sized(2f, 2.5f).build(new LilisLuckyLuresIdentifier("river_fish_pool").toString()));
+    public static final RegistrySupplier<EntityType<OceanFishPoolEntity>> OCEAN_FISH_POOL = registerEntityType("ocean_fish_pool", () -> EntityType.Builder.of(OceanFishPoolEntity::new, MobCategory.CREATURE).sized(2f, 2.5f).build(new LilisLuckyLuresIdentifier("ocean_fish_pool").toString()));
 
     public static final RegistrySupplier<BlockEntityType<FishTrapBlockEntity>> FISH_TRAP = registerBlockEntity("fish_trap", () -> BlockEntityType.Builder.of(FishTrapBlockEntity::new, ObjectRegistry.FISH_TRAP.get()).build(null));
     public static final RegistrySupplier<BlockEntityType<HangingFrameBlockEntity>> HANGING_FRAME = registerBlockEntity("hanging_frame", () -> BlockEntityType.Builder.of(HangingFrameBlockEntity::new, ObjectRegistry.HANGING_FRAME.get()).build(null));

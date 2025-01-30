@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "lilis_lucky_lures:block/fish_bag",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "lilis_lucky_lures:block/fish_bag"
+    },
+    "facing=south": {
+      "model": "lilis_lucky_lures:block/fish_bag",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "lilis_lucky_lures:block/fish_bag",
+      "y": 270
+    }
+  }
+}

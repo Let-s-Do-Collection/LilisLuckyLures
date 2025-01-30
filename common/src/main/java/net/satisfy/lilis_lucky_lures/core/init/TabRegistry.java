@@ -13,9 +13,10 @@ public class TabRegistry {
 
     @SuppressWarnings("unused")
     public static final RegistrySupplier<CreativeModeTab> LILIS_LUCKY_LURES_TAB = CREATIVE_MODE_TABS.register("lilis_lucky_lures", () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
-            .icon(() -> new ItemStack(ObjectRegistry.BAMBOO_FISHING_ROD.get()))
+            .icon(() -> new ItemStack(ObjectRegistry.RIVER_FISH_POOL.get()))
             .title(Component.translatable("creativetab.lilis_lucky_lures.tab"))
             .displayItems((parameters, output) -> {
+                output.accept(ObjectRegistry.FISH_BAG.get());
                 output.accept(ObjectRegistry.DYNAMITE.get());
                 output.accept(ObjectRegistry.SPEAR.get());
                 output.accept(ObjectRegistry.FISHING_NET.get());
@@ -23,6 +24,7 @@ public class TabRegistry {
                 output.accept(ObjectRegistry.FLOATING_DEBRIS.get());
                 output.accept(ObjectRegistry.FLOATING_BOOKS.get());
                 output.accept(ObjectRegistry.RIVER_FISH_POOL.get());
+                output.accept(ObjectRegistry.OCEAN_FISH_POOL.get());
                 output.accept(ObjectRegistry.FISH_TRAP.get());
                 output.accept(ObjectRegistry.SOAKED_BAG.get());
             })

@@ -40,16 +40,7 @@ public class HangingFrameRenderer implements BlockEntityRenderer<HangingFrameBlo
                 }
 
                 poseStack.scale(0.35f, 0.35f, 0.35f);
-                Minecraft.getInstance().getItemRenderer().renderStatic(
-                        stack,
-                        ItemDisplayContext.GUI,
-                        getLightLevel(level, entity.getBlockPos()),
-                        OverlayTexture.NO_OVERLAY,
-                        poseStack,
-                        buffer,
-                        level,
-                        1
-                );
+                Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GUI, getLightLevel(level, entity.getBlockPos()), OverlayTexture.NO_OVERLAY, poseStack, buffer, level, 1);
                 poseStack.popPose();
             }
         }

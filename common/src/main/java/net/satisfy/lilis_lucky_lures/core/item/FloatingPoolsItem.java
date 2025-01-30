@@ -41,6 +41,8 @@ public class FloatingPoolsItem extends Item {
                     debris = EntityTypeRegistry.FLOATING_BOOKS.get().create(level);
                 } else if (itemStack.is(ObjectRegistry.RIVER_FISH_POOL.get())) {
                     debris = EntityTypeRegistry.RIVER_FISH_POOL.get().create(level);
+                } else if (itemStack.is(ObjectRegistry.OCEAN_FISH_POOL.get())) {
+                    debris = EntityTypeRegistry.OCEAN_FISH_POOL.get().create(level);
                 } else {
                     debris = EntityTypeRegistry.FLOATING_DEBRIS.get().create(level);
                 }

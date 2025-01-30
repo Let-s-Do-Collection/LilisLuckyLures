@@ -7,28 +7,28 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.satisfy.lilis_lucky_lures.client.model.entity.RiverFishPoolModel;
-import net.satisfy.lilis_lucky_lures.core.entity.RiverFishPoolEntity;
+import net.satisfy.lilis_lucky_lures.client.model.entity.OceanFishPoolModel;
+import net.satisfy.lilis_lucky_lures.core.entity.OceanFishPoolEntity;
 import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresIdentifier;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 
-public class RiverFishPoolRenderer extends EntityRenderer<RiverFishPoolEntity> {
-    private static final ResourceLocation TEXTURE = new LilisLuckyLuresIdentifier("textures/entity/river_fish_pool.png");
-    private final RiverFishPoolModel<RiverFishPoolEntity> model;
+public class OceanFishPoolRenderer extends EntityRenderer<OceanFishPoolEntity> {
+    private static final ResourceLocation TEXTURE = new LilisLuckyLuresIdentifier("textures/entity/ocean_fish_pool.png");
+    private final OceanFishPoolModel<OceanFishPoolEntity> model;
 
-    public RiverFishPoolRenderer(EntityRendererProvider.Context context) {
+    public OceanFishPoolRenderer(EntityRendererProvider.Context context) {
         super(context);
-        this.model = new RiverFishPoolModel<>(context.bakeLayer(RiverFishPoolModel.LAYER_LOCATION));
+        this.model = new OceanFishPoolModel<>(context.bakeLayer(OceanFishPoolModel.LAYER_LOCATION));
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(RiverFishPoolEntity entity) {
+    public @NotNull ResourceLocation getTextureLocation(OceanFishPoolEntity entity) {
         return TEXTURE;
     }
 
     @Override
-    public void render(RiverFishPoolEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+    public void render(OceanFishPoolEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
         poseStack.pushPose();
         poseStack.mulPose(new Quaternionf().rotateX((float)Math.PI));
         Quaternionf rotationRandom = new Quaternionf().rotateY((float)Math.toRadians(entity.getRandomRotation()));

@@ -7,17 +7,17 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresIdentifier;
 
-public class RiverFishPoolEntity extends FloatingDebrisEntity {
+public class OceanFishPoolEntity extends FloatingDebrisEntity {
     public final AnimationState idleAnimationState = new AnimationState();
     private int idleAnimationTimeout = 0;
 
-    public RiverFishPoolEntity(EntityType<? extends RiverFishPoolEntity> type, Level level) {
+    public OceanFishPoolEntity(EntityType<? extends OceanFishPoolEntity> type, Level level) {
         super(type, level);
     }
 
     @Override
     protected LootTable getLootTable(ServerLevel serverLevel) {
-        return serverLevel.getServer().getLootData().getLootTable(new LilisLuckyLuresIdentifier("gameplay/fishing_pools/river_fish_pool"));
+        return serverLevel.getServer().getLootData().getLootTable(new LilisLuckyLuresIdentifier("gameplay/fishing_pools/ocean_fish_pool"));
     }
 
     @Override
