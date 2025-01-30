@@ -2,9 +2,11 @@ package net.satisfy.lilis_lucky_lures.core.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.core.NonNullList;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Tuple;
-import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -20,6 +22,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -37,18 +40,7 @@ import java.util.Optional;
 @SuppressWarnings("deprecation")
 public class HangingFrameBlock extends Block implements EntityBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
-    private static final VoxelShape BASE_SHAPE = Shapes.join(
-            Shapes.join(
-                    Shapes.join(
-                            Shapes.join(
-                                    Shapes.join(
-                                            Shapes.empty(),
-                                            Shapes.box(0, 0.125, 0.4375, 0.125, 0.625, 0.5625), BooleanOp.OR),
-                                    Shapes.box(0.875, 0.125, 0.4375, 1, 0.625, 0.5625), BooleanOp.OR),
-                            Shapes.box(0, 0, 0.3125, 0.125, 0.125, 0.6875), BooleanOp.OR),
-                    Shapes.box(0.875, 0, 0.3125, 1, 0.125, 0.6875), BooleanOp.OR),
-            Shapes.box(0, 0.625, 0.4375, 1, 1, 0.5625), BooleanOp.OR
-    );
+    private static final VoxelShape BASE_SHAPE = Shapes.join(Shapes.join(Shapes.join(Shapes.join(Shapes.join(Shapes.empty(), Shapes.box(0, 0.125, 0.4375, 0.125, 0.625, 0.5625), BooleanOp.OR), Shapes.box(0.875, 0.125, 0.4375, 1, 0.625, 0.5625), BooleanOp.OR), Shapes.box(0, 0, 0.3125, 0.125, 0.125, 0.6875), BooleanOp.OR), Shapes.box(0.875, 0, 0.3125, 1, 0.125, 0.6875), BooleanOp.OR), Shapes.box(0, 0.625, 0.4375, 1, 1, 0.5625), BooleanOp.OR);
     private static final Map<Direction, VoxelShape> SHAPE = new HashMap<>();
 
     static {
@@ -77,10 +69,12 @@ public class HangingFrameBlock extends Block implements EntityBlock {
         return RenderShape.MODEL;
     }
 
-    @Nullable
-    @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new HangingFrameBlockEntity(pos, state);
+    public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new HangingFrameBlockEntity(pos, state, this.size());
+    }
+
+    public int size() {
+        return 3;
     }
 
     @Nullable
@@ -90,49 +84,48 @@ public class HangingFrameBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public @NotNull InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (level.isClientSide) return InteractionResult.SUCCESS;
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (!(blockEntity instanceof HangingFrameBlockEntity entity)) return InteractionResult.PASS;
-
-        Optional<Tuple<Float, Float>> relative = LilisLuckyLuresUtil.getRelativeHitCoordinatesForBlockFace(hit, state.getValue(FACING), new Direction[]{});
-        if (relative.isEmpty()) return InteractionResult.PASS;
-
-        float x = relative.get().getA();
-        int slot = x < 0.33f ? 0 : x < 0.66f ? 1 : 2;
-        ItemStack existing = entity.getStack(slot);
-
-        if (existing.isEmpty()) {
-            ItemStack held = player.getItemInHand(hand);
-            if (!held.isEmpty()) {
-                ItemStack copy = held.copy();
-                copy.setCount(1);
-                entity.setStack(slot, copy);
-                held.shrink(1);
-                entity.setChanged();
-                return InteractionResult.CONSUME;
-            }
-        } else {
-            player.addItem(existing);
-            entity.setStack(slot, ItemStack.EMPTY);
-            entity.setChanged();
-            return InteractionResult.CONSUME;
+    public @NotNull InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if (!(blockEntity instanceof HangingFrameBlockEntity shelfBlockEntity)) {
+            return InteractionResult.PASS;
         }
-        return InteractionResult.PASS;
-    }
 
-    @Override
-    public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean moved) {
-        if (!state.is(newState.getBlock())) {
-            BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof HangingFrameBlockEntity entity) {
-                if (world instanceof ServerLevel serverLevel) {
-                    Containers.dropContents(serverLevel, pos, entity.getInventory());
+        Optional<Tuple<Float, Float>> optional = LilisLuckyLuresUtil.getRelativeHitCoordinatesForBlockFace(hit, state.getValue(FACING), new Direction[]{Direction.DOWN, Direction.UP});
+        if (optional.isEmpty()) {
+            return InteractionResult.PASS;
+        }
+
+        int i = 2 - (int) (optional.get().getA() * 3);
+        if (i < 0 || i >= shelfBlockEntity.getInventory().size()) {
+            return InteractionResult.PASS;
+        }
+
+        NonNullList<ItemStack> inventory = shelfBlockEntity.getInventory();
+        if (!inventory.get(i).isEmpty()) {
+            if (!world.isClientSide) {
+                ItemStack itemStack = shelfBlockEntity.removeStack(i);
+                world.playSound(null, pos, SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 1.0F, 1.0F);
+                if (!player.getInventory().add(itemStack)) {
+                    player.drop(itemStack, false);
                 }
-                world.updateNeighbourForOutputSignal(pos, this);
+                world.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
             }
-            super.onRemove(state, world, pos, newState, moved);
+            return InteractionResult.sidedSuccess(world.isClientSide);
         }
-    }
 
+        ItemStack stack = player.getItemInHand(hand);
+        if (!stack.isEmpty() && stack.is(ItemTags.FISHES)) {
+            if (!world.isClientSide) {
+                shelfBlockEntity.setStack(i, stack.split(1));
+                world.playSound(null, pos, SoundEvents.WOOL_HIT, SoundSource.BLOCKS, 1.0F, 1.0F);
+                if (player.isCreative()) {
+                    stack.grow(1);
+                }
+                world.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
+            }
+            return InteractionResult.sidedSuccess(world.isClientSide);
+        }
+
+        return InteractionResult.CONSUME;
+    }
 }

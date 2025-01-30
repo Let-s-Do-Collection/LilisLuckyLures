@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -23,8 +24,9 @@ public class HangingFrameRenderer implements BlockEntityRenderer<HangingFrameBlo
         Level level = entity.getLevel();
         if (level == null) return;
 
-        for (int slot = 0; slot < 3; slot++) {
-            ItemStack stack = entity.getStack(slot);
+        NonNullList<ItemStack> inventory = entity.getInventory();
+        for (int slot = 0; slot < inventory.size(); slot++) {
+            ItemStack stack = inventory.get(slot);
             if (!stack.isEmpty()) {
                 poseStack.pushPose();
                 poseStack.translate(0.5, 0.5, 0.5);
@@ -32,14 +34,13 @@ public class HangingFrameRenderer implements BlockEntityRenderer<HangingFrameBlo
                 poseStack.mulPoseMatrix(new Matrix4f().rotateZ((float) Math.toRadians(45)));
 
                 switch (slot) {
-                    case 0 -> poseStack.translate(-0.11, 0.2, 0);
+                    case 0 -> poseStack.translate(0.21, -0.1, 0);
                     case 1 -> poseStack.translate(0.0, -0.041, 0);
-                    case 2 -> poseStack.translate(0.21, -0.1, 0);
+                    case 2 -> poseStack.translate(-0.11, 0.2, 0);
                 }
 
                 poseStack.scale(0.35f, 0.35f, 0.35f);
-                Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GUI,
-                        getLightLevel(level, entity.getBlockPos()), OverlayTexture.NO_OVERLAY, poseStack, buffer, level, 1);
+                Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GUI, getLightLevel(level, entity.getBlockPos()), OverlayTexture.NO_OVERLAY, poseStack, buffer, level, 1);
                 poseStack.popPose();
             }
         }
