@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -14,7 +15,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.satisfy.lilis_lucky_lures.core.block.HangingFrameBlock;
 import net.satisfy.lilis_lucky_lures.core.block.entity.HangingFrameBlockEntity;
-import net.minecraft.core.Direction;
 import org.joml.Matrix4f;
 
 public class HangingFrameRenderer implements BlockEntityRenderer<HangingFrameBlockEntity> {
@@ -40,7 +40,16 @@ public class HangingFrameRenderer implements BlockEntityRenderer<HangingFrameBlo
                 }
 
                 poseStack.scale(0.35f, 0.35f, 0.35f);
-                Minecraft.getInstance().getItemRenderer().renderStatic(stack, ItemDisplayContext.GUI, getLightLevel(level, entity.getBlockPos()), OverlayTexture.NO_OVERLAY, poseStack, buffer, level, 1);
+                Minecraft.getInstance().getItemRenderer().renderStatic(
+                        stack,
+                        ItemDisplayContext.GUI,
+                        getLightLevel(level, entity.getBlockPos()),
+                        OverlayTexture.NO_OVERLAY,
+                        poseStack,
+                        buffer,
+                        level,
+                        1
+                );
                 poseStack.popPose();
             }
         }

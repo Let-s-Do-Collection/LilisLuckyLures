@@ -13,6 +13,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.satisfy.lilis_lucky_lures.core.block.HangingFrameBlock;
 import net.satisfy.lilis_lucky_lures.core.init.EntityTypeRegistry;
 import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresUtil;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +28,6 @@ public class HangingFrameBlockEntity extends BlockEntity {
         this.size = 3;
         this.inventory = NonNullList.withSize(this.size, ItemStack.EMPTY);
     }
-
 
     public HangingFrameBlockEntity(BlockPos pos, BlockState state, int size) {
         super(EntityTypeRegistry.HANGING_FRAME.get(), pos, state);
@@ -45,6 +46,7 @@ public class HangingFrameBlockEntity extends BlockEntity {
         this.setChanged();
     }
 
+    @Override
     public void setChanged() {
         Level var2 = this.level;
         if (var2 instanceof ServerLevel serverLevel) {
@@ -60,6 +62,7 @@ public class HangingFrameBlockEntity extends BlockEntity {
         super.setChanged();
     }
 
+    @Override
     public void load(CompoundTag nbt) {
         super.load(nbt);
         this.size = nbt.getInt("size");
@@ -67,21 +70,28 @@ public class HangingFrameBlockEntity extends BlockEntity {
         ContainerHelper.loadAllItems(nbt, this.inventory);
     }
 
+    @Override
     protected void saveAdditional(CompoundTag nbt) {
         ContainerHelper.saveAllItems(nbt, this.inventory);
         nbt.putInt("size", this.size);
         super.saveAdditional(nbt);
     }
 
+    @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
+    @Override
     public @NotNull CompoundTag getUpdateTag() {
         return this.saveWithoutMetadata();
     }
 
     public NonNullList<ItemStack> getInventory() {
         return this.inventory;
+    }
+
+    public boolean isTop() {
+        return getBlockState().getValue(HangingFrameBlock.HALF) == DoubleBlockHalf.UPPER;
     }
 }
