@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=east": [
+      {
+        "model": "lilis_lucky_lures:block/hanging_frame",
+        "y": 90
+      }
+    ],
+    "facing=north": [
+      {
+        "model": "lilis_lucky_lures:block/hanging_frame",
+        "weight": 1
+      }
+    ],
+    "facing=south": [
+      {
+        "model": "lilis_lucky_lures:block/hanging_frame",
+        "y": 180
+      }
+    ],
+    "facing=west": [
+      {
+        "model": "lilis_lucky_lures:block/hanging_frame",
+        "y": 270
+      }
+    ]
+  }
+}

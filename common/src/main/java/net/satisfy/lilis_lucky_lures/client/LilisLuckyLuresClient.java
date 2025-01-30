@@ -12,6 +12,7 @@ import net.satisfy.lilis_lucky_lures.client.model.entity.FloatingDebrisModel;
 import net.satisfy.lilis_lucky_lures.client.model.entity.RiverFishPoolModel;
 import net.satisfy.lilis_lucky_lures.client.model.entity.SpearModel;
 import net.satisfy.lilis_lucky_lures.client.renderer.block.FishTrapBlockEntityRenderer;
+import net.satisfy.lilis_lucky_lures.client.renderer.block.HangingFrameRenderer;
 import net.satisfy.lilis_lucky_lures.client.renderer.entity.*;
 import net.satisfy.lilis_lucky_lures.core.init.EntityTypeRegistry;
 import net.satisfy.lilis_lucky_lures.core.init.ObjectRegistry;
@@ -22,9 +23,11 @@ public class LilisLuckyLuresClient {
 
     public static void onInitializeClient() {
         RenderTypeRegistry.register(RenderType.cutout(),
-                ObjectRegistry.FISH_TRAP.get()
+                ObjectRegistry.FISH_TRAP.get(), ObjectRegistry.HANGING_FRAME.get()
         );
+
         BlockEntityRendererRegistry.register(EntityTypeRegistry.FISH_TRAP.get(), context -> new FishTrapBlockEntityRenderer());
+        BlockEntityRendererRegistry.register(EntityTypeRegistry.HANGING_FRAME.get(), context -> new HangingFrameRenderer());
     }
 
     public static void preInitClient() {
@@ -38,7 +41,6 @@ public class LilisLuckyLuresClient {
         EntityRendererRegistry.register(EntityTypeRegistry.RIVER_FISH_POOL, RiverFishPoolRenderer::new);
         EntityRendererRegistry.register(EntityTypeRegistry.DYNAMITE, RotatingThrownItemRenderer::new);
         EntityRendererRegistry.register(EntityTypeRegistry.THROWN_SPEAR, ThrownSpearRenderer::new);
-
     }
 
     public static void registerEntityModelLayer() {
@@ -46,6 +48,5 @@ public class LilisLuckyLuresClient {
         EntityModelLayerRegistry.register(FloatingBooksModel.LAYER_LOCATION, FloatingBooksModel::getTexturedModelData);
         EntityModelLayerRegistry.register(RiverFishPoolModel.LAYER_LOCATION, RiverFishPoolModel::getTexturedModelData);
         EntityModelLayerRegistry.register(SpearModel.LAYER_LOCATION, SpearModel::getTexturedModelData);
-
     }
 }

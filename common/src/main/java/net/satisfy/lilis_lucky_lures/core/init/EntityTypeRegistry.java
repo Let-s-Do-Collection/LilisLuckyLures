@@ -8,6 +8,7 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.satisfy.lilis_lucky_lures.LilisLuckyLures;
 import net.satisfy.lilis_lucky_lures.core.block.entity.FishTrapBlockEntity;
+import net.satisfy.lilis_lucky_lures.core.block.entity.HangingFrameBlockEntity;
 import net.satisfy.lilis_lucky_lures.core.entity.DynamiteEntity;
 import net.satisfy.lilis_lucky_lures.core.entity.FloatingBooksEntity;
 import net.satisfy.lilis_lucky_lures.core.entity.FloatingDebrisEntity;
@@ -29,6 +30,7 @@ public class EntityTypeRegistry {
     public static final RegistrySupplier<EntityType<RiverFishPoolEntity>> RIVER_FISH_POOL = registerEntityType("river_fish_pool", () -> EntityType.Builder.of(RiverFishPoolEntity::new, MobCategory.CREATURE).sized(2f, 2.5f).build(new LilisLuckyLuresIdentifier("river_fish_pool").toString()));
 
     public static final RegistrySupplier<BlockEntityType<FishTrapBlockEntity>> FISH_TRAP = registerBlockEntity("fish_trap", () -> BlockEntityType.Builder.of(FishTrapBlockEntity::new, ObjectRegistry.FISH_TRAP.get()).build(null));
+    public static final RegistrySupplier<BlockEntityType<HangingFrameBlockEntity>> HANGING_FRAME = registerBlockEntity("hanging_frame", () -> BlockEntityType.Builder.of(HangingFrameBlockEntity::new, ObjectRegistry.HANGING_FRAME.get()).build(null));
 
     private static <T extends BlockEntityType<?>> RegistrySupplier<T> registerBlockEntity(String name, final Supplier<T> type) {
         return BLOCK_ENTITY_TYPES.register(new LilisLuckyLuresIdentifier(name), type);

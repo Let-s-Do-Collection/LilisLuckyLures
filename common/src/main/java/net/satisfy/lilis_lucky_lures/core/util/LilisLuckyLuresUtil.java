@@ -4,17 +4,28 @@ import dev.architectury.platform.Platform;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrySupplier;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 
+@SuppressWarnings("unused")
 public class LilisLuckyLuresUtil {
 
     public static <T extends Block> RegistrySupplier<T> registerWithItem(DeferredRegister<Block> registerB, Registrar<Block> registrarB, DeferredRegister<Item> registerI, Registrar<Item> registrarI, ResourceLocation name, Supplier<T> block) {
@@ -42,5 +53,57 @@ public class LilisLuckyLuresUtil {
         }
 
         return buffer[0];
+    }
+
+    public static Collection<ServerPlayer> getTrackingPlayers(ServerLevel world, ChunkPos chunkPos) {
+        Objects.requireNonNull(world);
+        Objects.requireNonNull(chunkPos);
+        return world.getChunkSource().chunkMap.getPlayers(chunkPos, false);
+    }
+
+    public static Collection<ServerPlayer> getTrackingPlayers(ServerLevel world, BlockPos blockPos) {
+        Objects.requireNonNull(blockPos);
+        return getTrackingPlayers(world, new ChunkPos(blockPos));
+    }
+
+    public static Optional<Tuple<Float, Float>> getRelativeHitCoordinatesForBlockFace(
+            BlockHitResult blockHitResult,
+            Direction direction,
+            Direction[] unAllowedDirections) {
+
+        Direction hitDirection = blockHitResult.getDirection();
+
+        for (Direction unAllowed : unAllowedDirections) {
+            if (unAllowed == hitDirection) {
+                return Optional.empty();
+            }
+        }
+
+        if (hitDirection != direction && hitDirection != Direction.UP && hitDirection != Direction.DOWN) {
+            return Optional.empty();
+        }
+
+        BlockPos adjacentPos = blockHitResult.getBlockPos().relative(hitDirection);
+        Vec3 hitLocation = blockHitResult.getLocation().subtract(
+                adjacentPos.getX(),
+                adjacentPos.getY(),
+                adjacentPos.getZ()
+        );
+
+        float x = (float) hitLocation.x();
+        float z = (float) hitLocation.z();
+        float y = (float) hitLocation.y();
+
+        Direction effectiveDirection = (hitDirection == Direction.UP || hitDirection == Direction.DOWN)
+                ? direction
+                : hitDirection;
+
+        return switch (effectiveDirection) {
+            case NORTH -> Optional.of(new Tuple<>(1.0f - x, y));
+            case SOUTH -> Optional.of(new Tuple<>(x, y));
+            case WEST -> Optional.of(new Tuple<>(z, y));
+            case EAST -> Optional.of(new Tuple<>(1.0f - z, y));
+            default -> Optional.empty();
+        };
     }
 }

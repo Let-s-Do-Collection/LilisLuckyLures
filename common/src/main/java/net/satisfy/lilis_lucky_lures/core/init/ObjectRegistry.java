@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.satisfy.lilis_lucky_lures.LilisLuckyLures;
 import net.satisfy.lilis_lucky_lures.core.block.FishTrapBlock;
+import net.satisfy.lilis_lucky_lures.core.block.HangingFrameBlock;
 import net.satisfy.lilis_lucky_lures.core.item.*;
 import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresIdentifier;
 import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresUtil;
@@ -29,6 +30,7 @@ public class ObjectRegistry {
     public static final RegistrySupplier<Block> FISH_TRAP = registerWithItem("fish_trap", () -> new FishTrapBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
     public static final RegistrySupplier<Block> FISH_BARREL = registerWithItem("fish_barrel", () -> new BarrelBlock(BlockBehaviour.Properties.copy(Blocks.BARREL)));
     public static final RegistrySupplier<Item> SOAKED_BAG = registerItem("soaked_bag", () -> new SoakedBagItem(getSettings()));
+    public static final RegistrySupplier<Block> HANGING_FRAME = registerWithItem("hanging_frame", () -> new HangingFrameBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
 
 
     public static final RegistrySupplier<Item> SPEAR = registerItem("spear", () -> new SpearItem(getSettings().durability(124)));
