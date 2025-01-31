@@ -16,6 +16,7 @@ public class TabRegistry {
             .icon(() -> new ItemStack(ObjectRegistry.RIVER_FISH_POOL.get()))
             .title(Component.translatable("creativetab.lilis_lucky_lures.tab"))
             .displayItems((parameters, output) -> {
+                output.accept(ObjectRegistry.REDSTONE_COIL.get());
                 output.accept(ObjectRegistry.FISH_BAG.get());
                 output.accept(ObjectRegistry.DYNAMITE.get());
                 output.accept(ObjectRegistry.SPEAR.get());
@@ -26,7 +27,13 @@ public class TabRegistry {
                 output.accept(ObjectRegistry.RIVER_FISH_POOL.get());
                 output.accept(ObjectRegistry.OCEAN_FISH_POOL.get());
                 output.accept(ObjectRegistry.FISH_TRAP.get());
+                output.accept(ObjectRegistry.HANGING_FRAME.get());
+                output.accept(ObjectRegistry.FISH_NET.get());
                 output.accept(ObjectRegistry.SOAKED_BAG.get());
+                output.accept(ObjectRegistry.COOKED_COD_MEAL.get());
+                output.accept(ObjectRegistry.SALMON_ROLLS.get());
+                output.accept(ObjectRegistry.GRILLED_TROPICAL_FISH.get());
+                output.accept(ObjectRegistry.PUFFER_PLATER.get());
             })
             .build());
 

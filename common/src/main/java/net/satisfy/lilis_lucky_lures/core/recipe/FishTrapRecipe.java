@@ -15,8 +15,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
+@SuppressWarnings("unused")
 public class FishTrapRecipe implements Recipe<Container> {
-
     final ResourceLocation id;
     private final Ingredient baitItem;
     private final ItemStack catchItem;

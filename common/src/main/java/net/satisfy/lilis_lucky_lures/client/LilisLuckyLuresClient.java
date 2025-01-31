@@ -20,7 +20,7 @@ public class LilisLuckyLuresClient {
 
     public static void onInitializeClient() {
         RenderTypeRegistry.register(RenderType.cutout(),
-                ObjectRegistry.FISH_TRAP.get(), ObjectRegistry.HANGING_FRAME.get(), ObjectRegistry.ELASTIC_FISHING_NET.get()
+                ObjectRegistry.FISH_TRAP.get(), ObjectRegistry.HANGING_FRAME.get(), ObjectRegistry.ELASTIC_FISHING_NET.get(), ObjectRegistry.FISH_NET_FENCE.get()
         );
 
         BlockEntityRendererRegistry.register(EntityTypeRegistry.FISH_TRAP.get(), context -> new FishTrapBlockEntityRenderer());
