@@ -61,6 +61,11 @@ public class FishingNetItem extends Item {
             if (targetDebris != null) {
                 ServerLevel serverLevel = (ServerLevel) level;
                 spawnParticles(serverLevel, targetDebris.getX(), targetDebris.getY() + 0.5, targetDebris.getZ());
+
+                if (remainingUseTicks % 20 == 0) {
+                    level.playSound(null, targetDebris.getX(), targetDebris.getY(), targetDebris.getZ(),
+                            SoundEvents.BOAT_PADDLE_WATER, SoundSource.NEUTRAL, 0.8F, 1.0F);
+                }
             }
         }
     }

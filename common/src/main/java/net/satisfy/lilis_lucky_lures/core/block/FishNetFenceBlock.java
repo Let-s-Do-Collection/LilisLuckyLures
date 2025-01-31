@@ -2,17 +2,16 @@ package net.satisfy.lilis_lucky_lures.core.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Direction.Plane;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.LeadItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.BellBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CrossCollisionBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -64,17 +63,36 @@ public class FishNetFenceBlock extends CrossCollisionBlock {
     }
 
     private boolean connectsTo(BlockState state, Direction direction) {
-        return state.getBlock() instanceof FishNetFenceBlock;
+        return state.getBlock() instanceof FishNetFenceBlock || state.isSolidRender(null, null);
+    }
+
+    private boolean hasBellAbove(Level level, BlockPos pos) {
+        for (int i = 1; i <= 32; i++) {
+            BlockState stateAbove = level.getBlockState(pos.above(i));
+            if (stateAbove.getBlock() instanceof BellBlock) {
+                return true;
+            }
+            if (stateAbove.isAir()) {
+                break;
+            }
+        }
+        return false;
     }
 
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (level.isClientSide) {
-            ItemStack itemStack = player.getItemInHand(hand);
-            return itemStack.is(Items.LEAD) ? InteractionResult.SUCCESS : InteractionResult.PASS;
-        } else {
-            return LeadItem.bindPlayerMobs(player, level, pos);
+        if (!level.isClientSide) {
+            if (hasBellAbove(level, pos)) {
+                level.playSound(null, pos, SoundEvents.BELL_RESONATE, SoundSource.BLOCKS, 1.0F, 1.0F);
+                return InteractionResult.SUCCESS;
+            }
         }
+        return InteractionResult.PASS;
+    }
+
+    @Override
+    public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
+        return context.getItemInHand().is(this.asItem());
     }
 
     @Override
@@ -82,6 +100,7 @@ public class FishNetFenceBlock extends CrossCollisionBlock {
         BlockGetter world = context.getLevel();
         BlockPos pos = context.getClickedPos();
         FluidState fluidState = world.getFluidState(pos);
+
         return this.defaultBlockState()
                 .setValue(NORTH, this.connectsTo(world.getBlockState(pos.north()), Direction.SOUTH))
                 .setValue(EAST, this.connectsTo(world.getBlockState(pos.east()), Direction.WEST))
@@ -95,8 +114,8 @@ public class FishNetFenceBlock extends CrossCollisionBlock {
         if (state.getValue(WATERLOGGED)) {
             world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
         }
-        if (direction.getAxis().getPlane() == Plane.HORIZONTAL) {
-            return state.setValue((BooleanProperty) PROPERTY_BY_DIRECTION.get(direction), this.connectsTo(newState, direction.getOpposite()));
+        if (direction.getAxis().isHorizontal()) {
+            return state.setValue(PROPERTY_BY_DIRECTION.get(direction), this.connectsTo(newState, direction.getOpposite()));
         }
         return super.updateShape(state, direction, newState, world, pos, neighborPos);
     }
