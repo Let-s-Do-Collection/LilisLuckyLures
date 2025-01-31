@@ -16,7 +16,7 @@ public class OceanFishPoolEntity extends FloatingDebrisEntity {
     }
 
     @Override
-    protected LootTable getLootTable(ServerLevel serverLevel) {
+    public LootTable getLootTable(ServerLevel serverLevel) {
         return serverLevel.getServer().getLootData().getLootTable(new LilisLuckyLuresIdentifier("gameplay/fishing_pools/ocean_fish_pool"));
     }
 

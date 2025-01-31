@@ -2,6 +2,7 @@ package net.satisfy.lilis_lucky_lures.core.item;
 
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -30,6 +31,7 @@ public class FishingNetItem extends Item {
     private static final int USE_DURATION = 100;
     private static final int COOLDOWN_TICKS = 40;
     private static final String TAG_STATE = "State";
+    private static final String TAG_ENTITY_LOOT = "EntityLoot";
     private static final int STATE_EMPTY = 0;
     private static final int STATE_FULL = 1;
 
@@ -70,6 +72,25 @@ public class FishingNetItem extends Item {
             if (targetDebris != null) {
                 if (level.getRandom().nextFloat() <= SUCCESS_CHANCE) {
                     setState(stack, STATE_FULL);
+
+                    LootTable entityLootTable = targetDebris.getLootTable((ServerLevel) level);
+                    LootParams lootParams = new LootParams.Builder((ServerLevel) level)
+                            .withParameter(LootContextParams.THIS_ENTITY, player)
+                            .withParameter(LootContextParams.ORIGIN, player.position())
+                            .create(LootContextParamSets.GIFT);
+
+                    List<ItemStack> entityLoot = entityLootTable.getRandomItems(lootParams);
+
+                    CompoundTag tag = stack.getOrCreateTag();
+                    ListTag lootListTag = new ListTag();
+                    for (ItemStack item : entityLoot) {
+                        CompoundTag itemTag = new CompoundTag();
+                        item.save(itemTag);
+                        lootListTag.add(itemTag);
+                    }
+                    tag.put(TAG_ENTITY_LOOT, lootListTag);
+                    stack.setTag(tag);
+
                     level.playSound(null, player.getX(), player.getY(), player.getZ(),
                             SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1.0F, 1.0F);
                     targetDebris.triggerInteraction();
@@ -85,15 +106,29 @@ public class FishingNetItem extends Item {
 
     private void retrieveLoot(Level level, Player player, ItemStack stack) {
         ServerLevel serverLevel = (ServerLevel) level;
-        LootTable lootTable = serverLevel.getServer().getLootData()
+
+        LootTable fishingNetLootTable = serverLevel.getServer().getLootData()
                 .getLootTable(new LilisLuckyLuresIdentifier("gameplay/fishing_net"));
 
-        LootParams lootParams = new LootParams.Builder(serverLevel)
+        LootParams fishingNetLootParams = new LootParams.Builder(serverLevel)
                 .withParameter(LootContextParams.THIS_ENTITY, player)
                 .withParameter(LootContextParams.ORIGIN, player.position())
                 .create(LootContextParamSets.GIFT);
 
-        lootTable.getRandomItems(lootParams).forEach(player::addItem);
+        List<ItemStack> fishingNetLoot = fishingNetLootTable.getRandomItems(fishingNetLootParams);
+        fishingNetLoot.forEach(player::addItem);
+
+        CompoundTag tag = stack.getTag();
+        if (tag != null && tag.contains(TAG_ENTITY_LOOT, 9)) {
+            ListTag lootListTag = tag.getList(TAG_ENTITY_LOOT, 10);
+            for (int i = 0; i < lootListTag.size(); i++) {
+                CompoundTag itemTag = lootListTag.getCompound(i);
+                ItemStack entityLootItem = ItemStack.of(itemTag);
+                player.addItem(entityLootItem);
+            }
+            tag.remove(TAG_ENTITY_LOOT);
+        }
+
         level.playSound(null, player.getX(), player.getY(), player.getZ(),
                 SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1.0F, 1.0F);
         setState(stack, STATE_EMPTY);

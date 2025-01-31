@@ -103,7 +103,7 @@ public class FloatingDebrisEntity extends Entity {
         this.entityData.set(HURT_TIME, 10);
     }
 
-    protected LootTable getLootTable(ServerLevel serverLevel) {
+    public LootTable getLootTable(ServerLevel serverLevel) {
         return serverLevel.getServer().getLootData().getLootTable(new LilisLuckyLuresIdentifier("fishing_pools/floating_debris"));
     }
 
