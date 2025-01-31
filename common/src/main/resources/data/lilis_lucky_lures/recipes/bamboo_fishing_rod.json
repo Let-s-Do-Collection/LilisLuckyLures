@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "item": "minecraft:bamboo"
+    },
+    "X": {
+      "item": "minecraft:string"
+    }
+  },
+  "pattern": [
+    "  #",
+    " #X",
+    "# X"
+  ],
+  "result": {
+    "item": "lilis_lucky_lures:bamboo_fishing_rod"
+  }
+}

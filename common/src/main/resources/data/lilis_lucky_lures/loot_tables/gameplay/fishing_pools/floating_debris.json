@@ -21,6 +21,11 @@
         },
         {
           "type": "minecraft:item",
+          "name": "lilis_lucky_lures:dynamite",
+          "weight": 12
+        },
+        {
+          "type": "minecraft:item",
           "name": "minecraft:birch_planks",
           "weight": 8
         },
@@ -323,6 +328,23 @@
               "damage": {
                 "min": 0.1,
                 "max": 0.5
+              }
+            },
+            {
+              "function": "enchant_randomly"
+            }
+          ],
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "lilis_lucky_lures:spear",
+          "functions": [
+            {
+              "function": "set_damage",
+              "damage": {
+                "min": 0.1,
+                "max": 0.8
               }
             },
             {

@@ -33,7 +33,7 @@ public class ThrownSpearRenderer extends EntityRenderer<ThrownSpearEntity> {
         poseStack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(g, thrownSpear.xRotO, thrownSpear.getXRot()) + 90.0F));
         poseStack.mulPose(Axis.ZP.rotationDegrees(-90.0F));
 
-        poseStack.translate(0, 0, 0);
+        poseStack.translate(-0.7, -0.75, 0);
 
         VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.entityTranslucent(this.getTextureLocation(thrownSpear)));
         this.model.renderToBuffer(poseStack, vertexConsumer, i, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);

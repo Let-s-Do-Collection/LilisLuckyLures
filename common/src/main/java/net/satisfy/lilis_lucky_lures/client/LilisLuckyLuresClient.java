@@ -9,6 +9,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.RenderType;
 import net.satisfy.lilis_lucky_lures.client.model.entity.*;
 import net.satisfy.lilis_lucky_lures.client.renderer.block.FishTrapBlockEntityRenderer;
+import net.satisfy.lilis_lucky_lures.client.renderer.block.FishTrophyFrameRenderer;
 import net.satisfy.lilis_lucky_lures.client.renderer.block.HangingFrameRenderer;
 import net.satisfy.lilis_lucky_lures.client.renderer.entity.*;
 import net.satisfy.lilis_lucky_lures.core.registry.EntityTypeRegistry;
@@ -25,6 +26,7 @@ public class LilisLuckyLuresClient {
 
         BlockEntityRendererRegistry.register(EntityTypeRegistry.FISH_TRAP.get(), context -> new FishTrapBlockEntityRenderer());
         BlockEntityRendererRegistry.register(EntityTypeRegistry.HANGING_FRAME.get(), context -> new HangingFrameRenderer());
+        BlockEntityRendererRegistry.register(EntityTypeRegistry.FISH_TROPHY_FRAME.get(), context -> new FishTrophyFrameRenderer());
     }
 
     public static void preInitClient() {

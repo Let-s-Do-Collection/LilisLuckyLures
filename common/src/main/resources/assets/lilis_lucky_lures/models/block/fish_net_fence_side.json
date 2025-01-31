@@ -1,8 +1,8 @@
 {
 	"credit": "Made by Satisfy",
 	"textures": {
-		"particle": "lilis_lucky_lures:block/elastic_fishing_net",
-		"texture": "lilis_lucky_lures:block/elastic_fishing_net"
+		"particle": "lilis_lucky_lures:block/fishing_net_side",
+		"texture": "lilis_lucky_lures:block/fishing_net_side"
 	},
 	"elements": [
 		{
@@ -10,8 +10,8 @@
 			"to": [8, 16, 9],
 			"rotation": {"angle": 0, "axis": "y", "origin": [1, -6, 0]},
 			"faces": {
-				"east": {"uv": [11, 0, 2, 16], "texture": "#texture"},
-				"west": {"uv": [2, 0, 11, 16], "texture": "#texture"}
+				"east": {"uv": [9, 0, 0, 16], "texture": "#texture"},
+				"west": {"uv": [0, 0, 9, 16], "texture": "#texture"}
 			}
 		}
 	]

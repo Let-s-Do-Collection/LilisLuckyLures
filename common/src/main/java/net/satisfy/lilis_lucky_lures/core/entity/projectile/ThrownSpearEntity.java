@@ -100,7 +100,13 @@ public class ThrownSpearEntity extends AbstractArrow {
     protected void onHitEntity(EntityHitResult result) {
         Entity target = result.getEntity();
         float damage = 8.0F;
-        if (target instanceof LivingEntity livingTarget) damage += EnchantmentHelper.getDamageBonus(this.spearItem, livingTarget.getMobType());
+        if (target instanceof LivingEntity livingTarget) {
+            damage += EnchantmentHelper.getDamageBonus(this.spearItem, livingTarget.getMobType());
+
+            if (livingTarget.isInWater()) {
+                damage *= 1.35F;
+            }
+        }
 
         Entity owner = this.getOwner();
         DamageSource damageSource = this.damageSources().trident(this, owner == null ? this : owner);

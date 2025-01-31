@@ -61,18 +61,15 @@ public class DynamiteEntity extends ThrowableItemProjectile {
     public void handleEntityEvent(byte event) {
         if (event == 3) {
             ParticleOptions itemParticle = getParticle();
-            int particleCount = 6;
-            for (int i = 0; i < particleCount; i++) {
+            for (int i = 0; i < 6; i++) {
                 double theta = random.nextDouble() * 2 * Math.PI;
                 double phi = Math.acos(2 * random.nextDouble() - 1);
                 double x = Math.sin(phi) * Math.cos(theta);
                 double y = Math.sin(phi) * Math.sin(theta);
                 double z = Math.cos(phi);
                 double speed = 0.5D;
-
                 level().addParticle(itemParticle, getX(), getY(), getZ(), x * speed, y * speed, z * speed);
             }
-
             for (int i = 0; i < 4; i++) {
                 double theta = random.nextDouble() * 2 * Math.PI;
                 double phi = Math.acos(2 * random.nextDouble() - 1);
@@ -80,11 +77,9 @@ public class DynamiteEntity extends ThrowableItemProjectile {
                 double y = Math.sin(phi) * Math.sin(theta);
                 double z = Math.cos(phi);
                 double speed = 0.3D;
-
                 level().addParticle(ParticleTypes.FLAME, getX(), getY(), getZ(), x * speed, y * speed, z * speed);
                 level().addParticle(ParticleTypes.SMOKE, getX(), getY(), getZ(), x * speed, y * speed, z * speed);
             }
-
             smokeTicksRemaining = SMOKE_DURATION;
         } else {
             super.handleEntityEvent(event);
@@ -100,17 +95,17 @@ public class DynamiteEntity extends ThrowableItemProjectile {
         if (getDeltaMovement().length() < MIN_VELOCITY && bounceCount > 0) {
             if (!level().isClientSide) {
                 explode();
-                level().broadcastEntityEvent(this, (byte)3);
+                level().broadcastEntityEvent(this, (byte) 3);
+                discard();
             }
         }
-
         if (smokeTicksRemaining > 0) {
             if (level().isClientSide) {
                 double height = 6.0D;
                 for (int i = 0; i < 5; i++) {
                     double offsetX = (random.nextDouble() - 0.5) * 0.5;
                     double offsetZ = (random.nextDouble() - 0.5) * 0.5;
-                    double posY = getY() + height * (1 - (double)smokeTicksRemaining / SMOKE_DURATION) + random.nextDouble() * 0.2;
+                    double posY = getY() + height * (1 - (double) smokeTicksRemaining / SMOKE_DURATION) + random.nextDouble() * 0.2;
                     level().addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, getX() + offsetX, posY, getZ() + offsetZ, 0.0D, 0.1D, 0.0D);
                 }
             }
@@ -126,7 +121,8 @@ public class DynamiteEntity extends ThrowableItemProjectile {
         if (bounceCount >= 1 || tickCount >= 160) {
             if (!level().isClientSide) {
                 explode();
-                level().broadcastEntityEvent(this, (byte)3);
+                level().broadcastEntityEvent(this, (byte) 3);
+                discard();
             }
         } else {
             bounceCount++;
@@ -146,15 +142,9 @@ public class DynamiteEntity extends ThrowableItemProjectile {
             if (!level().isClientSide && bounceCount < 2) {
                 level().playSound(null, getX(), getY(), getZ(), SoundEvents.WOOD_HIT, SoundSource.NEUTRAL, 1.0F, 4.0F);
             }
-            if (d == Direction.EAST || d == Direction.WEST) {
-                vx = -vx * DAMPING_FACTOR;
-            }
-            if (d == Direction.DOWN || d == Direction.UP) {
-                vy = -vy * DAMPING_FACTOR;
-            }
-            if (d == Direction.NORTH || d == Direction.SOUTH) {
-                vz = -vz * DAMPING_FACTOR;
-            }
+            if (d == Direction.EAST || d == Direction.WEST) vx = -vx * DAMPING_FACTOR;
+            if (d == Direction.DOWN || d == Direction.UP) vy = -vy * DAMPING_FACTOR;
+            if (d == Direction.NORTH || d == Direction.SOUTH) vz = -vz * DAMPING_FACTOR;
             setDeltaMovement(vx, vy, vz);
         }
     }
@@ -167,21 +157,17 @@ public class DynamiteEntity extends ThrowableItemProjectile {
         double ax = Math.abs(vx);
         double ay = Math.abs(vy);
         double az = Math.abs(vz);
-        if (ax >= ay && ax >= az) {
-            vx = -vx * DAMPING_FACTOR;
-        } else if (ay >= ax && ay >= az) {
-            vy = -vy * DAMPING_FACTOR;
-        } else {
-            vz = -vz * DAMPING_FACTOR;
-        }
+        if (ax >= ay && ax >= az) vx = -vx * DAMPING_FACTOR;
+        else if (ay >= ax && ay >= az) vy = -vy * DAMPING_FACTOR;
+        else vz = -vz * DAMPING_FACTOR;
         setDeltaMovement(vx, vy, vz);
     }
 
     @Override
     public void shootFromRotation(Entity entity, float x, float y, float z, float velocity, float inaccuracy) {
-        float f = -Mth.sin(y * ((float)Math.PI / 180F)) * Mth.cos(x * ((float)Math.PI / 180F));
-        float f1 = -Mth.sin((x + z) * ((float)Math.PI / 180F));
-        float f2 = Mth.cos(y * ((float)Math.PI / 180F)) * Mth.cos(x * ((float)Math.PI / 180F));
+        float f = -Mth.sin(y * ((float) Math.PI / 180F)) * Mth.cos(x * ((float) Math.PI / 180F));
+        float f1 = -Mth.sin((x + z) * ((float) Math.PI / 180F));
+        float f2 = Mth.cos(y * ((float) Math.PI / 180F)) * Mth.cos(x * ((float) Math.PI / 180F));
         shoot(f, f1, f2, velocity, inaccuracy);
         setDeltaMovement(getDeltaMovement().multiply(0.7F, 0.5F, 0.7F));
         Vec3 v = entity.getDeltaMovement();
@@ -192,6 +178,6 @@ public class DynamiteEntity extends ThrowableItemProjectile {
         boolean underwater = isInWater();
         float radius = underwater ? EXPLOSION_RADIUS * 3.0F : EXPLOSION_RADIUS;
         Level.ExplosionInteraction interaction = underwater ? Level.ExplosionInteraction.NONE : Level.ExplosionInteraction.TNT;
-        level().explode(this, (float)getX(), (float)(getY(0.0625D) + 0.5F), (float)getZ(), radius, interaction);
+        level().explode(this, (float) getX(), (float) (getY(0.0625D) + 0.5F), (float) getZ(), radius, interaction);
     }
 }
