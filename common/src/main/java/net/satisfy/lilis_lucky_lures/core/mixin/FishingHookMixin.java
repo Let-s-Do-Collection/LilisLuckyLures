@@ -6,7 +6,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.satisfy.lilis_lucky_lures.core.entity.FloatingDebrisEntity;
-import net.satisfy.lilis_lucky_lures.core.init.ObjectRegistry;
+import net.satisfy.lilis_lucky_lures.core.registry.ObjectRegistry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.satisfy.lilis_lucky_lures.core.block.HangingFrameBlock;
-import net.satisfy.lilis_lucky_lures.core.init.EntityTypeRegistry;
+import net.satisfy.lilis_lucky_lures.core.registry.EntityTypeRegistry;
 import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresUtil;
 import org.jetbrains.annotations.NotNull;
 

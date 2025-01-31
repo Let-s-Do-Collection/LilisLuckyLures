@@ -1,13 +1,8 @@
 package net.satisfy.lilis_lucky_lures.core.block;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -20,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class ElasticFishingNetBlock extends Block {
     private static final VoxelShape SHAPE = Shapes.box(0.0, 3.0 / 16.0, 0.0, 1.0, (3.0 + 1.0) / 16.0, 1.0);
-    private static final EntityDataAccessor<Integer> BOUNCE_COUNT = SynchedEntityData.defineId(Entity.class, EntityDataSerializers.INT);
 
     public ElasticFishingNetBlock(Properties properties) {
         super(properties);
@@ -33,69 +27,24 @@ public class ElasticFishingNetBlock extends Block {
     }
 
     @Override
-    public void fallOn(Level level, BlockState blockState, BlockPos blockPos, Entity entity, float fallDistance) {
-        if (!level.isClientSide) {
-            int bounceCount = getBounceCount(entity);
-
-            if (bounceCount < 2) {
-                double fallVelocity = Math.abs(entity.getDeltaMovement().y);
-                if (fallVelocity > 0.5) {
-                    bounceUp(entity, fallVelocity);
-                    setBounceCount(entity, bounceCount + 1);
-                } else {
-                    resetBounceCount(entity);
-                }
-            } else {
-                resetBounceCount(entity);
-                entity.setDeltaMovement(entity.getDeltaMovement().x, 0, entity.getDeltaMovement().z);
-            }
-            entity.fallDistance = 0;
-        }
+    public void fallOn(Level world, BlockState state, BlockPos pos, Entity entity, float fallDistance) {
+        super.fallOn(world, state, pos, entity, fallDistance * 0.5F);
     }
 
     @Override
     public void updateEntityAfterFallOn(BlockGetter world, Entity entity) {
-        if (!entity.isSuppressingBounce()) {
-            int bounceCount = getBounceCount(entity);
-            if (bounceCount < 2) {
-                double fallVelocity = Math.abs(entity.getDeltaMovement().y);
-                if (fallVelocity > 0.3) {
-                    bounceUp(entity, fallVelocity);
-                    setBounceCount(entity, bounceCount + 1);
-                } else {
-                    resetBounceCount(entity);
-                }
-            } else {
-                resetBounceCount(entity);
-                entity.setDeltaMovement(entity.getDeltaMovement().x, 0, entity.getDeltaMovement().z);
-            }
+        if (entity.isSuppressingBounce()) {
+            super.updateEntityAfterFallOn(world, entity);
+        } else {
+            bounceUp(entity);
         }
     }
 
-    private void bounceUp(Entity entity, double fallVelocity) {
-        double bounceFactor = Mth.clamp(fallVelocity * 0.85, 0.5, 2.0);
-        entity.setDeltaMovement(entity.getDeltaMovement().x, bounceFactor, entity.getDeltaMovement().z);
-    }
-
-    @Override
-    public void stepOn(Level level, BlockPos pos, BlockState state, Entity entity) {
-        if (!level.isClientSide && entity instanceof Player player) {
-            if (!(player.getInventory().getArmor(0).getItem() instanceof ArmorItem)) {
-                Vec3 motion = player.getDeltaMovement();
-                player.setDeltaMovement(motion.multiply(0.9, 1, 0.9));
-            }
+    private void bounceUp(Entity entity) {
+        Vec3 motion = entity.getDeltaMovement();
+        if (motion.y < 0.0) {
+            double bounceFactor = entity instanceof LivingEntity ? 1.0 : 0.8;
+            entity.setDeltaMovement(motion.x, -motion.y * 0.66 * bounceFactor, motion.z);
         }
-    }
-
-    private int getBounceCount(Entity entity) {
-        return entity.getEntityData().get(BOUNCE_COUNT);
-    }
-
-    private void setBounceCount(Entity entity, int count) {
-        entity.getEntityData().set(BOUNCE_COUNT, count);
-    }
-
-    private void resetBounceCount(Entity entity) {
-        entity.getEntityData().set(BOUNCE_COUNT, 0);
     }
 }

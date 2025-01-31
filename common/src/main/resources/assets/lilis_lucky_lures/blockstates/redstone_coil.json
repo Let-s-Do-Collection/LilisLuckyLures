@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "active=false,half=lower,facing=north": {
+      "model": "lilis_lucky_lures:block/redstone_coil_bottom",
+      "y": 180
+    },
+    "active=false,half=lower,facing=south": {
+      "model": "lilis_lucky_lures:block/redstone_coil_bottom"
+    },
+    "active=false,half=lower,facing=west": {
+      "model": "lilis_lucky_lures:block/redstone_coil_bottom",
+      "y": 270
+    },
+    "active=false,half=lower,facing=east": {
+      "model": "lilis_lucky_lures:block/redstone_coil_bottom",
+      "y": 90
+    },
+    "active=false,half=upper,facing=north": {
+      "model": "lilis_lucky_lures:block/redstone_coil_top",
+      "y": 180
+    },
+    "active=false,half=upper,facing=south": {
+      "model": "lilis_lucky_lures:block/redstone_coil_top"
+    },
+    "active=false,half=upper,facing=west": {
+      "model": "lilis_lucky_lures:block/redstone_coil_top",
+      "y": 270
+    },
+    "active=false,half=upper,facing=east": {
+      "model": "lilis_lucky_lures:block/redstone_coil_top",
+      "y": 90
+    },
+    "active=true,half=lower,facing=north": {
+      "model": "lilis_lucky_lures:block/redstone_coil_bottom",
+      "y": 180
+    },
+    "active=true,half=lower,facing=south": {
+      "model": "lilis_lucky_lures:block/redstone_coil_bottom"
+    },
+    "active=true,half=lower,facing=west": {
+      "model": "lilis_lucky_lures:block/redstone_coil_bottom",
+      "y": 270
+    },
+    "active=true,half=lower,facing=east": {
+      "model": "lilis_lucky_lures:block/redstone_coil_bottom",
+      "y": 90
+    },
+    "active=true,half=upper,facing=north": {
+      "model": "lilis_lucky_lures:block/redstone_coil_top",
+      "y": 180
+    },
+    "active=true,half=upper,facing=south": {
+      "model": "lilis_lucky_lures:block/redstone_coil_top"
+    },
+    "active=true,half=upper,facing=west": {
+      "model": "lilis_lucky_lures:block/redstone_coil_top",
+      "y": 270
+    },
+    "active=true,half=upper,facing=east": {
+      "model": "lilis_lucky_lures:block/redstone_coil_top",
+      "y": 90
+    }
+  }
+}

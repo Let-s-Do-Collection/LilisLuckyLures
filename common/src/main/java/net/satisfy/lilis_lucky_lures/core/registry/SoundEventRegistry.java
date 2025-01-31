@@ -1,4 +1,4 @@
-package net.satisfy.lilis_lucky_lures.core.init;
+package net.satisfy.lilis_lucky_lures.core.registry;
 
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.Registrar;

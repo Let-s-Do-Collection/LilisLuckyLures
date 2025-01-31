@@ -31,7 +31,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.satisfy.lilis_lucky_lures.core.block.entity.FishTrapBlockEntity;
-import net.satisfy.lilis_lucky_lures.core.init.EntityTypeRegistry;
+import net.satisfy.lilis_lucky_lures.core.registry.EntityTypeRegistry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

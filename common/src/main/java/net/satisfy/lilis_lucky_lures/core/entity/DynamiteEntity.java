@@ -22,8 +22,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.satisfy.lilis_lucky_lures.core.init.EntityTypeRegistry;
-import net.satisfy.lilis_lucky_lures.core.init.ObjectRegistry;
+import net.satisfy.lilis_lucky_lures.core.registry.EntityTypeRegistry;
+import net.satisfy.lilis_lucky_lures.core.registry.ObjectRegistry;
 import org.jetbrains.annotations.NotNull;
 
 public class DynamiteEntity extends ThrowableItemProjectile {

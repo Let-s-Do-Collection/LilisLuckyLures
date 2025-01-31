@@ -12,8 +12,8 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.satisfy.lilis_lucky_lures.core.entity.FloatingDebrisEntity;
-import net.satisfy.lilis_lucky_lures.core.init.EntityTypeRegistry;
-import net.satisfy.lilis_lucky_lures.core.init.ObjectRegistry;
+import net.satisfy.lilis_lucky_lures.core.registry.EntityTypeRegistry;
+import net.satisfy.lilis_lucky_lures.core.registry.ObjectRegistry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

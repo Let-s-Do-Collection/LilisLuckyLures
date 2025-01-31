@@ -1,4 +1,4 @@
-package net.satisfy.lilis_lucky_lures.core.init;
+package net.satisfy.lilis_lucky_lures.core.registry;
 
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.Registrar;
@@ -6,15 +6,11 @@ import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.FishingRodItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.BarrelBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.satisfy.lilis_lucky_lures.LilisLuckyLures;
-import net.satisfy.lilis_lucky_lures.core.block.ElasticFishingNetBlock;
-import net.satisfy.lilis_lucky_lures.core.block.FishBagBlock;
-import net.satisfy.lilis_lucky_lures.core.block.FishTrapBlock;
-import net.satisfy.lilis_lucky_lures.core.block.HangingFrameBlock;
+import net.satisfy.lilis_lucky_lures.core.block.*;
 import net.satisfy.lilis_lucky_lures.core.item.*;
 import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresIdentifier;
 import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresUtil;
@@ -28,7 +24,7 @@ public class ObjectRegistry {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(LilisLuckyLures.MOD_ID, Registries.BLOCK);
     public static final Registrar<Block> BLOCK_REGISTRAR = BLOCKS.getRegistrar();
 
-    public static final RegistrySupplier<Block> REDSTONE_COIL = registerWithItem("redstone_coil", () -> new Block(BlockBehaviour.Properties.copy(Blocks.REDSTONE_BLOCK)));
+    public static final RegistrySupplier<Block> REDSTONE_COIL = registerWithItem("redstone_coil", () -> new RedstoneCoilBlock(BlockBehaviour.Properties.copy(Blocks.REDSTONE_BLOCK)));
     public static final RegistrySupplier<Block> FISH_TRAP = registerWithItem("fish_trap", () -> new FishTrapBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
     public static final RegistrySupplier<Block> FISH_BAG = registerWithItem("fish_bag", () -> new FishBagBlock(BlockBehaviour.Properties.copy(Blocks.RED_WOOL)));
     public static final RegistrySupplier<Item> SOAKED_BAG = registerItem("soaked_bag", () -> new SoakedBagItem(getSettings()));

@@ -1,0 +1,43 @@
+{
+	"credit": "Made with Blockbench",
+	"elements": [
+		{
+			"name": "support",
+			"from": [7, 0, 7],
+			"to": [9, 14, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 0, 7]},
+			"color": 6,
+			"faces": {
+				"north": {"uv": [0, 0, 2, 14], "texture": "#missing"},
+				"east": {"uv": [0, 0, 2, 14], "texture": "#missing"},
+				"south": {"uv": [0, 0, 2, 14], "texture": "#missing"},
+				"west": {"uv": [0, 0, 2, 14], "texture": "#missing"},
+				"up": {"uv": [0, 0, 2, 2], "texture": "#missing"},
+				"down": {"uv": [0, 0, 2, 2], "texture": "#missing"}
+			}
+		},
+		{
+			"name": "redstone_cube",
+			"from": [3, 8, 3],
+			"to": [13, 12, 13],
+			"rotation": {"angle": 0, "axis": "y", "origin": [3, 8, 3]},
+			"color": 1,
+			"faces": {
+				"north": {"uv": [0, 0, 10, 4], "texture": "#missing"},
+				"east": {"uv": [0, 0, 10, 4], "texture": "#missing"},
+				"south": {"uv": [0, 0, 10, 4], "texture": "#missing"},
+				"west": {"uv": [0, 0, 10, 4], "texture": "#missing"},
+				"up": {"uv": [0, 0, 10, 10], "texture": "#missing"},
+				"down": {"uv": [0, 0, 10, 10], "texture": "#missing"}
+			}
+		}
+	],
+	"groups": [
+		{
+			"name": "top",
+			"origin": [8, 8, 8],
+			"color": 0,
+			"children": [0, 1]
+		}
+	]
+}

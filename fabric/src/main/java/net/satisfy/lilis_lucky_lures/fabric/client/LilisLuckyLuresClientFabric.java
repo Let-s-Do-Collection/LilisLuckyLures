@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.satisfy.lilis_lucky_lures.client.LilisLuckyLuresClient;
-import net.satisfy.lilis_lucky_lures.core.init.ObjectRegistry;
+import net.satisfy.lilis_lucky_lures.core.registry.ObjectRegistry;
 
 public class LilisLuckyLuresClientFabric implements ClientModInitializer {
     @Override

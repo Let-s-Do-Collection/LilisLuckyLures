@@ -1,6 +1,6 @@
 package net.satisfy.lilis_lucky_lures;
 
-import net.satisfy.lilis_lucky_lures.core.init.*;
+import net.satisfy.lilis_lucky_lures.core.registry.*;
 
 
 public class LilisLuckyLures {

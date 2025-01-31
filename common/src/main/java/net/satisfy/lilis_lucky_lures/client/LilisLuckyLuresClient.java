@@ -11,8 +11,8 @@ import net.satisfy.lilis_lucky_lures.client.model.entity.*;
 import net.satisfy.lilis_lucky_lures.client.renderer.block.FishTrapBlockEntityRenderer;
 import net.satisfy.lilis_lucky_lures.client.renderer.block.HangingFrameRenderer;
 import net.satisfy.lilis_lucky_lures.client.renderer.entity.*;
-import net.satisfy.lilis_lucky_lures.core.init.EntityTypeRegistry;
-import net.satisfy.lilis_lucky_lures.core.init.ObjectRegistry;
+import net.satisfy.lilis_lucky_lures.core.registry.EntityTypeRegistry;
+import net.satisfy.lilis_lucky_lures.core.registry.ObjectRegistry;
 
 
 @Environment(EnvType.CLIENT)
