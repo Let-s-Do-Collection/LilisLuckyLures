@@ -4,10 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterials;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -15,6 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.satisfy.lilis_lucky_lures.core.block.RedstoneCoilBlock;
 import net.satisfy.lilis_lucky_lures.core.registry.EntityTypeRegistry;
+import org.joml.Vector3d;
 
 import java.util.List;
 import java.util.Random;
@@ -25,7 +22,6 @@ public class RedstoneCoilBlockEntity extends BlockEntity {
     private int beamProgress = 0;
     private int tickCounter = 0;
     private int phase = 0;
-    private static final int TICK_THRESHOLD = 45;
 
     public RedstoneCoilBlockEntity(BlockPos pos, BlockState state) {
         super(EntityTypeRegistry.REDSTONE_COIL.get(), pos, state);
@@ -45,8 +41,7 @@ public class RedstoneCoilBlockEntity extends BlockEntity {
     public static void tick(Level level, BlockPos pos, BlockState state, RedstoneCoilBlockEntity be) {
         if (!(level instanceof ServerLevel serverLevel) || !state.getValue(RedstoneCoilBlock.ACTIVE)) return;
         be.tickCounter++;
-
-        if (be.tickCounter >= TICK_THRESHOLD) {
+        if (be.tickCounter >= 200) {
             be.tickCounter = 0;
             int range = Math.min(32, Math.max(3, serverLevel.getBestNeighborSignal(pos)));
             AABB box = new AABB(pos).inflate(range);
@@ -58,16 +53,14 @@ public class RedstoneCoilBlockEntity extends BlockEntity {
                 be.phase = 1;
             }
         }
-
         if (be.phase == 1 && be.beamProgress < 30) {
-            double radius = (double) be.beamProgress / 30.0 * 2.0;
+            double radius = (1.0 - (double) be.beamProgress / 30.0) * 2.0;
             for (int i = 0; i < 5; i++) {
                 double angle = serverLevel.random.nextDouble() * Math.PI * 2;
                 double x = pos.getX() + 0.5 + radius * Math.cos(angle);
-                double y = pos.getY() + 0.5 + serverLevel.random.nextDouble();
+                double y = pos.getY() + 1.0 + serverLevel.random.nextDouble();
                 double z = pos.getZ() + 0.5 + radius * Math.sin(angle);
                 serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, x, y, z, 1, 0, 0, 0, 0);
-                serverLevel.sendParticles(ParticleTypes.SMOKE, x, y, z, 1, 0, 0, 0, 0);
             }
             be.beamProgress++;
             if (be.beamProgress >= 30) {
@@ -75,60 +68,28 @@ public class RedstoneCoilBlockEntity extends BlockEntity {
                 be.phase = 2;
             }
         }
-
         if (be.phase == 2 && be.beamProgress < 20 && be.targetPos != null) {
             be.beamProgress++;
             double progress = (double) be.beamProgress / 20.0;
-            double startX = pos.getX() + 0.5;
-            double startY = pos.getY() + 0.5;
-            double startZ = pos.getZ() + 0.5;
-            double endX = be.targetPos.getX() + 0.5;
-            double endY = be.targetPos.getY() + 0.5;
-            double endZ = be.targetPos.getZ() + 0.5;
-            double currentX = startX + (endX - startX) * progress;
-            double currentY = startY + (endY - startY) * progress;
-            double currentZ = startZ + (endZ - startZ) * progress;
-            serverLevel.sendParticles(ParticleTypes.END_ROD, currentX, currentY, currentZ, 1, 0, 0, 0, 0);
-            serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, currentX, currentY, currentZ, 1, 0, 0, 0, 0);
-
-            BlockPos currentPos = new BlockPos((int) currentX, (int) currentY, (int) currentZ);
-            List<Player> shields = serverLevel.getEntitiesOfClass(Player.class, new AABB(currentPos).inflate(0.5), LivingEntity::isBlocking);
-
-            if (!shields.isEmpty()) {
-                serverLevel.sendParticles(ParticleTypes.SMOKE, currentX, currentY, currentZ, 10, 0.5, 0.5, 0.5, 0);
-                serverLevel.sendParticles(ParticleTypes.FLASH, currentX, currentY, currentZ, 5, 0.3, 0.3, 0.3, 0);
-                Player shield = shields.get(0);
-                shield.hurt(serverLevel.damageSources().magic(), 1.0F);
-                be.phase = 0;
-                be.targetPos = null;
-                be.beamProgress = 0;
-                return;
-            }
-
+            Vector3d start = new Vector3d(pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5);
+            Vector3d end = new Vector3d(be.targetPos.getX() + 0.5, be.targetPos.getY() + 0.5, be.targetPos.getZ() + 0.5);
+            Vector3d dir = new Vector3d(end).sub(start);
+            Vector3d current = new Vector3d(dir).mul(progress).add(start);
+            Vector3d arbitrary = new Vector3d(0, 1, 0);
+            if (Math.abs(dir.dot(arbitrary)) > 0.99) arbitrary.set(1, 0, 0);
+            Vector3d perp = new Vector3d();
+            dir.cross(arbitrary, perp).normalize();
+            double wave = Math.sin(progress * Math.PI * 4) * 0.1;
+            perp.mul(wave);
+            current.add(perp);
+            serverLevel.sendParticles(ParticleTypes.END_ROD, current.x, current.y, current.z, 1, 0, 0, 0, 0);
+            serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, current.x, current.y, current.z, 1, 0, 0, 0, 0);
+            serverLevel.sendParticles(ParticleTypes.SMOKE, current.x, current.y, current.z, 1, 0, 0, 0, 0);
             if (be.beamProgress >= 20) {
                 List<LivingEntity> targets = serverLevel.getEntitiesOfClass(LivingEntity.class, new AABB(be.targetPos).inflate(1.0), LivingEntity::isAlive);
                 if (!targets.isEmpty()) {
                     LivingEntity livingTarget = targets.get(0);
-                    float damage = 10.0F;
-                    boolean hasIronArmor = false;
-                    for (ItemStack armorStack : livingTarget.getArmorSlots()) {
-                        if (armorStack.getItem() instanceof ArmorItem armorItem && armorItem.getMaterial() == ArmorMaterials.IRON) {
-                            hasIronArmor = true;
-                            break;
-                        }
-                    }
-                    if (hasIronArmor) {
-                        damage *= 1.25F;
-                    }
-                    livingTarget.hurt(serverLevel.damageSources().magic(), damage);
-                    if (hasIronArmor) {
-                        for (ItemStack armorStack : livingTarget.getArmorSlots()) {
-                            if (armorStack.getItem() instanceof ArmorItem armorItem && armorItem.getMaterial() == ArmorMaterials.IRON) {
-                                int damageAmount = Math.max(1, (int)(armorStack.getMaxDamage() * 0.1));
-                                armorStack.hurt(damageAmount, level.getRandom(), null);
-                            }
-                        }
-                    }
+                    livingTarget.hurt(serverLevel.damageSources().magic(), 10.0F);
                     livingTarget.setSecondsOnFire(5);
                     setFireAround(serverLevel, be.targetPos);
                     spawnImpactParticles(serverLevel, be.targetPos);
@@ -145,8 +106,9 @@ public class RedstoneCoilBlockEntity extends BlockEntity {
             for (int y = center.getY() - 3; y <= center.getY() + 3; y++) {
                 for (int z = center.getZ() - 3; z <= center.getZ() + 3; z++) {
                     BlockPos currentPos = new BlockPos(x, y, z);
-                    if (level.isEmptyBlock(currentPos.above()) && RANDOM.nextDouble() < 0.05) {
-                        level.setBlock(currentPos, Blocks.FIRE.defaultBlockState(), 3);
+                    BlockPos abovePos = currentPos.above();
+                    if (!level.getBlockState(currentPos).isAir() && level.isEmptyBlock(abovePos) && RANDOM.nextDouble() < 0.05) {
+                        level.setBlock(abovePos, Blocks.FIRE.defaultBlockState(), 3);
                     }
                 }
             }
@@ -154,15 +116,21 @@ public class RedstoneCoilBlockEntity extends BlockEntity {
     }
 
     private static void spawnImpactParticles(ServerLevel level, BlockPos pos) {
-        for (int i = 0; i < 10; i++) {
-            double offsetX = level.random.nextDouble() - 0.5;
-            double offsetY = level.random.nextDouble() * 0.5;
-            double offsetZ = level.random.nextDouble() - 0.5;
-            double particleX = pos.getX() + 0.5 + offsetX;
-            double particleY = pos.getY() + 0.5 + offsetY;
-            double particleZ = pos.getZ() + 0.5 + offsetZ;
-            level.sendParticles(ParticleTypes.SMOKE, particleX, particleY, particleZ, 1, 0, 0, 0, 0);
-            level.sendParticles(ParticleTypes.FLAME, particleX, particleY, particleZ, 1, 0, 0, 0, 0);
+        for (int i = 0; i < 40; i++) {
+            Vector3d vec = new Vector3d(
+                    (level.random.nextDouble() * 2 - 1),
+                    (level.random.nextDouble() * 2 - 1),
+                    (level.random.nextDouble() * 2 - 1)
+            );
+            if (vec.lengthSquared() == 0) continue;
+            vec.normalize().mul(level.random.nextDouble() * 1.5 + 0.5);
+
+            double particleX = pos.getX() + 0.5;
+            double particleY = pos.getY() + 0.5;
+            double particleZ = pos.getZ() + 0.5;
+
+            level.sendParticles(ParticleTypes.SMOKE, particleX, particleY, particleZ, 0, vec.x, vec.y, vec.z, 0.2);
+            level.sendParticles(ParticleTypes.FLAME, particleX, particleY, particleZ, 0, vec.x * 1.2, vec.y * 1.2, vec.z * 1.2, 0.1);
         }
     }
 }
