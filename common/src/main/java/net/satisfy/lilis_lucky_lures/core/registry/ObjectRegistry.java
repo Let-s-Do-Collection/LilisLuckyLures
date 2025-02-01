@@ -10,6 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.PushReaction;
 import net.satisfy.lilis_lucky_lures.LilisLuckyLures;
 import net.satisfy.lilis_lucky_lures.core.block.*;
 import net.satisfy.lilis_lucky_lures.core.item.*;
@@ -26,7 +27,7 @@ public class ObjectRegistry {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(LilisLuckyLures.MOD_ID, Registries.BLOCK);
     public static final Registrar<Block> BLOCK_REGISTRAR = BLOCKS.getRegistrar();
 
-    public static final RegistrySupplier<Block> REDSTONE_COIL = registerWithItem("redstone_coil", () -> new RedstoneCoilBlock(BlockBehaviour.Properties.copy(Blocks.REDSTONE_BLOCK)));
+    public static final RegistrySupplier<Block> REDSTONE_COIL = registerWithItem("redstone_coil", () -> new RedstoneCoilBlock(BlockBehaviour.Properties.copy(Blocks.REDSTONE_BLOCK).lightLevel(state -> state.getValue(RedstoneCoilBlock.ACTIVE) ? 8 : 0).pushReaction(PushReaction.IGNORE)));
     public static final RegistrySupplier<Block> FISH_TRAP = registerWithItem("fish_trap", () -> new FishTrapBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
     public static final RegistrySupplier<Block> FISH_BAG = registerWithItem("fish_bag", () -> new FishBagBlock(BlockBehaviour.Properties.copy(Blocks.RED_WOOL)));
     public static final RegistrySupplier<Item> SOAKED_BAG = registerItem("soaked_bag", () -> new SoakedBagItem(getSettings()));

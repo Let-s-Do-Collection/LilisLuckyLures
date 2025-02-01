@@ -1,11 +1,16 @@
 package net.satisfy.lilis_lucky_lures.core.block.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterials;
@@ -16,11 +21,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.satisfy.lilis_lucky_lures.core.block.RedstoneCoilBlock;
+import net.satisfy.lilis_lucky_lures.core.block.RedstoneCoilBlock.RedstoneCoilTarget;
 import net.satisfy.lilis_lucky_lures.core.registry.EntityTypeRegistry;
 import org.joml.Vector3d;
-
-import java.util.List;
-import java.util.Random;
 
 public class RedstoneCoilBlockEntity extends BlockEntity {
     private static final Random RANDOM = new Random();
@@ -28,22 +31,19 @@ public class RedstoneCoilBlockEntity extends BlockEntity {
     private int beamProgress = 0;
     private int tickCounter = 0;
     private int phase = 0;
+    private UUID owner = null;
 
     public RedstoneCoilBlockEntity(BlockPos pos, BlockState state) {
         super(EntityTypeRegistry.REDSTONE_COIL.get(), pos, state);
     }
-
+    public void setOwner(UUID owner) {
+        this.owner = owner;
+    }
     public void setActive(boolean active) {
         if (level != null) {
             level.setBlock(worldPosition, getBlockState().setValue(RedstoneCoilBlock.ACTIVE, active), 3);
         }
     }
-
-    @SuppressWarnings("unused")
-    public void stopTicking() {
-        tickCounter = 0;
-    }
-
     public static void tick(Level level, BlockPos pos, BlockState state, RedstoneCoilBlockEntity be) {
         if (!(level instanceof ServerLevel serverLevel) || !state.getValue(RedstoneCoilBlock.ACTIVE))
             return;
@@ -53,8 +53,36 @@ public class RedstoneCoilBlockEntity extends BlockEntity {
             int range = Math.min(32, Math.max(3, serverLevel.getBestNeighborSignal(pos)));
             AABB box = new AABB(pos).inflate(range);
             List<LivingEntity> entities = serverLevel.getEntitiesOfClass(LivingEntity.class, box, LivingEntity::isAlive);
-            if (!entities.isEmpty()) {
-                LivingEntity target = entities.get(0);
+            RedstoneCoilTarget targetMode = state.getValue(RedstoneCoilBlock.TARGET);
+            List<LivingEntity> filtered = new ArrayList<>();
+            switch(targetMode) {
+                case NONE:
+                    break;
+                case FISHES:
+                    for (LivingEntity entity : entities) {
+                        if (entity.isInWater()) filtered.add(entity);
+                    }
+                    break;
+                case PLAYER:
+                    Player ownerPlayer = be.owner != null ? serverLevel.getPlayerByUUID(be.owner) : null;
+                    for (LivingEntity entity : entities) {
+                        if (entity instanceof Player p && !p.isCreative()) {
+                            if (ownerPlayer != null) {
+                                if (p.getUUID().equals(ownerPlayer.getUUID())) continue;
+                                if (ownerPlayer.getTeam() != null && p.getTeam() != null && ownerPlayer.getTeam().isAlliedTo(p.getTeam())) continue;
+                            }
+                            filtered.add(entity);
+                        }
+                    }
+                    break;
+                case MONSTER:
+                    for (LivingEntity entity : entities) {
+                        if (entity.getType().getCategory() == MobCategory.MONSTER) filtered.add(entity);
+                    }
+                    break;
+            }
+            if (!filtered.isEmpty()) {
+                LivingEntity target = filtered.get(0);
                 be.targetPos = target.blockPosition();
                 be.beamProgress = 0;
                 be.phase = 1;
@@ -143,7 +171,6 @@ public class RedstoneCoilBlockEntity extends BlockEntity {
             }
         }
     }
-
     private static void applyDamage(LivingEntity livingTarget, ServerLevel serverLevel, RedstoneCoilBlockEntity be) {
         float damage = 10.0F;
         if (livingTarget.isInWater()) {
@@ -170,7 +197,6 @@ public class RedstoneCoilBlockEntity extends BlockEntity {
         setFireAround(serverLevel, be.targetPos);
         spawnImpactParticles(serverLevel, be.targetPos);
     }
-
     private static void setFireAround(ServerLevel level, BlockPos center) {
         for (int x = center.getX() - 3; x <= center.getX() + 3; x++) {
             for (int y = center.getY() - 3; y <= center.getY() + 3; y++) {
@@ -184,7 +210,6 @@ public class RedstoneCoilBlockEntity extends BlockEntity {
             }
         }
     }
-
     private static void spawnImpactParticles(ServerLevel level, BlockPos pos) {
         for (int i = 0; i < 40; i++) {
             Vector3d vec = new Vector3d(level.random.nextDouble() * 2 - 1, level.random.nextDouble() * 2 - 1, level.random.nextDouble() * 2 - 1);

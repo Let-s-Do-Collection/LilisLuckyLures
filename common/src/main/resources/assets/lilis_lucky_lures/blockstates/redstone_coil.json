@@ -1,67 +1,119 @@
 {
   "variants": {
-    "active=false,upper=false,facing=north": {
+    "active=false,upper=false,facing=north,target=none": {
       "model": "lilis_lucky_lures:block/redstone_coil_bottom",
       "y": 180
     },
-    "active=false,upper=false,facing=south": {
+    "active=false,upper=false,facing=south,target=none": {
       "model": "lilis_lucky_lures:block/redstone_coil_bottom",
       "y": 0
     },
-    "active=false,upper=false,facing=west": {
+    "active=false,upper=false,facing=west,target=none": {
       "model": "lilis_lucky_lures:block/redstone_coil_bottom",
       "y": 270
     },
-    "active=false,upper=false,facing=east": {
+    "active=false,upper=false,facing=east,target=none": {
       "model": "lilis_lucky_lures:block/redstone_coil_bottom",
       "y": 90
     },
-    "active=false,upper=true,facing=north": {
+    "active=false,upper=true,facing=north,target=none": {
       "model": "lilis_lucky_lures:block/redstone_coil_top",
       "y": 180
     },
-    "active=false,upper=true,facing=south": {
+    "active=false,upper=true,facing=south,target=none": {
       "model": "lilis_lucky_lures:block/redstone_coil_top",
       "y": 0
     },
-    "active=false,upper=true,facing=west": {
+    "active=false,upper=true,facing=west,target=none": {
       "model": "lilis_lucky_lures:block/redstone_coil_top",
       "y": 270
     },
-    "active=false,upper=true,facing=east": {
+    "active=false,upper=true,facing=east,target=none": {
       "model": "lilis_lucky_lures:block/redstone_coil_top",
       "y": 90
     },
-    "active=true,upper=false,facing=north": {
+
+    "active=true,upper=false,facing=north,target=none": {
       "model": "lilis_lucky_lures:block/redstone_coil_bottom",
       "y": 180
     },
-    "active=true,upper=false,facing=south": {
+    "active=true,upper=false,facing=south,target=none": {
       "model": "lilis_lucky_lures:block/redstone_coil_bottom",
       "y": 0
     },
-    "active=true,upper=false,facing=west": {
+    "active=true,upper=false,facing=west,target=none": {
       "model": "lilis_lucky_lures:block/redstone_coil_bottom",
       "y": 270
     },
-    "active=true,upper=false,facing=east": {
+    "active=true,upper=false,facing=east,target=none": {
       "model": "lilis_lucky_lures:block/redstone_coil_bottom",
       "y": 90
     },
-    "active=true,upper=true,facing=north": {
+    "active=true,upper=true,facing=north,target=none": {
       "model": "lilis_lucky_lures:block/redstone_coil_top",
       "y": 180
     },
-    "active=true,upper=true,facing=south": {
+    "active=true,upper=true,facing=south,target=none": {
       "model": "lilis_lucky_lures:block/redstone_coil_top",
       "y": 0
     },
-    "active=true,upper=true,facing=west": {
+    "active=true,upper=true,facing=west,target=none": {
       "model": "lilis_lucky_lures:block/redstone_coil_top",
       "y": 270
     },
-    "active=true,upper=true,facing=east": {
+    "active=true,upper=true,facing=east,target=none": {
       "model": "lilis_lucky_lures:block/redstone_coil_top",
+      "y": 90
+    },
+
+    "active=true,upper=false,facing=north,target=fishes": {
+      "model": "lilis_lucky_lures:block/redstone_coil_bottom_fishes",
+      "y": 180
+    },
+    "active=true,upper=false,facing=south,target=fishes": {
+      "model": "lilis_lucky_lures:block/redstone_coil_bottom_fishes",
+      "y": 0
+    },
+    "active=true,upper=false,facing=west,target=fishes": {
+      "model": "lilis_lucky_lures:block/redstone_coil_bottom_fishes",
+      "y": 270
+    },
+    "active=true,upper=false,facing=east,target=fishes": {
+      "model": "lilis_lucky_lures:block/redstone_coil_bottom_fishes",
+      "y": 90
+    },
+
+    "active=true,upper=false,facing=north,target=player": {
+      "model": "lilis_lucky_lures:block/redstone_coil_bottom_player",
+      "y": 180
+    },
+    "active=true,upper=false,facing=south,target=player": {
+      "model": "lilis_lucky_lures:block/redstone_coil_bottom_player",
+      "y": 0
+    },
+    "active=true,upper=false,facing=west,target=player": {
+      "model": "lilis_lucky_lures:block/redstone_coil_bottom_player",
+      "y": 270
+    },
+    "active=true,upper=false,facing=east,target=player": {
+      "model": "lilis_lucky_lures:block/redstone_coil_bottom_player",
+      "y": 90
+    },
+
+    "active=true,upper=false,facing=north,target=monster": {
+      "model": "lilis_lucky_lures:block/redstone_coil_bottom_monster",
+      "y": 180
+    },
+    "active=true,upper=false,facing=south,target=monster": {
+      "model": "lilis_lucky_lures:block/redstone_coil_bottom_monster",
+      "y": 0
+    },
+    "active=true,upper=false,facing=west,target=monster": {
+      "model": "lilis_lucky_lures:block/redstone_coil_bottom_monster",
+      "y": 270
+    },
+    "active=true,upper=false,facing=east,target=monster": {
+      "model": "lilis_lucky_lures:block/redstone_coil_bottom_monster",
       "y": 90
     }
   }
