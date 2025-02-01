@@ -3,7 +3,13 @@ package net.satisfy.lilis_lucky_lures.core.block.entity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterials;
+import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -39,7 +45,8 @@ public class RedstoneCoilBlockEntity extends BlockEntity {
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, RedstoneCoilBlockEntity be) {
-        if (!(level instanceof ServerLevel serverLevel) || !state.getValue(RedstoneCoilBlock.ACTIVE)) return;
+        if (!(level instanceof ServerLevel serverLevel) || !state.getValue(RedstoneCoilBlock.ACTIVE))
+            return;
         be.tickCounter++;
         if (be.tickCounter >= 200) {
             be.tickCounter = 0;
@@ -76,7 +83,8 @@ public class RedstoneCoilBlockEntity extends BlockEntity {
             Vector3d dir = new Vector3d(end).sub(start);
             Vector3d current = new Vector3d(dir).mul(progress).add(start);
             Vector3d arbitrary = new Vector3d(0, 1, 0);
-            if (Math.abs(dir.dot(arbitrary)) > 0.99) arbitrary.set(1, 0, 0);
+            if (Math.abs(dir.dot(arbitrary)) > 0.99)
+                arbitrary.set(1, 0, 0);
             Vector3d perp = new Vector3d();
             dir.cross(arbitrary, perp).normalize();
             double wave = Math.sin(progress * Math.PI * 4) * 0.1;
@@ -89,16 +97,78 @@ public class RedstoneCoilBlockEntity extends BlockEntity {
                 List<LivingEntity> targets = serverLevel.getEntitiesOfClass(LivingEntity.class, new AABB(be.targetPos).inflate(1.0), LivingEntity::isAlive);
                 if (!targets.isEmpty()) {
                     LivingEntity livingTarget = targets.get(0);
-                    livingTarget.hurt(serverLevel.damageSources().magic(), 10.0F);
-                    livingTarget.setSecondsOnFire(5);
-                    setFireAround(serverLevel, be.targetPos);
-                    spawnImpactParticles(serverLevel, be.targetPos);
+                    if (livingTarget instanceof Player player && player.isBlocking()) {
+                        boolean mainShield = !player.getMainHandItem().isEmpty() && player.getMainHandItem().getItem() instanceof ShieldItem;
+                        boolean offShield = !player.getOffhandItem().isEmpty() && player.getOffhandItem().getItem() instanceof ShieldItem;
+                        if (mainShield || offShield) {
+                            net.minecraft.world.item.ItemStack shieldStack;
+                            InteractionHand hand;
+                            if (mainShield) {
+                                shieldStack = player.getMainHandItem();
+                                hand = InteractionHand.MAIN_HAND;
+                            } else {
+                                shieldStack = player.getOffhandItem();
+                                hand = InteractionHand.OFF_HAND;
+                            }
+                            int shieldDamage = serverLevel.random.nextInt(10) + 4;
+                            shieldStack.hurtAndBreak(shieldDamage, player, p -> p.broadcastBreakEvent(hand));
+                            Vector3d shieldPos;
+                            Vector3d look = new Vector3d(player.getLookAngle().x, player.getLookAngle().y, player.getLookAngle().z);
+                            Vector3d right = new Vector3d();
+                            new Vector3d(0, 1, 0).cross(look, right).normalize();
+                            if (hand == InteractionHand.MAIN_HAND) {
+                                shieldPos = new Vector3d(player.getX(), player.getY() + player.getEyeHeight() - 0.5, player.getZ());
+                                shieldPos.add(look.mul(0.3)).add(right.mul(0.4));
+                            } else {
+                                shieldPos = new Vector3d(player.getX(), player.getY() + player.getEyeHeight() - 0.5, player.getZ());
+                                shieldPos.add(look.mul(0.3)).sub(right.mul(0.4));
+                            }
+                            int flashCount = serverLevel.random.nextInt(2) + 2;
+                            for (int i = 0; i < flashCount; i++) {
+                                double flashX = shieldPos.x + (serverLevel.random.nextDouble() - 0.5) * 0.2;
+                                double flashY = shieldPos.y + (serverLevel.random.nextDouble() - 0.5) * 0.2;
+                                double flashZ = shieldPos.z + (serverLevel.random.nextDouble() - 0.5) * 0.2;
+                                serverLevel.sendParticles(ParticleTypes.FLASH, flashX, flashY, flashZ, 1, 0, 0, 0, 0);
+                            }
+                        } else {
+                            applyDamage(livingTarget, serverLevel, be);
+                        }
+                    } else {
+                        applyDamage(livingTarget, serverLevel, be);
+                    }
                 }
                 be.phase = 0;
                 be.targetPos = null;
                 be.beamProgress = 0;
             }
         }
+    }
+
+    private static void applyDamage(LivingEntity livingTarget, ServerLevel serverLevel, RedstoneCoilBlockEntity be) {
+        float damage = 10.0F;
+        if (livingTarget.isInWater()) {
+            damage *= 1.65F;
+        }
+        boolean hasIronArmor = false;
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            if (slot.getType() == EquipmentSlot.Type.ARMOR) {
+                net.minecraft.world.item.ItemStack armorStack = livingTarget.getItemBySlot(slot);
+                if (!armorStack.isEmpty() && armorStack.getItem() instanceof ArmorItem armorItem) {
+                    if (armorItem.getMaterial() == ArmorMaterials.IRON) {
+                        hasIronArmor = true;
+                        int armorDamage = serverLevel.random.nextInt(5) + 3;
+                        armorStack.hurtAndBreak(armorDamage, livingTarget, e -> e.broadcastBreakEvent(slot));
+                    }
+                }
+            }
+        }
+        if (hasIronArmor) {
+            damage *= 1.12F;
+        }
+        livingTarget.hurt(serverLevel.damageSources().magic(), damage);
+        livingTarget.setSecondsOnFire(5);
+        setFireAround(serverLevel, be.targetPos);
+        spawnImpactParticles(serverLevel, be.targetPos);
     }
 
     private static void setFireAround(ServerLevel level, BlockPos center) {
@@ -117,18 +187,13 @@ public class RedstoneCoilBlockEntity extends BlockEntity {
 
     private static void spawnImpactParticles(ServerLevel level, BlockPos pos) {
         for (int i = 0; i < 40; i++) {
-            Vector3d vec = new Vector3d(
-                    (level.random.nextDouble() * 2 - 1),
-                    (level.random.nextDouble() * 2 - 1),
-                    (level.random.nextDouble() * 2 - 1)
-            );
-            if (vec.lengthSquared() == 0) continue;
+            Vector3d vec = new Vector3d(level.random.nextDouble() * 2 - 1, level.random.nextDouble() * 2 - 1, level.random.nextDouble() * 2 - 1);
+            if (vec.lengthSquared() == 0)
+                continue;
             vec.normalize().mul(level.random.nextDouble() * 1.5 + 0.5);
-
             double particleX = pos.getX() + 0.5;
             double particleY = pos.getY() + 0.5;
             double particleZ = pos.getZ() + 0.5;
-
             level.sendParticles(ParticleTypes.SMOKE, particleX, particleY, particleZ, 0, vec.x, vec.y, vec.z, 0.2);
             level.sendParticles(ParticleTypes.FLAME, particleX, particleY, particleZ, 0, vec.x * 1.2, vec.y * 1.2, vec.z * 1.2, 0.1);
         }
