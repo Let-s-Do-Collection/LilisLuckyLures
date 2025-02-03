@@ -41,42 +41,73 @@ import java.util.Map;
 @SuppressWarnings("deprecation")
 public class RedstoneCoilBlock extends BaseEntityBlock {
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
+    public static final EnumProperty<DoubleBlockHalf> HALF = EnumProperty.create("half", DoubleBlockHalf.class);
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-    public static final BooleanProperty UPPER = BooleanProperty.create("upper");
-    private static final VoxelShape TOP_SHAPE;
-    private static final VoxelShape BOTTOM_SHAPE;
-    private static final Map<Direction, VoxelShape> TOP_SHAPES = new HashMap<>();
-    private static final Map<Direction, VoxelShape> BOTTOM_SHAPES = new HashMap<>();
     public static final EnumProperty<RedstoneCoilTarget> TARGET = EnumProperty.create("target", RedstoneCoilTarget.class);
+
     public enum RedstoneCoilTarget implements StringRepresentable {
         NONE("none"), FISHES("fishes"), PLAYER("player"), MONSTER("monster");
         private final String name;
+
         RedstoneCoilTarget(String name) {
             this.name = name;
         }
+
         @Override
         public @NotNull String getSerializedName() {
             return name;
         }
     }
+
+    private static final VoxelShape TOP_SHAPE;
+    private static final VoxelShape BOTTOM_SHAPE;
+    private static final Map<Direction, VoxelShape> TOP_SHAPES = new HashMap<>();
+    private static final Map<Direction, VoxelShape> BOTTOM_SHAPES = new HashMap<>();
     private static final java.util.Random RANDOM = new java.util.Random();
+
     public RedstoneCoilBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(ACTIVE, false).setValue(FACING, Direction.NORTH).setValue(UPPER, false).setValue(TARGET, RedstoneCoilTarget.NONE));
+        this.registerDefaultState(this.stateDefinition.any().setValue(ACTIVE, false).setValue(FACING, Direction.NORTH).setValue(HALF, DoubleBlockHalf.LOWER).setValue(TARGET, RedstoneCoilTarget.NONE));
     }
+
     @Override
     public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
         if (!level.isClientSide) {
-            boolean powered = level.hasNeighborSignal(pos);
-            if (state.getValue(ACTIVE) != powered) {
-                level.setBlock(pos, state.setValue(ACTIVE, powered), 3);
-                BlockEntity be = level.getBlockEntity(pos);
-                if (be instanceof RedstoneCoilBlockEntity coil) {
-                    coil.setActive(powered);
+            if (state.getValue(HALF) == DoubleBlockHalf.LOWER) {
+                boolean powered = level.hasNeighborSignal(pos);
+                if (state.getValue(ACTIVE) != powered) {
+                    level.setBlock(pos, state.setValue(ACTIVE, powered), 3);
+                    BlockEntity be = level.getBlockEntity(pos);
+                    if (be instanceof RedstoneCoilBlockEntity coil) {
+                        coil.setActive(powered);
+                    }
+                }
+                BlockPos posAbove = pos.above();
+                BlockState stateAbove = level.getBlockState(posAbove);
+                if (stateAbove.getBlock() instanceof RedstoneCoilBlock && stateAbove.getValue(HALF) == DoubleBlockHalf.UPPER && stateAbove.getValue(ACTIVE) != powered) {
+                    level.setBlock(posAbove, stateAbove.setValue(ACTIVE, powered), 3);
+                    BlockEntity beAbove = level.getBlockEntity(posAbove);
+                    if (beAbove instanceof RedstoneCoilBlockEntity coilAbove) {
+                        coilAbove.setActive(powered);
+                    }
+                }
+            } else {
+                BlockPos posBelow = pos.below();
+                BlockState stateBelow = level.getBlockState(posBelow);
+                if (stateBelow.getBlock() instanceof RedstoneCoilBlock && stateBelow.getValue(HALF) == DoubleBlockHalf.LOWER) {
+                    boolean bottomActive = stateBelow.getValue(ACTIVE);
+                    if (state.getValue(ACTIVE) != bottomActive) {
+                        level.setBlock(pos, state.setValue(ACTIVE, bottomActive), 3);
+                        BlockEntity be = level.getBlockEntity(pos);
+                        if (be instanceof RedstoneCoilBlockEntity coil) {
+                            coil.setActive(bottomActive);
+                        }
+                    }
                 }
             }
         }
     }
+
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext ctx) {
         BlockPos posAbove = ctx.getClickedPos().above();
@@ -85,15 +116,16 @@ public class RedstoneCoilBlock extends BaseEntityBlock {
             return null;
         }
         Direction facing = ctx.getHorizontalDirection().getOpposite();
-        BlockState baseState = defaultBlockState().setValue(FACING, facing).setValue(UPPER, false).setValue(TARGET, RedstoneCoilTarget.NONE);
-        BlockState upperState = defaultBlockState().setValue(FACING, facing).setValue(UPPER, true).setValue(TARGET, RedstoneCoilTarget.NONE);
+        BlockState baseState = defaultBlockState().setValue(FACING, facing).setValue(HALF, DoubleBlockHalf.LOWER).setValue(TARGET, RedstoneCoilTarget.NONE);
+        BlockState upperState = defaultBlockState().setValue(FACING, facing).setValue(HALF, DoubleBlockHalf.UPPER).setValue(TARGET, RedstoneCoilTarget.NONE);
         level.setBlock(posAbove, upperState, 3);
         return baseState;
     }
+
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         if (!state.is(newState.getBlock())) {
-            if (!state.getValue(UPPER)) {
+            if (state.getValue(HALF) == DoubleBlockHalf.LOWER) {
                 level.removeBlock(pos.above(), false);
             } else {
                 level.removeBlock(pos.below(), false);
@@ -101,37 +133,39 @@ public class RedstoneCoilBlock extends BaseEntityBlock {
         }
         super.onRemove(state, level, pos, newState, isMoving);
     }
+
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new RedstoneCoilBlockEntity(pos, state);
     }
+
     @Override
     public @NotNull RenderShape getRenderShape(BlockState blockState) {
         return RenderShape.MODEL;
     }
+
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
         return createTickerHelper(blockEntityType, EntityTypeRegistry.REDSTONE_COIL.get(), RedstoneCoilBlockEntity::tick);
     }
+
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(ACTIVE, FACING, UPPER, TARGET);
+        builder.add(ACTIVE, FACING, HALF, TARGET);
     }
 
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        if (state.getValue(ACTIVE) && !state.getValue(UPPER)) {
+        if (state.getValue(ACTIVE) && state.getValue(HALF) == DoubleBlockHalf.LOWER) {
             double centerX = pos.getX() + 0.5;
             double centerY = pos.getY() + 1.5;
             double centerZ = pos.getZ() + 0.5;
             DustParticleOptions redDust = new DustParticleOptions(new Vector3f(1.0F, 0.0F, 0.0F), 1.0F);
-
             for (int i = 0; i < 2; i++) {
                 double offsetX = (RANDOM.nextDouble() - 0.5) * 0.6;
                 double offsetY = RANDOM.nextDouble() * 0.3;
                 double offsetZ = (RANDOM.nextDouble() - 0.5) * 0.6;
-
                 level.addParticle(ParticleTypes.ELECTRIC_SPARK, centerX + offsetX, centerY + offsetY, centerZ + offsetZ, 0, 0, 0);
                 level.addParticle(redDust, centerX + offsetX, centerY + offsetY, centerZ + offsetZ, 0, 0, 0);
             }
@@ -139,10 +173,9 @@ public class RedstoneCoilBlock extends BaseEntityBlock {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public @NotNull InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (level.isClientSide()) return InteractionResult.SUCCESS;
-        BlockPos basePos = state.getValue(UPPER) ? pos.below() : pos;
+        BlockPos basePos = state.getValue(HALF) == DoubleBlockHalf.UPPER ? pos.below() : pos;
         BlockState baseState = level.getBlockState(basePos);
         if (!(baseState.getBlock() instanceof RedstoneCoilBlock)) return InteractionResult.PASS;
         RedstoneCoilTarget current = baseState.getValue(TARGET);
@@ -170,12 +203,11 @@ public class RedstoneCoilBlock extends BaseEntityBlock {
         VoxelShape shape = Shapes.box(0.4375, 0, 0.4375, 0.5625, 0.875, 0.5625);
         shape = Shapes.join(shape, Shapes.box(0.1875, 0.5, 0.1875, 0.8125, 0.75, 0.8125), BooleanOp.OR);
         TOP_SHAPE = shape;
-
         shape = Shapes.box(0.4375, 0.875, 0.4375, 0.5625, 1, 0.5625);
+        shape = Shapes.join(shape, Shapes.box(0.125, 0, 0.875, 0.875, 0.875, 0.875), BooleanOp.OR);
         shape = Shapes.join(shape, Shapes.box(0.125, 0, 0.125, 0.875, 0.875, 0.875), BooleanOp.OR);
         shape = Shapes.join(shape, Shapes.box(0.25, 0.25, 0.0625, 0.75, 0.75, 0.125), BooleanOp.OR);
         BOTTOM_SHAPE = shape;
-
         for (Direction direction : Direction.Plane.HORIZONTAL) {
             TOP_SHAPES.put(direction, LilisLuckyLuresUtil.rotateShape(Direction.NORTH, direction, TOP_SHAPE));
             BOTTOM_SHAPES.put(direction, LilisLuckyLuresUtil.rotateShape(Direction.NORTH, direction, BOTTOM_SHAPE));
@@ -184,6 +216,6 @@ public class RedstoneCoilBlock extends BaseEntityBlock {
 
     @Override
     public @NotNull VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-        return state.getValue(UPPER) ? TOP_SHAPES.get(state.getValue(FACING)) : BOTTOM_SHAPES.get(state.getValue(FACING));
+        return state.getValue(HALF) == DoubleBlockHalf.UPPER ? TOP_SHAPES.get(state.getValue(FACING)) : BOTTOM_SHAPES.get(state.getValue(FACING));
     }
 }

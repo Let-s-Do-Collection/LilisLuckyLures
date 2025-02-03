@@ -8,6 +8,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
@@ -157,6 +159,9 @@ public class RedstoneCoilBlockEntity extends BlockEntity {
                                 double flashY = shieldPos.y + (serverLevel.random.nextDouble() - 0.5) * 0.2;
                                 double flashZ = shieldPos.z + (serverLevel.random.nextDouble() - 0.5) * 0.2;
                                 serverLevel.sendParticles(ParticleTypes.FLASH, flashX, flashY, flashZ, 1, 0, 0, 0, 0);
+                            }
+                            for (LivingEntity entity : serverLevel.getEntitiesOfClass(LivingEntity.class, new AABB(shieldPos.x, shieldPos.y, shieldPos.z, shieldPos.x, shieldPos.y, shieldPos.z).inflate(10.0), LivingEntity::isAlive)) {
+                                entity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 60, 0));
                             }
                         } else {
                             applyDamage(livingTarget, serverLevel, be);

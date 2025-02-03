@@ -43,15 +43,15 @@ public class ObjectRegistry {
     public static final RegistrySupplier<Item> COOKED_COD_MEAL = registerItem("cooked_cod_meal", () -> new FoodEffectItem(getFoodSettings(8, 0.8f), 3600, true));
     public static final RegistrySupplier<Item> SALMON_ROLLS = registerItem("salmon_rolls", () -> new FoodEffectItem(getFoodSettings(10, 0.9f), 4800, true));
     public static final RegistrySupplier<Item> GRILLED_TROPICAL_FISH = registerItem("grilled_tropical_fish", () -> new FoodEffectItem(getFoodSettings(6, 0.7f), 3600, true));
-    public static final RegistrySupplier<Item> PUFFER_PLATER = registerItem("puffer_plater", () -> new CookableSuspiciousStewItem(getFoodSettings(5, 0.6f), true));
     public static final RegistrySupplier<Item> UNCOOKED_COD_MEAL = registerItem("uncooked_cod_meal", () -> new FoodEffectItem(getFoodSettings(6, 0.7f), 200, false));
     public static final RegistrySupplier<Item> UNCOOKED_SALMON_ROLLS = registerItem("uncooked_salmon_rolls", () -> new FoodEffectItem(getFoodSettings(4, 0.4f), 200, false));
     public static final RegistrySupplier<Item> UNCOOKED_TROPICAL_FISH = registerItem("uncooked_tropical_fish", () -> new FoodEffectItem(getFoodSettings(4, 0.5f), 200, false));
-    public static final RegistrySupplier<Item> UNCOOKED_PUFFER_PLATER = registerItem("uncooked_puffer_plater", () -> new CookableSuspiciousStewItem(getFoodSettings(5, 0.4f), false));
     public static final RegistrySupplier<Block> ELASTIC_FISHING_NET = registerWithoutItem("elastic_fishing_net", () -> new ElasticFishingNetBlock(BlockBehaviour.Properties.copy(Blocks.RED_WOOL)));
     public static final RegistrySupplier<Block> FISH_NET_FENCE = registerWithoutItem("fish_net_fence", () -> new FishNetFenceBlock(BlockBehaviour.Properties.copy(Blocks.RED_WOOL)));
     public static final RegistrySupplier<Item> FISH_NET = registerItem("fish_net", () -> new FishNetBlockItem(getSettings(), ELASTIC_FISHING_NET.get(), FISH_NET_FENCE.get()));
     public static final RegistrySupplier<Block> FISH_TROPHY_FRAME = registerWithItem("fish_trophy_frame", () -> new FishTrophyFrameBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
+    public static final RegistrySupplier<Item> PUFFER_PLATER = registerItem("puffer_plater", () -> new CookableSuspiciousStewItem(getFoodSettings(5, 0.6f), true));
+    public static final RegistrySupplier<Item> UNCOOKED_PUFFER_PLATER = registerItem("uncooked_puffer_plater", () -> new CookableSuspiciousStewItem(getFoodSettings(5, 0.4f), false));
 
 
     public static void init() {

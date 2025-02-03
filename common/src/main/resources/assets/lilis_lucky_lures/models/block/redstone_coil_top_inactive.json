@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "lilis_lucky_lures:block/redstone_coil_cube_top",
-		"particle": "lilis_lucky_lures:block/redstone_coil_cube_top"
+		"0": "lilis_lucky_lures:block/redstone_coil_cube_top_inactive",
+		"particle": "lilis_lucky_lures:block/redstone_coil_cube_top_inactive"
 	},
 	"elements": [
 		{
