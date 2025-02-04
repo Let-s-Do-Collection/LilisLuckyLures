@@ -19,15 +19,17 @@ public class AnglersHatModel<T extends Entity> extends EntityModel<T> {
         this.anglersHat = root.getChild("anglersHat");
     }
 
+    @SuppressWarnings("unused")
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
-        partdefinition.addOrReplaceChild("anglersHat",
-                CubeListBuilder.create()
-                        .texOffs(-14, 16).addBox(-7.0F, -6.0F, -7.0F, 14.0F, 0.0F, 14.0F, new CubeDeformation(0.0F))
-                        .texOffs(0, 0).addBox(-4.0F, -14.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F)),
-                PartPose.offset(0.0F, 0.0F, 0.0F));
-        return LayerDefinition.create(meshdefinition, 48, 48);
+
+        PartDefinition anglersHat = partdefinition.addOrReplaceChild("anglersHat", CubeListBuilder.create()
+                        .texOffs(0, 0).addBox(-4.0F, -9.0F, -4.0F, 8.0F, 4.0F, 8.0F, new CubeDeformation(0.0F))
+                        .texOffs(-14, 12).addBox(-7.0F, -5.0F, -7.0F, 14.0F, 0.0F, 14.0F, new CubeDeformation(0.0F)),
+                PartPose.offset(0.0F, 23.0F, 0.0F));
+
+        return LayerDefinition.create(meshdefinition, 32, 32);
     }
 
     @Override

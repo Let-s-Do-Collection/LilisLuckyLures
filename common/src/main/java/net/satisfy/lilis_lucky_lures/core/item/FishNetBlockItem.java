@@ -90,7 +90,7 @@ public class FishNetBlockItem extends Item {
         tag.putString(MODE_KEY, newMode);
 
         level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1.0F, 1.0F);
+                SoundEvents.ARMOR_EQUIP_GENERIC, SoundSource.PLAYERS, 1.0F, 1.0F);
 
         if (newMode.equals("net")) {
             tag.putInt("CustomModelData", 0);

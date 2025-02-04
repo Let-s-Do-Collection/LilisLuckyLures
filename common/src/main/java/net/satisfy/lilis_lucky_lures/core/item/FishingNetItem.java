@@ -64,7 +64,7 @@ public class FishingNetItem extends Item {
 
                 if (remainingUseTicks % 20 == 0) {
                     level.playSound(null, targetDebris.getX(), targetDebris.getY(), targetDebris.getZ(),
-                            SoundEvents.BOAT_PADDLE_WATER, SoundSource.NEUTRAL, 0.8F, 1.0F);
+                            SoundEvents.BOAT_PADDLE_WATER, SoundSource.NEUTRAL, 1.25F, 1.0F);
                 }
             }
         }
@@ -97,11 +97,11 @@ public class FishingNetItem extends Item {
                     stack.setTag(tag);
 
                     level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                            SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1.0F, 1.0F);
+                            SoundEvents.GENERIC_SWIM, SoundSource.PLAYERS, 1.0F, 1.0F);
                     targetDebris.triggerInteraction();
                 } else {
                     level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                            SoundEvents.BUCKET_EMPTY_FISH, SoundSource.PLAYERS, 0.5F, 0.8F);
+                            SoundEvents.GENERIC_SPLASH, SoundSource.PLAYERS, 0.5F, 0.8F);
                 }
                 player.getCooldowns().addCooldown(this, COOLDOWN_TICKS);
             }

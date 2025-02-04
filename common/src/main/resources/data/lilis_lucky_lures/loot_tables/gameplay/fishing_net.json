@@ -175,6 +175,24 @@
             }
           ],
           "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "lilis_lucky_lures:anglers_hat",
+          "functions": [
+            {
+              "function": "minecraft:set_damage",
+              "damage": {
+                "min": 0.4,
+                "max": 0.8
+              }
+            },
+            {
+              "function": "minecraft:enchant_randomly",
+              "chance": 0.4
+            }
+          ],
+          "weight": 4
         }
       ]
     }

@@ -1,0 +1,50 @@
+{
+  "parent": "lilis_lucky_lures:main/root",
+  "criteria": {
+    "spyglass_at_floating_debris": {
+      "conditions": {
+        "item": {
+          "items": [
+            "minecraft:spyglass"
+          ]
+        },
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type_specific": {
+                "type": "player",
+                "looking_at": {
+                  "type": "lilis_lucky_lures:floating_debris"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:using_item"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.lilis_lucky_lures.spyglass_at_floating_debris.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "lilis_lucky_lures:floating_debris"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.lilis_lucky_lures.spyglass_at_floating_debris"
+    }
+  },
+  "requirements": [
+    [
+      "spyglass_at_floating_debris"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

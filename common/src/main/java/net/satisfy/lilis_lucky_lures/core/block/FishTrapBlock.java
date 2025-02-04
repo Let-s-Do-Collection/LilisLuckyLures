@@ -96,24 +96,37 @@ public class FishTrapBlock extends BaseEntityBlock {
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof FishTrapBlockEntity fishTrap) {
             if (!level.isClientSide) {
-                ItemStack heldItem = player.getItemInHand(hand);
-                if (!heldItem.isEmpty()) {
-                    if (fishTrap.getItem(0).isEmpty()) {
-                        ItemStack toInsert = heldItem.copy();
-                        if (!player.isCreative()) {
-                            heldItem.shrink(1);
+                if (player.isShiftKeyDown()) {
+                    ItemStack slot0 = fishTrap.getItem(0);
+                    if (!slot0.isEmpty()) {
+                        boolean added = player.getInventory().add(slot0.copy());
+                        if (added) {
+                            fishTrap.removeItem(0, slot0.getCount());
+                        } else {
+                            popResource(level, pos, slot0.copy());
+                            fishTrap.removeItem(0, slot0.getCount());
                         }
-                        fishTrap.setItem(0, toInsert);
                     }
                 } else {
-                    ItemStack output = fishTrap.getItem(1);
-                    if (!output.isEmpty()) {
-                        boolean added = player.getInventory().add(output.copy());
-                        if (added) {
-                            fishTrap.removeItem(1, output.getCount());
-                        } else {
-                            popResource(level, pos, output.copy());
-                            fishTrap.removeItem(1, output.getCount());
+                    ItemStack heldItem = player.getItemInHand(hand);
+                    if (!heldItem.isEmpty()) {
+                        if (fishTrap.getItem(0).isEmpty()) {
+                            ItemStack toInsert = heldItem.copy();
+                            if (!player.isCreative()) {
+                                heldItem.shrink(1);
+                            }
+                            fishTrap.setItem(0, toInsert);
+                        }
+                    } else {
+                        ItemStack output = fishTrap.getItem(1);
+                        if (!output.isEmpty()) {
+                            boolean added = player.getInventory().add(output.copy());
+                            if (added) {
+                                fishTrap.removeItem(1, output.getCount());
+                            } else {
+                                popResource(level, pos, output.copy());
+                                fishTrap.removeItem(1, output.getCount());
+                            }
                         }
                     }
                 }
