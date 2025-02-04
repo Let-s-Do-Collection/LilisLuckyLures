@@ -1,11 +1,15 @@
 package net.satisfy.lilis_lucky_lures.core.item;
 
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -15,6 +19,7 @@ import net.satisfy.lilis_lucky_lures.core.entity.FloatingDebrisEntity;
 import net.satisfy.lilis_lucky_lures.core.registry.EntityTypeRegistry;
 import net.satisfy.lilis_lucky_lures.core.registry.ObjectRegistry;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -77,6 +82,11 @@ public class FloatingPoolsItem extends Item {
                 level.addParticle(ParticleTypes.SPLASH, hitResult.getLocation().x + xOffset, hitResult.getLocation().y + yOffset, hitResult.getLocation().z + zOffset, 0, 0, 0);
             }
         }
+    }
+
+    @Override
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+        tooltip.add(Component.translatable("tooltip.lilis_lucky_lures.item.not_obtainable").setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xD27D46)).withItalic(true)));
     }
 }
 

@@ -1,9 +1,5 @@
 package net.satisfy.lilis_lucky_lures.core.block.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -26,6 +22,11 @@ import net.satisfy.lilis_lucky_lures.core.block.RedstoneCoilBlock;
 import net.satisfy.lilis_lucky_lures.core.block.RedstoneCoilBlock.RedstoneCoilTarget;
 import net.satisfy.lilis_lucky_lures.core.registry.EntityTypeRegistry;
 import org.joml.Vector3d;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 
 public class RedstoneCoilBlockEntity extends BlockEntity {
     private static final Random RANDOM = new Random();

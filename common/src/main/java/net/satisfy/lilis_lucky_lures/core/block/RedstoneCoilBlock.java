@@ -1,19 +1,26 @@
 package net.satisfy.lilis_lucky_lures.core.block;
 
-import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.util.StringRepresentable;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.util.RandomSource;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -21,7 +28,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.*;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -32,10 +38,10 @@ import net.satisfy.lilis_lucky_lures.core.registry.EntityTypeRegistry;
 import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import net.minecraft.util.RandomSource;
 import org.joml.Vector3f;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("deprecation")
@@ -217,5 +223,27 @@ public class RedstoneCoilBlock extends BaseEntityBlock {
     @Override
     public @NotNull VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         return state.getValue(HALF) == DoubleBlockHalf.UPPER ? TOP_SHAPES.get(state.getValue(FACING)) : BOTTOM_SHAPES.get(state.getValue(FACING));
+    }
+
+    @Override
+    public void appendHoverText(ItemStack itemStack, @Nullable BlockGetter blockGetter, List<Component> list, TooltipFlag tooltipFlag) {
+        Style defaultStyle = Style.EMPTY.withColor(TextColor.fromRgb(0x52A3CC));
+        Style actionStyle = Style.EMPTY.withColor(TextColor.fromRgb(0xffecb3));
+        Style noteStyle = Style.EMPTY.withColor(TextColor.fromRgb(0xDAFFFF));
+
+        if (!Screen.hasShiftDown()) {
+            list.add(Component.translatable("tooltip.lilis_lucky_lures.block.shift_to_show_more").setStyle(actionStyle)
+                    .append(Component.translatable("tooltip.lilis_lucky_lures.block.information").setStyle(defaultStyle)));
+        } else {
+            list.add(Component.translatable("tooltip.lilis_lucky_lures.block.description.defense").setStyle(defaultStyle));
+            list.add(Component.empty());
+            list.add(Component.translatable("tooltip.lilis_lucky_lures.block.right_click_to_switch").setStyle(actionStyle).append(Component.translatable("tooltip.lilis_lucky_lures.block.modes").setStyle(defaultStyle)));
+            list.add(Component.translatable("tooltip.lilis_lucky_lures.block.mode.none").setStyle(noteStyle).append(Component.translatable("tooltip.lilis_lucky_lures.block.mode.none.description").setStyle(defaultStyle)));
+            list.add(Component.translatable("tooltip.lilis_lucky_lures.block.mode.player").setStyle(noteStyle).append(Component.translatable("tooltip.lilis_lucky_lures.block.mode.player.description").setStyle(defaultStyle)));
+            list.add(Component.translatable("tooltip.lilis_lucky_lures.block.mode.fishes").setStyle(noteStyle).append(Component.translatable("tooltip.lilis_lucky_lures.block.mode.fishes.description").setStyle(defaultStyle)));
+            list.add(Component.translatable("tooltip.lilis_lucky_lures.block.mode.monster").setStyle(noteStyle).append(Component.translatable("tooltip.lilis_lucky_lures.block.mode.monster.description").setStyle(defaultStyle)));
+            list.add(Component.empty());
+            list.add(Component.translatable("tooltip.lilis_lucky_lures.block.note").setStyle(noteStyle).append(Component.translatable("tooltip.lilis_lucky_lures.block.note.description").setStyle(defaultStyle)));
+        }
     }
 }

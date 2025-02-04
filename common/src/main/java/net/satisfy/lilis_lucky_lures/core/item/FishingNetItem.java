@@ -23,8 +23,8 @@ import net.satisfy.lilis_lucky_lures.core.entity.FloatingDebrisEntity;
 import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresIdentifier;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.Comparator;
+import java.util.List;
 
 public class FishingNetItem extends Item {
     private static final float SUCCESS_CHANCE = 0.8F;

@@ -33,10 +33,12 @@ public class TabRegistry {
                 output.accept(ObjectRegistry.FISH_TROPHY_FRAME.get());
                 output.accept(ObjectRegistry.FISH_NET.get());
                 output.accept(ObjectRegistry.SOAKED_BAG.get());
+                output.accept(ObjectRegistry.ANGLERS_HAT.get());
                 output.accept(ObjectRegistry.COOKED_COD_MEAL.get());
                 output.accept(ObjectRegistry.SALMON_ROLLS.get());
                 output.accept(ObjectRegistry.GRILLED_TROPICAL_FISH.get());
                 output.accept(ObjectRegistry.PUFFER_PLATER.get());
+                output.accept(ObjectRegistry.LILIS_LUCKY_LURES_BANNER.get());
             })
             .build());
 

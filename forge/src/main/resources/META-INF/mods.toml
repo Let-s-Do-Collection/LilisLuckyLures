@@ -1,33 +1,33 @@
 modLoader = "javafml"
 loaderVersion = "[47,)"
-#issueTrackerURL = ""
-license = "Insert License Here"
+issueTrackerURL = "https://github.com/satisfyu/Let-s-Do-Hub"
+license = "Custom"
 
 [[mods]]
-modId = "examplemod"
+modId = "lilis_lucky_lures"
 version = "${version}"
-displayName = "Example Mod"
-authors = "Me!"
+displayName = "[Let's Do] Lilis Lucky Lures"
+authors = "Satisfy, MissLilitu"
 description = '''
 This is an example description! Tell everyone what your mod is about!
 '''
-#logoFile = ""
+logoFile = "pack.png"
 
-[[dependencies.examplemod]]
+[[dependencies.lilis_lucky_lures]]
 modId = "forge"
 mandatory = true
 versionRange = "[47,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.examplemod]]
+[[dependencies.lilis_lucky_lures]]
 modId = "minecraft"
 mandatory = true
 versionRange = "[1.20.1,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.examplemod]]
+[[dependencies.lilis_lucky_lures]]
 modId = "architectury"
 mandatory = true
 versionRange = "[9.1.12,)"

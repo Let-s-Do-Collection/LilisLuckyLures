@@ -7,7 +7,9 @@ import dev.architectury.registry.client.rendering.RenderTypeRegistry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.RenderType;
+import net.satisfy.lilis_lucky_lures.client.model.armor.AnglersHatModel;
 import net.satisfy.lilis_lucky_lures.client.model.entity.*;
+import net.satisfy.lilis_lucky_lures.client.renderer.block.CompletionistBannerRenderer;
 import net.satisfy.lilis_lucky_lures.client.renderer.block.FishTrapBlockEntityRenderer;
 import net.satisfy.lilis_lucky_lures.client.renderer.block.FishTrophyFrameRenderer;
 import net.satisfy.lilis_lucky_lures.client.renderer.block.HangingFrameRenderer;
@@ -27,6 +29,7 @@ public class LilisLuckyLuresClient {
         BlockEntityRendererRegistry.register(EntityTypeRegistry.FISH_TRAP.get(), context -> new FishTrapBlockEntityRenderer());
         BlockEntityRendererRegistry.register(EntityTypeRegistry.HANGING_FRAME.get(), context -> new HangingFrameRenderer());
         BlockEntityRendererRegistry.register(EntityTypeRegistry.FISH_TROPHY_FRAME.get(), context -> new FishTrophyFrameRenderer());
+        BlockEntityRendererRegistry.register(EntityTypeRegistry.LILIS_LUCKY_LURES_BANNER.get(), CompletionistBannerRenderer::new);
     }
 
     public static void preInitClient() {
@@ -49,5 +52,7 @@ public class LilisLuckyLuresClient {
         EntityModelLayerRegistry.register(RiverFishPoolModel.LAYER_LOCATION, RiverFishPoolModel::getTexturedModelData);
         EntityModelLayerRegistry.register(OceanFishPoolModel.LAYER_LOCATION, OceanFishPoolModel::getTexturedModelData);
         EntityModelLayerRegistry.register(SpearModel.LAYER_LOCATION, SpearModel::getTexturedModelData);
+        EntityModelLayerRegistry.register(CompletionistBannerRenderer.LAYER_LOCATION, CompletionistBannerRenderer::createBodyLayer);
+        EntityModelLayerRegistry.register(AnglersHatModel.LAYER_LOCATION, AnglersHatModel::createBodyLayer);
     }
 }

@@ -23,8 +23,11 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("deprecation, unused")
 public class FishNetFenceBlock extends CrossCollisionBlock {
     private static final VoxelShape POST_SHAPE = Block.box(7, 0, 7, 9, 16, 9);
     private static final VoxelShape NORTH_SHAPE = Block.box(7, 0, 0, 9, 16, 7);
@@ -48,12 +51,12 @@ public class FishNetFenceBlock extends CrossCollisionBlock {
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+    public @NotNull VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         VoxelShape shape = POST_SHAPE;
-        if (state.getValue(NORTH)) shape = net.minecraft.world.phys.shapes.Shapes.or(shape, NORTH_SHAPE);
-        if (state.getValue(SOUTH)) shape = net.minecraft.world.phys.shapes.Shapes.or(shape, SOUTH_SHAPE);
-        if (state.getValue(WEST)) shape = net.minecraft.world.phys.shapes.Shapes.or(shape, WEST_SHAPE);
-        if (state.getValue(EAST)) shape = net.minecraft.world.phys.shapes.Shapes.or(shape, EAST_SHAPE);
+        if (state.getValue(NORTH)) shape = Shapes.or(shape, NORTH_SHAPE);
+        if (state.getValue(SOUTH)) shape = Shapes.or(shape, SOUTH_SHAPE);
+        if (state.getValue(WEST)) shape = Shapes.or(shape, WEST_SHAPE);
+        if (state.getValue(EAST)) shape = Shapes.or(shape, EAST_SHAPE);
         return shape;
     }
 
@@ -80,7 +83,7 @@ public class FishNetFenceBlock extends CrossCollisionBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public @NotNull InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (!level.isClientSide) {
             if (hasBellAbove(level, pos)) {
                 level.playSound(null, pos, SoundEvents.BELL_RESONATE, SoundSource.BLOCKS, 1.0F, 1.0F);
@@ -110,7 +113,7 @@ public class FishNetFenceBlock extends CrossCollisionBlock {
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState newState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
+    public @NotNull BlockState updateShape(BlockState state, Direction direction, BlockState newState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
         if (state.getValue(WATERLOGGED)) {
             world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
         }
@@ -123,5 +126,10 @@ public class FishNetFenceBlock extends CrossCollisionBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(NORTH, EAST, SOUTH, WEST, WATERLOGGED);
+    }
+
+    @Override
+    public @NotNull VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+        return this.getShape(state, world, pos, context);
     }
 }

@@ -7,10 +7,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.satisfy.lilis_lucky_lures.LilisLuckyLures;
-import net.satisfy.lilis_lucky_lures.core.block.entity.FishTrapBlockEntity;
-import net.satisfy.lilis_lucky_lures.core.block.entity.FishTrophyFrameBlockEntity;
-import net.satisfy.lilis_lucky_lures.core.block.entity.HangingFrameBlockEntity;
-import net.satisfy.lilis_lucky_lures.core.block.entity.RedstoneCoilBlockEntity;
+import net.satisfy.lilis_lucky_lures.core.block.entity.*;
 import net.satisfy.lilis_lucky_lures.core.entity.*;
 import net.satisfy.lilis_lucky_lures.core.entity.projectile.ThrownSpearEntity;
 import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresIdentifier;
@@ -33,6 +30,7 @@ public class EntityTypeRegistry {
     public static final RegistrySupplier<BlockEntityType<HangingFrameBlockEntity>> HANGING_FRAME = registerBlockEntity("hanging_frame", () -> BlockEntityType.Builder.of(HangingFrameBlockEntity::new, ObjectRegistry.HANGING_FRAME.get()).build(null));
     public static final RegistrySupplier<BlockEntityType<RedstoneCoilBlockEntity>> REDSTONE_COIL = registerBlockEntity("redstone_coil", () -> BlockEntityType.Builder.of(RedstoneCoilBlockEntity::new, ObjectRegistry.REDSTONE_COIL.get()).build(null));
     public static final RegistrySupplier<BlockEntityType<FishTrophyFrameBlockEntity>> FISH_TROPHY_FRAME = registerBlockEntity("fishing_trophy_frame", () -> BlockEntityType.Builder.of(FishTrophyFrameBlockEntity::new, ObjectRegistry.FISH_TROPHY_FRAME.get()).build(null));
+    public static final RegistrySupplier<BlockEntityType<CompletionistBannerEntity>> LILIS_LUCKY_LURES_BANNER = registerBlockEntity("lilis_lucky_lures_banner", () -> BlockEntityType.Builder.of(CompletionistBannerEntity::new, ObjectRegistry.LILIS_LUCKY_LURES_BANNER.get(), ObjectRegistry.LILIS_LUCKY_LURES_WALL_BANNER.get()).build(null));
 
     private static <T extends BlockEntityType<?>> RegistrySupplier<T> registerBlockEntity(String name, final Supplier<T> type) {
         return BLOCK_ENTITY_TYPES.register(new LilisLuckyLuresIdentifier(name), type);

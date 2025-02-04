@@ -2,8 +2,8 @@ package net.satisfy.lilis_lucky_lures.core.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 import net.satisfy.lilis_lucky_lures.core.entity.FloatingBooksEntity;

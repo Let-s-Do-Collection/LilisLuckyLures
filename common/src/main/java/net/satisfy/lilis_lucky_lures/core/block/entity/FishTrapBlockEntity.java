@@ -1,26 +1,27 @@
 package net.satisfy.lilis_lucky_lures.core.block.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.Clearable;
-import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.core.NonNullList;
 import net.satisfy.lilis_lucky_lures.core.block.FishTrapBlock;
+import net.satisfy.lilis_lucky_lures.core.recipe.FishTrapRecipe;
 import net.satisfy.lilis_lucky_lures.core.registry.EntityTypeRegistry;
 import net.satisfy.lilis_lucky_lures.core.registry.RecipeTypeRegistry;
-import net.satisfy.lilis_lucky_lures.core.recipe.FishTrapRecipe;
-import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.item.crafting.Recipe;
 import org.jetbrains.annotations.NotNull;
 
-public class FishTrapBlockEntity extends BlockEntity implements Container, Clearable {
+public class FishTrapBlockEntity extends BlockEntity implements WorldlyContainer, Clearable {
     private final NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
     private int timer = 0;
     private int duration = 0;
@@ -181,5 +182,31 @@ public class FishTrapBlockEntity extends BlockEntity implements Container, Clear
         recipe = null;
         setChanged();
         updateBlockState();
+    }
+
+    @Override
+    public int @NotNull [] getSlotsForFace(Direction direction) {
+        return new int[]{0, 1};
+    }
+
+    @Override
+    public boolean canPlaceItemThroughFace(int slot, ItemStack stack, Direction direction) {
+        return slot == 0 && canPlaceItem(slot, stack);
+    }
+
+    @Override
+    public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction direction) {
+        return slot == 1;
+    }
+
+    @Override
+    public boolean canPlaceItem(int slot, ItemStack stack) {
+        if (slot == 0) {
+            SimpleContainer container = new SimpleContainer(stack);
+            return level != null && level.getRecipeManager()
+                    .getRecipeFor(RecipeTypeRegistry.FISH_TRAP_RECIPE_TYPE.get(), container, level)
+                    .isPresent();
+        }
+        return false;
     }
 }

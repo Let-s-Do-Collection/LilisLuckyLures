@@ -1,6 +1,5 @@
 package net.satisfy.lilis_lucky_lures.core.item;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -80,5 +79,4 @@ public class FoodEffectItem extends Item {
 
         }
     }
-
 }

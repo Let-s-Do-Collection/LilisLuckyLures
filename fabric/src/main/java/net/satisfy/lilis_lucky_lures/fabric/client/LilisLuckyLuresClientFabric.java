@@ -1,11 +1,13 @@
 package net.satisfy.lilis_lucky_lures.fabric.client;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.satisfy.lilis_lucky_lures.client.LilisLuckyLuresClient;
 import net.satisfy.lilis_lucky_lures.core.registry.ObjectRegistry;
+import net.satisfy.lilis_lucky_lures.fabric.client.renderer.HatArmorRenderer;
 
 public class LilisLuckyLuresClientFabric implements ClientModInitializer {
     @Override
@@ -13,6 +15,8 @@ public class LilisLuckyLuresClientFabric implements ClientModInitializer {
         LilisLuckyLuresClient.preInitClient();
         LilisLuckyLuresClient.onInitializeClient();
         registerItemProperties();
+
+        ArmorRenderer.register(new HatArmorRenderer(), ObjectRegistry.ANGLERS_HAT.get());
     }
 
     private static void registerItemProperties() {
