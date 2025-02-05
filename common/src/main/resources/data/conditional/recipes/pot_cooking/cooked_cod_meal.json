@@ -10,10 +10,10 @@
     "type": "farm_and_charm:pot_cooking",
     "ingredients": [
       {
-        "tag": "farm_and_charm:kelp"
+        "item": "minecraft:kelp"
       },
       {
-        "tag": "farm_and_charm:potato"
+        "item": "minecraft:potato"
       },
       {
         "item": "minecraft:cod"

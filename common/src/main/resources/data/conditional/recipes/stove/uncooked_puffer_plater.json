@@ -10,7 +10,7 @@
     "type": "farm_and_charm:stove",
     "ingredients": [
       {
-        "tag": "minecraft:pufferfish"
+        "item": "minecraft:pufferfish"
       },
       {
         "item": "minecraft:potato"
@@ -19,7 +19,7 @@
         "item": "minecraft:bowl"
       }
     ],
-    "item": "farm_and_charm:puffer_plater",
+    "item": "lilis_lucky_lures:puffer_plater",
     "count": 1,
     "experience": 0.5
   }

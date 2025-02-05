@@ -95,7 +95,7 @@ public class FishNetFenceBlock extends CrossCollisionBlock {
 
     @Override
     public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
-        return context.getItemInHand().is(this.asItem());
+        return false;
     }
 
     @Override
@@ -121,6 +121,13 @@ public class FishNetFenceBlock extends CrossCollisionBlock {
             return state.setValue(PROPERTY_BY_DIRECTION.get(direction), this.connectsTo(newState, direction.getOpposite()));
         }
         return super.updateShape(state, direction, newState, world, pos, neighborPos);
+    }
+
+    @Override
+    public void onPlace(BlockState state, Level world, BlockPos pos, BlockState oldState, boolean isMoving) {
+        if (!oldState.is(state.getBlock())) {
+            world.playSound(null, pos, state.getSoundType().getPlaceSound(), SoundSource.BLOCKS, 1.0F, 1.0F);
+        }
     }
 
     @Override
