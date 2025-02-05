@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smoking",
+  "category": "food",
+  "cookingtime": 200,
+  "experience": 0.85,
+  "ingredient": {
+    "item": "lilis_lucky_lures:uncooked_tropical_fish"
+  },
+  "result": {
+    "id": "lilis_lucky_lures:grilled_tropical_fish"
+  }
+}

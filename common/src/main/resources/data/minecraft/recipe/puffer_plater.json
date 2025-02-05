@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smelting",
+  "category": "food",
+  "cookingtime": 600,
+  "experience": 0.85,
+  "ingredient": {
+    "item": "lilis_lucky_lures:uncooked_puffer_plater"
+  },
+  "result": {
+    "id": "lilis_lucky_lures:puffer_plater"
+  }
+}

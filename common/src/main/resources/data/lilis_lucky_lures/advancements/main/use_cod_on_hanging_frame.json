@@ -1,7 +1,7 @@
 {
   "parent": "lilis_lucky_lures:main/place_fish_bag",
   "criteria": {
-    "use_cod_on_hanging_frame": {
+    "use_pufferfish_on_hanging_frame": {
       "conditions": {
         "location": [
           {
@@ -18,7 +18,7 @@
             "condition": "minecraft:match_tool",
             "predicate": {
               "items": [
-                "minecraft:cod"
+                "minecraft:pufferfish"
               ]
             }
           }
@@ -30,7 +30,7 @@
   "display": {
     "announce_to_chat": true,
     "description": {
-      "translate": "advancement.lilis_lucky_lures.use_cod_on_hanging_frame.desc"
+      "translate": "advancement.lilis_lucky_lures.use_pufferfish_on_hanging_frame.desc"
     },
     "frame": "task",
     "hidden": false,
@@ -39,12 +39,12 @@
     },
     "show_toast": true,
     "title": {
-      "translate": "advancement.lilis_lucky_lures.use_cod_on_hanging_frame"
+      "translate": "advancement.lilis_lucky_lures.use_pufferfish_on_hanging_frame"
     }
   },
   "requirements": [
     [
-      "use_cod_on_hanging_frame"
+      "use_pufferfish_on_hanging_frame"
     ]
   ],
   "sends_telemetry_event": true

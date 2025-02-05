@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smoking",
+  "category": "food",
+  "cookingtime": 200,
+  "experience": 0.85,
+  "ingredient": {
+    "item": "lilis_lucky_lures:uncooked_cod_meal"
+  },
+  "result": {
+    "id": "lilis_lucky_lures:cooked_cod_meal"
+  }
+}

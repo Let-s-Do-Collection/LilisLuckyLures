@@ -116,13 +116,13 @@ public class RedstoneCoilBlockEntity extends BlockEntity {
             }
             be.beamProgress++;
             double progress = (double) be.beamProgress / 20.0;
-            org.joml.Vector3d start = new org.joml.Vector3d(pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5);
-            org.joml.Vector3d end = new org.joml.Vector3d(be.targetPos.getX() + 0.5, be.targetPos.getY() + 0.5, be.targetPos.getZ() + 0.5);
-            org.joml.Vector3d dir = new org.joml.Vector3d(end).sub(start);
-            org.joml.Vector3d current = new org.joml.Vector3d(dir).mul(progress).add(start);
-            org.joml.Vector3d arbitrary = new org.joml.Vector3d(0, 1, 0);
+            Vector3d start = new Vector3d(pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5);
+            Vector3d end = new Vector3d(be.targetPos.getX() + 0.5, be.targetPos.getY() + 0.5, be.targetPos.getZ() + 0.5);
+            Vector3d dir = new Vector3d(end).sub(start);
+            Vector3d current = new Vector3d(dir).mul(progress).add(start);
+            Vector3d arbitrary = new Vector3d(0, 1, 0);
             if (Math.abs(dir.dot(arbitrary)) > 0.99) arbitrary.set(1, 0, 0);
-            org.joml.Vector3d perp = new org.joml.Vector3d();
+            Vector3d perp = new Vector3d();
             dir.cross(arbitrary, perp).normalize();
             double wave = Math.sin(progress * Math.PI * 4) * 0.1;
             perp.mul(wave);
@@ -149,15 +149,15 @@ public class RedstoneCoilBlockEntity extends BlockEntity {
                             }
                             int shieldDamage = serverLevel.random.nextInt(10) + 4;
                             shieldStack.hurtAndBreak(shieldDamage, player, p -> p.broadcastBreakEvent(hand));
-                            org.joml.Vector3d shieldPos;
-                            org.joml.Vector3d look = new org.joml.Vector3d(player.getLookAngle().x, player.getLookAngle().y, player.getLookAngle().z);
-                            org.joml.Vector3d right = new org.joml.Vector3d();
-                            new org.joml.Vector3d(0, 1, 0).cross(look, right).normalize();
+                            Vector3d shieldPos;
+                            Vector3d look = new Vector3d(player.getLookAngle().x, player.getLookAngle().y, player.getLookAngle().z);
+                            Vector3d right = new Vector3d();
+                            new Vector3d(0, 1, 0).cross(look, right).normalize();
                             if (hand == InteractionHand.MAIN_HAND) {
-                                shieldPos = new org.joml.Vector3d(player.getX(), player.getY() + player.getEyeHeight() - 0.5, player.getZ());
+                                shieldPos = new Vector3d(player.getX(), player.getY() + player.getEyeHeight() - 0.5, player.getZ());
                                 shieldPos.add(look.mul(0.3)).add(right.mul(0.4));
                             } else {
-                                shieldPos = new org.joml.Vector3d(player.getX(), player.getY() + player.getEyeHeight() - 0.5, player.getZ());
+                                shieldPos = new Vector3d(player.getX(), player.getY() + player.getEyeHeight() - 0.5, player.getZ());
                                 shieldPos.add(look.mul(0.3)).sub(right.mul(0.4));
                             }
                             int flashCount = serverLevel.random.nextInt(2) + 2;
