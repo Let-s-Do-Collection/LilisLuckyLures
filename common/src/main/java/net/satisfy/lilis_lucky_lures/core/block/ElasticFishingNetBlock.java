@@ -37,14 +37,9 @@ public class ElasticFishingNetBlock extends Block {
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        BlockPos pos = context.getClickedPos();
-        Level level = context.getLevel();
-        if (!level.getBlockState(pos).isCollisionShapeFullBlock(level, pos)) {
-            return null;
-        }
-        return super.getStateForPlacement(context);
+        return this.defaultBlockState();
     }
-    
+
     @Override
     public void fallOn(Level world, BlockState state, BlockPos pos, Entity entity, float fallDistance) {
         super.fallOn(world, state, pos, entity, fallDistance * 0.5F);

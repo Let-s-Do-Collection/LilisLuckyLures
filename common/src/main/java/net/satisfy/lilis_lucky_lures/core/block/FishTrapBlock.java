@@ -109,7 +109,7 @@ public class FishTrapBlock extends BaseEntityBlock {
                     }
                 } else {
                     ItemStack heldItem = player.getItemInHand(hand);
-                    if (!heldItem.isEmpty()) {
+                    if (!heldItem.isEmpty() && state.getValue(WATERLOGGED)) {
                         if (fishTrap.getItem(0).isEmpty()) {
                             ItemStack toInsert = heldItem.copy();
                             if (!player.isCreative()) {
@@ -117,7 +117,7 @@ public class FishTrapBlock extends BaseEntityBlock {
                             }
                             fishTrap.setItem(0, toInsert);
                         }
-                    } else {
+                    } else if (heldItem.isEmpty()) {
                         ItemStack output = fishTrap.getItem(1);
                         if (!output.isEmpty()) {
                             boolean added = player.getInventory().add(output.copy());

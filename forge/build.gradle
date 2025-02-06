@@ -7,6 +7,12 @@ architectury {
     forge()
 }
 
+
+def jarFileName = 'letsdo-lilis_lucky_lures-forge'
+
+archivesBaseName = jarFileName
+
+
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
 

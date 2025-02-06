@@ -42,6 +42,9 @@ public class FloatingDebrisEntity extends Entity {
         this.randomRotation = random.nextFloat() * 360.0F;
         lifeTicks = 0;
         maxLifeTicks = 9600;
+        if (!level().isClientSide) {
+            spawnPlacementParticles();
+        }
     }
 
     @Override
@@ -60,6 +63,9 @@ public class FloatingDebrisEntity extends Entity {
                 this.remove(RemovalReason.DISCARDED);
                 return;
             }
+        }
+        if (level().isClientSide && lifeTicks % 120 == 0) {
+            spawnPeriodicParticles();
         }
         int currentHurtTime = this.entityData.get(HURT_TIME);
         if (currentHurtTime > 0) {
@@ -170,6 +176,21 @@ public class FloatingDebrisEntity extends Entity {
             removeWithEffects((ServerLevel) level());
         }
     }
+
+    private void spawnPlacementParticles() {
+        for (int i = 0; i < 10; i++) {
+            double xOffset = (random.nextDouble() - 0.5);
+            double zOffset = (random.nextDouble() - 0.5);
+            level().addParticle(ParticleTypes.BUBBLE, getX() + xOffset, getY() + 1.9, getZ() + zOffset, 0, 0.1, 0);
+        }
+    }
+
+    private void spawnPeriodicParticles() {
+        double x = getX() + (random.nextDouble() - 0.5) * 2.0;
+        double z = getZ() + (random.nextDouble() - 0.5) * 2.0;
+        level().addParticle(ParticleTypes.SPLASH, x, getY() + 1.8, z, 0, 0.05, 0);
+    }
+
 
     @Override
     public @NotNull AABB getBoundingBoxForCulling() {
