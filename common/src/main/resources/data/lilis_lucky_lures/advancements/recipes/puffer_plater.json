@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "lilis_lucky_lures:puffer_plater"
+    ]
+  },
+  "criteria": {
+    "has_pufferfish": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:pufferfish"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "lilis_lucky_lures:puffer_plater"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_pufferfish",
+      "has_the_recipe"
+    ]
+  ]
+}
