@@ -3,6 +3,8 @@ package net.satisfy.lilis_lucky_lures.core.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -32,6 +34,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.satisfy.lilis_lucky_lures.core.block.entity.FishTrapBlockEntity;
 import net.satisfy.lilis_lucky_lures.core.registry.EntityTypeRegistry;
+import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresIdentifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,9 +43,13 @@ public class FishTrapBlock extends BaseEntityBlock {
     public static final BooleanProperty FULL = BooleanProperty.create("full");
     public static final BooleanProperty HAS_BAIT = BooleanProperty.create("has_bait");
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+    public static final BooleanProperty HANGING = BooleanProperty.create("hanging");
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final TagKey<Block> ROPES = TagKey.create(Registries.BLOCK, new LilisLuckyLuresIdentifier("ropes"));
 
-    private static final VoxelShape SHAPE = Shapes.box(0.0625, 0.0, 0.0625, 0.9375, 0.625, 0.9375); // 14x10x14, zentriert.
+    private static final VoxelShape SHAPE_NORMAL = Shapes.box(0.0625, 0.0, 0.0625, 0.9375, 0.625, 0.9375);
+    private static final VoxelShape SHAPE_HANGING = Shapes.box(0.0625, 0.125, 0.0625, 0.9375, 0.75, 0.9375);
+
 
     public FishTrapBlock(Properties properties) {
         super(properties);
@@ -50,34 +57,53 @@ public class FishTrapBlock extends BaseEntityBlock {
                 .setValue(FULL, false)
                 .setValue(HAS_BAIT, false)
                 .setValue(WATERLOGGED, false)
+                .setValue(HANGING, false)
                 .setValue(FACING, Direction.NORTH));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FULL, HAS_BAIT, WATERLOGGED, FACING);
+        builder.add(FULL, HAS_BAIT, WATERLOGGED, HANGING, FACING);
     }
 
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
+        Level level = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        boolean hanging = isHanging(level, pos.above());
+
         return this.defaultBlockState()
                 .setValue(FACING, context.getHorizontalDirection().getOpposite())
-                .setValue(WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
+                .setValue(WATERLOGGED, level.getFluidState(pos).getType() == Fluids.WATER)
+                .setValue(HANGING, hanging);
     }
 
     @Override
-    public @NotNull BlockState rotate(BlockState state, net.minecraft.world.level.block.Rotation rotation) {
-        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+    public @NotNull BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+        if (direction == Direction.UP) {
+            boolean hanging = isHanging(level, pos.above());
+            return state.setValue(HANGING, hanging);
+        }
+        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
     }
 
     @Override
-    public @NotNull BlockState mirror(BlockState state, net.minecraft.world.level.block.Mirror mirror) {
-        return state.rotate(mirror.getRotation(state.getValue(FACING)));
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+        if (fromPos.equals(pos.above())) {
+            boolean hanging = isHanging(level, pos.above());
+            level.setBlock(pos, state.setValue(HANGING, hanging), 3);
+        }
+        super.neighborChanged(state, level, pos, block, fromPos, isMoving);
+    }
+
+    private boolean isHanging(LevelAccessor level, BlockPos pos) {
+        BlockState aboveState = level.getBlockState(pos);
+        return aboveState.is(ROPES) || aboveState.getBlock() instanceof FishNetFenceBlock;
     }
 
     @Override
     public @NotNull VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, @NotNull CollisionContext context) {
-        return SHAPE;
+        return state.getValue(HANGING) ? SHAPE_HANGING : SHAPE_NORMAL;
     }
 
     @Override
@@ -137,6 +163,16 @@ public class FishTrapBlock extends BaseEntityBlock {
     }
 
     @Override
+    public @NotNull RenderShape getRenderShape(BlockState blockState) {
+        return RenderShape.MODEL;
+    }
+
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+        return level.isClientSide ? null : createTickerHelper(blockEntityType, EntityTypeRegistry.FISH_TRAP.get(), (lvl, pos, blkState, blockEntity) -> blockEntity.tick());
+    }
+
+    @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
         super.animateTick(state, level, pos, random);
 
@@ -181,37 +217,11 @@ public class FishTrapBlock extends BaseEntityBlock {
         }
     }
 
-    @Override
-    public @NotNull RenderShape getRenderShape(BlockState blockState) {
-        return RenderShape.MODEL;
-    }
-
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return level.isClientSide ? null : createTickerHelper(blockEntityType, EntityTypeRegistry.FISH_TRAP.get(), (lvl, pos, blkState, blockEntity) -> blockEntity.tick());
-    }
-
     public void updateBlockState(Level level, BlockPos pos, boolean full, boolean hasBait) {
         BlockState state = level.getBlockState(pos);
         BlockState newState = state.setValue(FULL, full).setValue(HAS_BAIT, hasBait);
         if (state != newState) {
             level.setBlock(pos, newState, 3);
         }
-    }
-
-    @Override
-    public @NotNull BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
-        if (state.getValue(WATERLOGGED)) {
-            level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
-        }
-        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
-    }
-
-    @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
-        if (state.getValue(WATERLOGGED)) {
-            level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
-        }
-        super.neighborChanged(state, level, pos, block, fromPos, isMoving);
     }
 }

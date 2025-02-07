@@ -7,12 +7,35 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.satisfy.lilis_lucky_lures.core.block.FishTrapBlock;
 import net.satisfy.lilis_lucky_lures.core.block.entity.FishTrapBlockEntity;
 import org.joml.Quaternionf;
 
 public class FishTrapBlockEntityRenderer implements BlockEntityRenderer<FishTrapBlockEntity> {
+    private long lastRenderTime = 0;
+    private float rotationAngle = 0.0F;
+
+    public FishTrapBlockEntityRenderer() {
+    }
+
+    private float updateRotationAngle(FishTrapBlockEntity blockEntity) {
+        Level level = blockEntity.getLevel();
+        if (level == null) return rotationAngle;
+
+        long currentTime = System.currentTimeMillis();
+        if (lastRenderTime == 0) {
+            lastRenderTime = currentTime;
+        }
+        float deltaTime = (currentTime - lastRenderTime) / 1000.0F;
+        lastRenderTime = currentTime;
+
+        rotationAngle += deltaTime * 40.0F;
+        rotationAngle %= 360;
+
+        return rotationAngle;
+    }
 
     @Override
     public void render(FishTrapBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int combinedLight, int combinedOverlay) {
@@ -23,23 +46,19 @@ public class FishTrapBlockEntityRenderer implements BlockEntityRenderer<FishTrap
 
         boolean isFull = state.getValue(FishTrapBlock.FULL);
         boolean hasBait = state.getValue(FishTrapBlock.HAS_BAIT);
+        boolean isHanging = state.getValue(FishTrapBlock.HANGING);
 
         ItemStack itemToRender = isFull ? blockEntity.getItem(1) : (hasBait ? blockEntity.getItem(0) : ItemStack.EMPTY);
-
         if (!itemToRender.isEmpty()) {
             poseStack.pushPose();
 
-            double gameTime = blockEntity.getLevel().getGameTime() + partialTick;
-            double offsetY = Math.sin(gameTime / 8.0) * 0.05; 
-            double offsetX = Math.cos(gameTime / 10.0) * 0.05;
-            double offsetZ = Math.sin(gameTime / 12.0) * 0.05;
+            final var angle = updateRotationAngle(blockEntity);
+            double yOffset = isHanging ? 0.125 : 0.0;
 
-            double x = 0.5 + offsetX;
-            double y = 0.3 + offsetY;
-            double z = 0.5 + offsetZ;
+            poseStack.translate(0.5, 0.3 + yOffset, 0.5);
+            poseStack.mulPose(new Quaternionf().rotationY((float) Math.toRadians(angle)));
+            poseStack.mulPose(new Quaternionf().rotationX((float) Math.toRadians(90)));
 
-            poseStack.translate(x, y, z);
-            poseStack.mulPose(new Quaternionf().rotationX((float) Math.toRadians(90 + Math.sin(gameTime / 20.0) * 15)));
             float scale = 0.85f;
             poseStack.scale(scale, scale, scale);
 

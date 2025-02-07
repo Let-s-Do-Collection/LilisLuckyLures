@@ -1,0 +1,56 @@
+{
+	"credit": "Made by Satisfy",
+	"textures": {
+		"0": "lilis_lucky_lures:block/fish_trap_front",
+		"1": "lilis_lucky_lures:block/fish_trap_side",
+		"2": "lilis_lucky_lures:block/fish_trap_top",
+		"3": "lilis_lucky_lures:block/fishing_net_side",
+		"particle": "lilis_lucky_lures:block/fish_trap_front"
+	},
+	"elements": [
+		{
+			"from": [1, 2.05, 1],
+			"to": [15, 12.05, 15],
+			"rotation": {"angle": 0, "axis": "y", "origin": [1, 2, 1]},
+			"faces": {
+				"north": {"uv": [15, 6, 1, 16], "texture": "#0"},
+				"east": {"uv": [1, 6, 15, 16], "texture": "#1"},
+				"south": {"uv": [15, 6, 1, 16], "texture": "#1"},
+				"west": {"uv": [1, 6, 15, 16], "texture": "#1"},
+				"up": {"uv": [1, 1, 15, 15], "texture": "#2"},
+				"down": {"uv": [1, 1, 15, 15], "texture": "#2"}
+			}
+		},
+		{
+			"from": [15, 2.05, 1],
+			"to": [1, 12.05, 15],
+			"rotation": {"angle": 0, "axis": "y", "origin": [15, 2, 1]},
+			"faces": {
+				"north": {"uv": [15, 6, 1, 16], "texture": "#1"},
+				"east": {"uv": [1, 6, 15, 16], "texture": "#1"},
+				"south": {"uv": [15, 6, 1, 16], "texture": "#1"},
+				"west": {"uv": [1, 6, 15, 16], "texture": "#1"},
+				"up": {"uv": [1, 1, 15, 15], "texture": "#2"},
+				"down": {"uv": [1, 1, 15, 15], "texture": "#2"}
+			}
+		},
+		{
+			"from": [2.34315, 12, 13.65685],
+			"to": [18.34315, 16, 13.65685],
+			"rotation": {"angle": 45, "axis": "y", "origin": [2.34315, 12, 13.65685]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 4], "texture": "#3"},
+				"south": {"uv": [0, 0, 16, 4], "texture": "#3"}
+			}
+		},
+		{
+			"from": [2.34315, 12, 2.34315],
+			"to": [18.34315, 16, 2.34315],
+			"rotation": {"angle": -45, "axis": "y", "origin": [2.34315, 12, 2.34315]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 4], "texture": "#3"},
+				"south": {"uv": [0, 0, 16, 4], "texture": "#3"}
+			}
+		}
+	]
+}
