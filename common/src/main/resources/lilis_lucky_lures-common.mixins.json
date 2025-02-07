@@ -8,6 +8,7 @@
   ],
   "mixins": [
     "FishingHookMixin",
+    "LivingEntityAccessor",
     "ServerLevelTickMixin"
   ],
   "injectors": {

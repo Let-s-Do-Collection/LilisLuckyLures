@@ -20,6 +20,12 @@
     ],
     "client": [
       "net.satisfy.lilis_lucky_lures.fabric.client.LilisLuckyLuresClientFabric"
+    ],
+    "jei_mod_plugin": [
+      "net.satisfy.lilis_lucky_lures.core.compat.jei.LilisLuckyLuresJEIPlugin"
+    ],
+    "rei_client": [
+      "net.satisfy.lilis_lucky_lures.fabric.core.rei.LilisLuckyLuresReiClientPluginFabric"
     ]
   },
   "mixins": [

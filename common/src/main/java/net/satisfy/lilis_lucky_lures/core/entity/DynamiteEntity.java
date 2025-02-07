@@ -18,19 +18,18 @@ import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.*;
 import net.satisfy.lilis_lucky_lures.core.registry.EntityTypeRegistry;
 import net.satisfy.lilis_lucky_lures.core.registry.ObjectRegistry;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3d;
 
 public class DynamiteEntity extends ThrowableItemProjectile {
     private static final float EXPLOSION_RADIUS = 1.5F;
     private static final float DAMPING_FACTOR = 0.2F;
     private static final double MIN_VELOCITY = 0.2D;
     private static final int SMOKE_DURATION = 100;
+    private static final float EXTRA_DAMAGE = 2.0F;
     private int bounceCount;
     private int smokeTicksRemaining = 0;
 
@@ -179,5 +178,12 @@ public class DynamiteEntity extends ThrowableItemProjectile {
         float radius = underwater ? EXPLOSION_RADIUS * 3.0F : EXPLOSION_RADIUS;
         Level.ExplosionInteraction interaction = underwater ? Level.ExplosionInteraction.NONE : Level.ExplosionInteraction.TNT;
         level().explode(this, (float) getX(), (float) (getY(0.0625D) + 0.5F), (float) getZ(), radius, interaction);
+        Vector3d center = new Vector3d(getX(), getY(0.0625D) + 0.5F, getZ());
+        AABB aabb = new AABB(center.x - radius, center.y - radius, center.z - radius, center.x + radius, center.y + radius, center.z + radius);
+        for (LivingEntity entity : level().getEntitiesOfClass(LivingEntity.class, aabb)) {
+            if (entity != getOwner()) {
+                entity.hurt(level().damageSources().explosion(null), EXTRA_DAMAGE);
+            }
+        }
     }
 }

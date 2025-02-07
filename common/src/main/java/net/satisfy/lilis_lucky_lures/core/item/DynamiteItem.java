@@ -18,7 +18,7 @@ public class DynamiteItem extends Item {
     private static final int COOLDOWN = 40;
     private static final float Z = 0.0F;
     private static final float VELOCITY = 1.5F;
-    private static final float INACCURACY = 1.0F;
+    private static final float INACCURACY = 1.125F;
 
     public DynamiteItem(Properties properties) {
         super(properties);
