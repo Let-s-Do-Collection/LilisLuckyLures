@@ -138,10 +138,11 @@ public class FishTrapBlock extends BaseEntityBlock {
                     if (!heldItem.isEmpty() && state.getValue(WATERLOGGED)) {
                         if (fishTrap.getItem(0).isEmpty()) {
                             ItemStack toInsert = heldItem.copy();
+                            toInsert.setCount(1);
+                            fishTrap.setItem(0, toInsert);
                             if (!player.isCreative()) {
                                 heldItem.shrink(1);
                             }
-                            fishTrap.setItem(0, toInsert);
                         }
                     } else if (heldItem.isEmpty()) {
                         ItemStack output = fishTrap.getItem(1);

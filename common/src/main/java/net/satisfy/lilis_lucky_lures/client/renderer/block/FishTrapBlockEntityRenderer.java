@@ -16,13 +16,14 @@ import org.joml.Quaternionf;
 public class FishTrapBlockEntityRenderer implements BlockEntityRenderer<FishTrapBlockEntity> {
     private long lastRenderTime = 0;
     private float rotationAngle = 0.0F;
+    private float movementTime = 0.0F;
 
     public FishTrapBlockEntityRenderer() {
     }
 
-    private float updateRotationAngle(FishTrapBlockEntity blockEntity) {
+    private void updateMovement(FishTrapBlockEntity blockEntity) {
         Level level = blockEntity.getLevel();
-        if (level == null) return rotationAngle;
+        if (level == null) return;
 
         long currentTime = System.currentTimeMillis();
         if (lastRenderTime == 0) {
@@ -34,7 +35,7 @@ public class FishTrapBlockEntityRenderer implements BlockEntityRenderer<FishTrap
         rotationAngle += deltaTime * 40.0F;
         rotationAngle %= 360;
 
-        return rotationAngle;
+        movementTime += deltaTime * 1.5F;
     }
 
     @Override
@@ -50,14 +51,26 @@ public class FishTrapBlockEntityRenderer implements BlockEntityRenderer<FishTrap
 
         ItemStack itemToRender = isFull ? blockEntity.getItem(1) : (hasBait ? blockEntity.getItem(0) : ItemStack.EMPTY);
         if (!itemToRender.isEmpty()) {
+            updateMovement(blockEntity);
+
             poseStack.pushPose();
 
-            final var angle = updateRotationAngle(blockEntity);
-            double yOffset = isHanging ? 0.125 : 0.0;
+            final float angle = (float) Math.toRadians(rotationAngle);
+            final float radius = 0.12f; 
+            final float baseYOffset = isHanging ? 0.125f : 0.0f;
+            
+            float xOffset = (float) Math.sin(movementTime) * radius;
+            float zOffset = (float) Math.cos(movementTime) * radius;
 
-            poseStack.translate(0.5, 0.3 + yOffset, 0.5);
-            poseStack.mulPose(new Quaternionf().rotationY((float) Math.toRadians(angle)));
-            poseStack.mulPose(new Quaternionf().rotationX((float) Math.toRadians(90)));
+            float yWave = (float) Math.sin(movementTime * 1.5f) * 0.05f;
+            
+            float tiltAngleX = (float) Math.sin(movementTime * 1.2f) * 5.0f; 
+            float tiltAngleZ = (float) Math.cos(movementTime * 1.4f) * 5.0f; 
+
+            poseStack.translate(0.5 + xOffset, 0.1 + baseYOffset + yWave, 0.5 + zOffset);
+            poseStack.mulPose(new Quaternionf().rotationY(angle)); 
+            poseStack.mulPose(new Quaternionf().rotationX((float) Math.toRadians(tiltAngleX))); 
+            poseStack.mulPose(new Quaternionf().rotationZ((float) Math.toRadians(tiltAngleZ))); 
 
             float scale = 0.85f;
             poseStack.scale(scale, scale, scale);
@@ -67,3 +80,4 @@ public class FishTrapBlockEntityRenderer implements BlockEntityRenderer<FishTrap
         }
     }
 }
+
