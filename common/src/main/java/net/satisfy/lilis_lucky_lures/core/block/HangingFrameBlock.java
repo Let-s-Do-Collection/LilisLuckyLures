@@ -98,14 +98,25 @@ public class HangingFrameBlock extends Block implements EntityBlock {
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         if (!state.is(newState.getBlock())) {
-            if (state.getValue(HALF) == DoubleBlockHalf.LOWER) {
-                level.removeBlock(pos.above(), false);
-            } else {
-                level.removeBlock(pos.below(), false);
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (blockEntity instanceof HangingFrameBlockEntity shelfBlockEntity) {
+                for (ItemStack stack : shelfBlockEntity.getInventory()) {
+                    if (!stack.isEmpty()) {
+                        Block.popResource(level, pos, stack);
+                    }
+                }
+                level.removeBlockEntity(pos);
+            }
+            BlockPos otherPos = state.getValue(HALF) == DoubleBlockHalf.LOWER ? pos.above() : pos.below();
+            BlockState otherState = level.getBlockState(otherPos);
+
+            if (otherState.is(this)) {
+                level.setBlock(otherPos, Blocks.AIR.defaultBlockState(), 35);
             }
         }
         super.onRemove(state, level, pos, newState, isMoving);
     }
+
 
     @Override
     public @NotNull BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {

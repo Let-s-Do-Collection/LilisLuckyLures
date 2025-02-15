@@ -21,6 +21,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -131,10 +132,14 @@ public class RedstoneCoilBlock extends BaseEntityBlock {
     @Override
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         if (!state.is(newState.getBlock())) {
-            if (state.getValue(HALF) == DoubleBlockHalf.LOWER) {
-                level.removeBlock(pos.above(), false);
-            } else {
-                level.removeBlock(pos.below(), false);
+            BlockPos otherPos = state.getValue(HALF) == DoubleBlockHalf.LOWER ? pos.above() : pos.below();
+            BlockState otherState = level.getBlockState(otherPos);
+
+            if (otherState.is(this)) {
+                level.setBlock(otherPos, Blocks.AIR.defaultBlockState(), 35);
+                if (state.getValue(HALF) == DoubleBlockHalf.UPPER) {
+                    Block.dropResources(otherState, level, pos.below());
+                }
             }
         }
         super.onRemove(state, level, pos, newState, isMoving);

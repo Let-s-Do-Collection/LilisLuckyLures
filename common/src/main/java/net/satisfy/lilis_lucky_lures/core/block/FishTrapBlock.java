@@ -225,4 +225,22 @@ public class FishTrapBlock extends BaseEntityBlock {
             level.setBlock(pos, newState, 3);
         }
     }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (!state.is(newState.getBlock())) {
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (blockEntity instanceof FishTrapBlockEntity fishTrap) {
+                for (int i = 0; i < fishTrap.getContainerSize(); i++) {
+                    ItemStack stack = fishTrap.getItem(i);
+                    if (!stack.isEmpty()) {
+                        Block.popResource(level, pos, stack);
+                    }
+                }
+                level.removeBlockEntity(pos);
+            }
+        }
+        super.onRemove(state, level, pos, newState, isMoving);
+    }
+
 }

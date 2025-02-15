@@ -32,25 +32,33 @@ public class SoakedBagItem extends Item {
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand) {
-        InteractionResultHolder<ItemStack> resultHolder = super.use(world, player, hand);
-        ItemStack stack = resultHolder.getObject();
+        ItemStack stack = player.getItemInHand(hand);
         player.swing(hand);
+
         if (!world.isClientSide) {
-            world.playSound(player, player.blockPosition().above(),
-                    SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.PLAYERS, 1, 1);
-            final MinecraftServer minecraftServer = player.level().getServer();
-            if (minecraftServer != null && player.level() instanceof ServerLevel server) {
+            final MinecraftServer minecraftServer = world.getServer();
+            if (minecraftServer != null && world instanceof ServerLevel server) {
                 LootParams lootContext = new LootParams.Builder(server)
                         .withParameter(LootContextParams.THIS_ENTITY, player)
                         .withParameter(LootContextParams.ORIGIN, player.position())
                         .create(LootContextParamSets.GIFT);
                 LootTable treasure = minecraftServer.getLootData().getLootTable(new ResourceLocation(LilisLuckyLures.MOD_ID, "gameplay/soaked_bag"));
-                treasure.getRandomItems(lootContext).forEach(player::addItem);
+
+                List<ItemStack> lootItems = treasure.getRandomItems(lootContext);
+
+                boolean hasSpace = lootItems.stream().allMatch(player.getInventory()::add);
+
+                if (!hasSpace) {
+                    lootItems.forEach(itemStack -> player.drop(itemStack, false));
+                }
+
+                world.playSound(player, player.blockPosition().above(), SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.PLAYERS, 1, 1);
+                stack.shrink(1);
             }
         }
-        stack.shrink(1);
-        return resultHolder;
+        return InteractionResultHolder.success(stack);
     }
+
 
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {

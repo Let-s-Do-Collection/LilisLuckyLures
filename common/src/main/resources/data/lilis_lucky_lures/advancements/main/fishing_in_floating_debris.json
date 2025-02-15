@@ -1,18 +1,9 @@
 {
   "parent": "lilis_lucky_lures:main/spyglass_at_floating_debris",
   "criteria": {
-    "fishing_in_floating_debris": {
-      "trigger": "minecraft:player_interacted_with_entity",
+    "use_item_fishing_net": {
+      "trigger": "minecraft:using_item",
       "conditions": {
-        "entity": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type": "lilis_lucky_lures:floating_debris"
-            }
-          }
-        ],
         "item": {
           "items": [
             "lilis_lucky_lures:fishing_net"
@@ -24,7 +15,7 @@
   "display": {
     "announce_to_chat": true,
     "description": {
-      "translate": "advancements.lilis_lucky_lures.fishing_in_floating_debris.description"
+      "translate": "advancements.lilis_lucky_lures.use_item_fishing_net.description"
     },
     "frame": "task",
     "hidden": false,
@@ -33,12 +24,12 @@
     },
     "show_toast": true,
     "title": {
-      "translate": "advancements.lilis_lucky_lures.fishing_in_floating_debris"
+      "translate": "advancements.lilis_lucky_lures.use_item_fishing_net"
     }
   },
   "requirements": [
     [
-      "fishing_in_floating_debris"
+      "use_item_fishing_net"
     ]
   ],
   "sends_telemetry_event": true

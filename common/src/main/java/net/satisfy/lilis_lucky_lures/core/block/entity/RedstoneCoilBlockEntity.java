@@ -2,6 +2,7 @@ package net.satisfy.lilis_lucky_lures.core.block.entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
@@ -39,6 +40,23 @@ public class RedstoneCoilBlockEntity extends BlockEntity {
     public RedstoneCoilBlockEntity(BlockPos pos, BlockState state) {
         super(EntityTypeRegistry.REDSTONE_COIL.get(), pos, state);
     }
+
+    @Override
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        if (owner != null) {
+            tag.putUUID("Owner", owner);
+        }
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        if (tag.hasUUID("Owner")) {
+            owner = tag.getUUID("Owner");
+        }
+    }
+
 
     public void setOwner(UUID owner) {
         this.owner = owner;

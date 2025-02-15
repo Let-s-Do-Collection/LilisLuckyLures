@@ -7,11 +7,14 @@
   "authors": [
     "satisfy, MissLilitu"
   ],
+  "credits": [
+    "CR-055"
+  ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "issues": "https://github.com/satisfyu/Let-s-Do-Hub",
+    "sources": "https://github.com/satisfyu/Lili-sLuckyLures"
   },
-  "license": "Insert License Here",
+  "license": "Custom",
   "icon": "pack.png",
   "environment": "*",
   "entrypoints": {

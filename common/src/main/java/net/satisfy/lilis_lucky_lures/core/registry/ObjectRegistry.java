@@ -38,10 +38,10 @@ public class ObjectRegistry {
     public static final RegistrySupplier<Block> LILIS_LUCKY_LURES_WALL_BANNER = registerWithoutItem("lilis_lucky_lures_wall_banner", () -> new CompletionistWallBannerBlock(BlockBehaviour.Properties.of().strength(1F).instrument(NoteBlockInstrument.BASS).noCollission().sound(SoundType.WOOD)));
     public static final RegistrySupplier<Block> REDSTONE_COIL = registerWithItem("redstone_coil", () -> new RedstoneCoilBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).lightLevel(state -> state.getValue(RedstoneCoilBlock.ACTIVE) ? 8 : 0).pushReaction(PushReaction.IGNORE)));
     public static final RegistrySupplier<Item> ANGLERS_HAT = registerItem("anglers_hat", () -> new AnglersHatItem(ArmorMaterials.LEATHER, ArmorItem.Type.HELMET, new Item.Properties().rarity(Rarity.RARE), new LilisLuckyLuresIdentifier("textures/models/armor/anglers_hat.png")));
-    public static final RegistrySupplier<Item> BAMBOO_FISHING_ROD = registerItem("bamboo_fishing_rod", () -> new FishingRodItem(getSettings().stacksTo(1)));
+    public static final RegistrySupplier<Item> BAMBOO_FISHING_ROD = registerItem("bamboo_fishing_rod", () -> new FishingRodItem(getSettings().stacksTo(1).durability(32)));
     public static final RegistrySupplier<Item> COOKED_COD_MEAL = registerItem("cooked_cod_meal", () -> new FoodEffectItem(getFoodSettings(8, 0.8f), 3600, true));
     public static final RegistrySupplier<Item> DYNAMITE = registerItem("dynamite", () -> new DynamiteItem(getSettings().rarity(Rarity.UNCOMMON)));
-    public static final RegistrySupplier<Item> FISHING_NET = registerItem("fishing_net", () -> new FishingNetItem(getSettings()));
+    public static final RegistrySupplier<Item> FISHING_NET = registerItem("fishing_net", () -> new FishingNetItem(getSettings().stacksTo(1)));
     public static final RegistrySupplier<Item> FLOATING_BOOKS = registerItem("floating_books", () -> new FloatingPoolsItem(getSettings()));
     public static final RegistrySupplier<Item> FLOATING_DEBRIS = registerItem("floating_debris", () -> new FloatingPoolsItem(getSettings()));
     public static final RegistrySupplier<Item> FISH_NET = registerItem("fish_net", () -> new FishNetBlockItem(getSettings(), ELASTIC_FISHING_NET.get(), FISH_NET_FENCE.get()));
@@ -73,9 +73,12 @@ public class ObjectRegistry {
     }
 
     private static Item.Properties getFoodSettings(int nutrition, float saturation) {
-        return new Item.Properties().food(new FoodProperties.Builder().nutrition(nutrition).saturationMod(saturation).alwaysEat().build());
+        return new Item.Properties().food(new FoodProperties.Builder()
+                .nutrition(nutrition)
+                .saturationMod(saturation)
+                .alwaysEat()
+                .build());
     }
-
 
     public static <T extends Block> RegistrySupplier<T> registerWithItem(String name, Supplier<T> block) {
         return LilisLuckyLuresUtil.registerWithItem(BLOCKS, BLOCK_REGISTRAR, ITEMS, ITEM_REGISTRAR, new LilisLuckyLuresIdentifier(name), block);

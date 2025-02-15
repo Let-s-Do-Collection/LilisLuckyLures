@@ -25,7 +25,7 @@ public class FoodEffectItem extends Item {
     private final int effectDuration;
     private final boolean cooked;
 
-    public FoodEffectItem(Properties properties, int effectDuration, boolean cooked) {
+    public FoodEffectItem(Item.Properties properties, int effectDuration, boolean cooked) {
         super(properties);
         this.effectDuration = effectDuration;
         this.cooked = cooked;
@@ -35,14 +35,24 @@ public class FoodEffectItem extends Item {
     public @NotNull ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
         if (!level.isClientSide) {
             entity.addEffect(new MobEffectInstance(cooked ? MobEffects.LUCK : MobEffects.HUNGER, effectDuration));
+
+            if (entity instanceof Player player) {
+                int nutrition = cooked ? 6 : 2;
+                float saturation = cooked ? 0.6F : 0.2F;
+
+                player.getFoodData().eat(nutrition, saturation);
+            }
         }
+
         if (entity instanceof ServerPlayer player) {
             player.awardStat(Stats.ITEM_USED.get(this));
         }
+
         if (entity instanceof Player player && !player.getAbilities().instabuild) {
             stack.shrink(1);
             player.getInventory().add(new ItemStack(Items.BOWL));
         }
+
         level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.GENERIC_EAT, SoundSource.PLAYERS, 0.8F, 1.0F);
         level.gameEvent(entity, GameEvent.EAT, entity.position());
 
