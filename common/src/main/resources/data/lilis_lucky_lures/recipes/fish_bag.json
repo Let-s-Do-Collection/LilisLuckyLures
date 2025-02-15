@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "tag": "minecraft:fishes"
+    }
+  },
+  "result": {
+    "item": "lilis_lucky_lures:fish_bag"
+  }
+}

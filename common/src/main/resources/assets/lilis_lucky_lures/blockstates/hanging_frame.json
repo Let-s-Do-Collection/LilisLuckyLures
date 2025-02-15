@@ -1,0 +1,50 @@
+{
+  "variants": {
+    "facing=east,half=lower": [
+      {
+        "model": "lilis_lucky_lures:block/hanging_frame_lower",
+        "y": 90
+      }
+    ],
+    "facing=north,half=lower": [
+      {
+        "model": "lilis_lucky_lures:block/hanging_frame_lower"
+      }
+    ],
+    "facing=south,half=lower": [
+      {
+        "model": "lilis_lucky_lures:block/hanging_frame_lower",
+        "y": 180
+      }
+    ],
+    "facing=west,half=lower": [
+      {
+        "model": "lilis_lucky_lures:block/hanging_frame_lower",
+        "y": 270
+      }
+    ],
+    "facing=east,half=upper": [
+      {
+        "model": "lilis_lucky_lures:block/hanging_frame_upper",
+        "y": 90
+      }
+    ],
+    "facing=north,half=upper": [
+      {
+        "model": "lilis_lucky_lures:block/hanging_frame_upper"
+      }
+    ],
+    "facing=south,half=upper": [
+      {
+        "model": "lilis_lucky_lures:block/hanging_frame_upper",
+        "y": 180
+      }
+    ],
+    "facing=west,half=upper": [
+      {
+        "model": "lilis_lucky_lures:block/hanging_frame_upper",
+        "y": 270
+      }
+    ]
+  }
+}

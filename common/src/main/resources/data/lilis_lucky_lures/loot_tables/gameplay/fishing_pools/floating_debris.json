@@ -1,0 +1,377 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:stick",
+          "weight": 10
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:oak_planks",
+          "weight": 8
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:spruce_planks",
+          "weight": 8
+        },
+        {
+          "type": "minecraft:item",
+          "name": "lilis_lucky_lures:dynamite",
+          "weight": 12
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:birch_planks",
+          "weight": 8
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:jungle_planks",
+          "weight": 8
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:acacia_planks",
+          "weight": 8
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:dark_oak_planks",
+          "weight": 8
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:mangrove_planks",
+          "weight": 8
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:bamboo_planks",
+          "weight": 8
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:crimson_planks",
+          "weight": 8
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:warped_planks",
+          "weight": 8
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:oak_door",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:spruce_door",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:birch_door",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:jungle_door",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:acacia_door",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:dark_oak_door",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:mangrove_door",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:bamboo_door",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:crimson_door",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:warped_door",
+          "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:oak_button",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:spruce_button",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:birch_button",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:jungle_button",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:acacia_button",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:dark_oak_button",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:mangrove_button",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:bamboo_button",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:crimson_button",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:warped_button",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:oak_fence",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:spruce_fence",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:birch_fence",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:copper_ingot",
+          "weight": 6
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:iron_ingot",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:gold_ingot",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:diamond",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:saddle",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:diamond_horse_armor",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:trident",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:stick",
+          "weight": 10
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:chainmail_helmet",
+          "functions": [
+            {
+              "function": "set_damage",
+              "damage": {
+                "min": 0.1,
+                "max": 0.5
+              }
+            },
+            {
+              "function": "enchant_randomly"
+            }
+          ],
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:chainmail_chestplate",
+          "functions": [
+            {
+              "function": "set_damage",
+              "damage": {
+                "min": 0.1,
+                "max": 0.5
+              }
+            },
+            {
+              "function": "enchant_randomly"
+            }
+          ],
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:chainmail_leggings",
+          "functions": [
+            {
+              "function": "set_damage",
+              "damage": {
+                "min": 0.1,
+                "max": 0.5
+              }
+            },
+            {
+              "function": "enchant_randomly"
+            }
+          ],
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:chainmail_boots",
+          "functions": [
+            {
+              "function": "set_damage",
+              "damage": {
+                "min": 0.1,
+                "max": 0.5
+              }
+            },
+            {
+              "function": "enchant_randomly"
+            }
+          ],
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:shield",
+          "functions": [
+            {
+              "function": "set_damage",
+              "damage": {
+                "min": 0.1,
+                "max": 0.5
+              }
+            },
+            {
+              "function": "enchant_randomly"
+            }
+          ],
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:saddle",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:diamond_horse_armor",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:trident",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:iron_axe",
+          "functions": [
+            {
+              "function": "set_damage",
+              "damage": {
+                "min": 0.1,
+                "max": 0.5
+              }
+            },
+            {
+              "function": "enchant_randomly"
+            }
+          ],
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "lilis_lucky_lures:spear",
+          "functions": [
+            {
+              "function": "set_damage",
+              "damage": {
+                "min": 0.1,
+                "max": 0.8
+              }
+            },
+            {
+              "function": "enchant_randomly"
+            }
+          ],
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "lilis_lucky_lures:anglers_hat",
+          "functions": [
+            {
+              "function": "minecraft:set_damage",
+              "damage": {
+                "min": 0.4,
+                "max": 0.8
+              }
+            },
+            {
+              "function": "minecraft:enchant_randomly",
+              "chance": 0.4
+            }
+          ],
+          "weight": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BBC",
+    " # "
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:bowl"
+    },
+    "B": {
+      "item": "minecraft:salmon"
+    },
+    "C": {
+      "item": "minecraft:kelp"
+    }
+  },
+  "result": {
+    "item": "lilis_lucky_lures:salmon_rolls",
+    "count": 1
+  }
+}

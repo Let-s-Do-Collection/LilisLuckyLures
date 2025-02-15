@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "lilis_lucky_lures:item/river_fish_pool"
+  }
+}

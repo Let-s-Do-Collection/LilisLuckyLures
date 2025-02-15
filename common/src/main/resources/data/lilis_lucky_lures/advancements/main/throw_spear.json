@@ -1,0 +1,45 @@
+{
+  "parent": "lilis_lucky_lures:main/root",
+  "criteria": {
+    "shot_spear": {
+      "conditions": {
+        "damage": {
+          "type": {
+            "direct_entity": {
+              "type": "lilis_lucky_lures:thrown_spear"
+            },
+            "tags": [
+              {
+                "expected": true,
+                "id": "minecraft:is_projectile"
+              }
+            ]
+          }
+        }
+      },
+      "trigger": "minecraft:player_hurt_entity"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.lilis_lucky_lures.throw_spear.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "lilis_lucky_lures:spear",
+      "nbt": "{Damage:0}"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.lilis_lucky_lures.throw_spear"
+    }
+  },
+  "requirements": [
+    [
+      "shot_spear"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

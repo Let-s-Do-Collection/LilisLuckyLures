@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "lilis_lucky_lures:block/fish_trophy_frame",
+      "y": 0
+    },
+    "facing=south": {
+      "model": "lilis_lucky_lures:block/fish_trophy_frame",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "lilis_lucky_lures:block/fish_trophy_frame",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "lilis_lucky_lures:block/fish_trophy_frame",
+      "y": 90
+    }
+  }
+}

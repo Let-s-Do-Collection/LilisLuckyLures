@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smoking",
+  "cookingtime": 200,
+  "experience": 0.35,
+  "ingredient": {
+    "item": "lilis_lucky_lures:uncooked_puffer_plater"
+  },
+  "result": "lilis_lucky_lures:puffer_plater"
+}

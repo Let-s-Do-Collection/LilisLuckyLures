@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  A",
+    " B ",
+    "#  "
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:paper"
+    },
+    "B": {
+      "item": "minecraft:gunpowder"
+    },
+    "A": {
+      "item": "minecraft:string"
+    }
+  },
+  "result": {
+    "item": "lilis_lucky_lures:dynamite",
+    "count": 1
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "lilis_lucky_lures:item/fishing_net"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "custom_model_data": 1
+      },
+      "model": "lilis_lucky_lures:item/fishing_net_full"
+    }
+  ]
+}

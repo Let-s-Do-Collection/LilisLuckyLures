@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#forge:ropes",
+      "required": false
+    },
+    {
+      "id": "#c:ropes",
+      "required": false
+    }
+  ]
+}

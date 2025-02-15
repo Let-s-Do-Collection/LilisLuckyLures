@@ -1,0 +1,18 @@
+{
+	"credit": "Made by Satisfy",
+	"textures": {
+		"particle": "lilis_lucky_lures:block/fishing_net_side",
+		"texture": "lilis_lucky_lures:block/fishing_net_side"
+	},
+	"elements": [
+		{
+			"from": [8, 0, 0],
+			"to": [8, 16, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [1, -6, 0]},
+			"faces": {
+				"east": {"uv": [9, 0, 0, 16], "texture": "#texture"},
+				"west": {"uv": [0, 0, 9, 16], "texture": "#texture"}
+			}
+		}
+	]
+}

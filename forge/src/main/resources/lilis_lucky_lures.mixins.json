@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "net.satisfy.lilis_lucky_lures.forge.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "client": [
+  ],
+  "mixins": [
+    "HatItemMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

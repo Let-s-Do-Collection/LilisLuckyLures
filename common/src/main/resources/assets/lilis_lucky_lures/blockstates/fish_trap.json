@@ -1,0 +1,50 @@
+{
+  "variants": {
+    "facing=east,hanging=false": [
+      {
+        "model": "lilis_lucky_lures:block/fish_trap",
+        "y": 90
+      }
+    ],
+    "facing=north,hanging=false": [
+      {
+        "model": "lilis_lucky_lures:block/fish_trap"
+      }
+    ],
+    "facing=south,hanging=false": [
+      {
+        "model": "lilis_lucky_lures:block/fish_trap",
+        "y": 180
+      }
+    ],
+    "facing=west,hanging=false": [
+      {
+        "model": "lilis_lucky_lures:block/fish_trap",
+        "y": 270
+      }
+    ],
+    "facing=east,hanging=true": [
+      {
+        "model": "lilis_lucky_lures:block/fish_trap_hanging",
+        "y": 90
+      }
+    ],
+    "facing=north,hanging=true": [
+      {
+        "model": "lilis_lucky_lures:block/fish_trap_hanging"
+      }
+    ],
+    "facing=south,hanging=true": [
+      {
+        "model": "lilis_lucky_lures:block/fish_trap_hanging",
+        "y": 180
+      }
+    ],
+    "facing=west,hanging=true": [
+      {
+        "model": "lilis_lucky_lures:block/fish_trap_hanging",
+        "y": 270
+      }
+    ]
+  }
+}

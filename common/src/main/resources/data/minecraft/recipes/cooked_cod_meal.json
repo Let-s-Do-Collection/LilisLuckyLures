@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "cookingtime": 600,
+  "experience": 0.35,
+  "ingredient": {
+    "item": "lilis_lucky_lures:uncooked_cod_meal"
+  },
+  "result": "lilis_lucky_lures:cooked_cod_meal"
+}

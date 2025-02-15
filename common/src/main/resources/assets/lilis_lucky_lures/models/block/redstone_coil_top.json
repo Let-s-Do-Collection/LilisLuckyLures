@@ -1,0 +1,44 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"0": "lilis_lucky_lures:block/redstone_coil_cube_top",
+		"particle": "lilis_lucky_lures:block/redstone_coil_cube_top"
+	},
+	"elements": [
+		{
+			"name": "support",
+			"from": [7, 0, 7],
+			"to": [9, 14, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 0, 7]},
+			"faces": {
+				"north": {"uv": [10, 0, 12, 14], "texture": "#0"},
+				"east": {"uv": [10, 0, 12, 14], "texture": "#0"},
+				"south": {"uv": [10, 0, 12, 14], "texture": "#0"},
+				"west": {"uv": [10, 0, 12, 14], "texture": "#0"},
+				"up": {"uv": [12, 0, 14, 2], "texture": "#0"}
+			}
+		},
+		{
+			"name": "redstone_cube",
+			"from": [3, 8, 3],
+			"to": [13, 12, 13],
+			"rotation": {"angle": 0, "axis": "y", "origin": [3, 8, 3]},
+			"faces": {
+				"north": {"uv": [0, 10, 10, 14], "texture": "#0"},
+				"east": {"uv": [0, 10, 10, 14], "texture": "#0"},
+				"south": {"uv": [0, 10, 10, 14], "texture": "#0"},
+				"west": {"uv": [0, 10, 10, 14], "texture": "#0"},
+				"up": {"uv": [0, 0, 10, 10], "texture": "#0"},
+				"down": {"uv": [0, 0, 10, 10], "texture": "#0"}
+			}
+		}
+	],
+	"groups": [
+		{
+			"name": "top",
+			"origin": [8, 8, 8],
+			"color": 0,
+			"children": [0, 1]
+		}
+	]
+}
