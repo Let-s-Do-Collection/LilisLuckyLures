@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "BBC",
+    "AAB",
     " # "
   ],
   "key": {
@@ -9,14 +9,13 @@
       "item": "minecraft:bowl"
     },
     "B": {
-      "item": "minecraft:salmon"
+      "item": "minecraft:pufferfish"
     },
-    "C": {
-      "item": "minecraft:kelp"
+    "A": {
+      "item": "minecraft:potato"
     }
   },
   "result": {
-    "item": "lilis_lucky_lures:salmon_rolls",
-    "count": 1
+    "id": "lilis_lucky_lures:uncooked_puffer_plater"
   }
 }

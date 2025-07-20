@@ -5,5 +5,7 @@
   "ingredient": {
     "item": "lilis_lucky_lures:uncooked_puffer_plater"
   },
-  "result": "lilis_lucky_lures:puffer_plater"
+  "result": {
+    "id": "lilis_lucky_lures:puffer_plater"
+  }
 }

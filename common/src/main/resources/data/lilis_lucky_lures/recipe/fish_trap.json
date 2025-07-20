@@ -9,11 +9,11 @@
     }
   },
   "pattern": [
-    "  #",
-    " #X",
-    "# X"
+    "#X#",
+    "#X#",
+    "###"
   ],
   "result": {
-    "item": "lilis_lucky_lures:bamboo_fishing_rod"
+    "id": "lilis_lucky_lures:fish_trap"
   }
 }

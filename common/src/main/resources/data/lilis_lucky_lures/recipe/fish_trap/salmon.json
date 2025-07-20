@@ -1,11 +1,11 @@
 {
   "type": "lilis_lucky_lures:fish_trap",
   "bait_item": {
-    "item": "minecraft:wheat_seeds"
+    "item": "minecraft:sweet_berries"
   },
   "catch": {
     "result": {
-      "item": "minecraft:cod",
+      "id": "minecraft:salmon",
       "count": 3
     }
   },

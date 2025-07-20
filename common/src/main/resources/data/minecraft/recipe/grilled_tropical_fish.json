@@ -1,9 +1,12 @@
 {
-  "type": "minecraft:campfire_cooking",
+  "type": "minecraft:smelting",
   "cookingtime": 600,
   "experience": 0.35,
   "ingredient": {
     "item": "lilis_lucky_lures:uncooked_tropical_fish"
   },
-  "result": "lilis_lucky_lures:grilled_tropical_fish"
+  "result": {
+    "id": "lilis_lucky_lures:grilled_tropical_fish"
+  }
 }
+

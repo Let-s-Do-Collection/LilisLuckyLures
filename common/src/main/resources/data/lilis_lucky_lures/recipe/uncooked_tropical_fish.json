@@ -9,7 +9,7 @@
       "item": "minecraft:bowl"
     },
     "B": {
-      "item": "minecraft:cod"
+      "item": "minecraft:tropical_fish"
     },
     "A": {
       "item": "minecraft:potato"
@@ -19,6 +19,6 @@
     }
   },
   "result": {
-    "item": "lilis_lucky_lures:uncooked_cod_meal"
+    "id": "lilis_lucky_lures:uncooked_tropical_fish"
   }
 }

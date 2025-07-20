@@ -2,18 +2,18 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "#": {
-      "item": "minecraft:bamboo"
+      "item": "minecraft:stick"
     },
     "X": {
       "item": "minecraft:string"
     }
   },
   "pattern": [
-    "#X#",
-    "#X#",
-    "###"
+    "#XX",
+    "#XX",
+    "#  "
   ],
   "result": {
-    "item": "lilis_lucky_lures:fish_trap"
+    "id": "lilis_lucky_lures:fishing_net"
   }
 }

@@ -1,16 +1,16 @@
 {
   "type": "lilis_lucky_lures:fish_trap",
   "bait_item": {
-    "item": "minecraft:sweet_berries"
+    "item": "minecraft:melon_seeds"
   },
   "catch": {
     "result": {
-      "item": "minecraft:salmon",
-      "count": 3
+      "id": "minecraft:tropical_fish",
+      "count": 2
     }
   },
   "catch_duration": {
-    "min": 1200,
-    "max": 1800
+    "min": 900,
+    "max": 1400
   }
 }

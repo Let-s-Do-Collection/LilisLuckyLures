@@ -2,18 +2,17 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "#": {
-      "item": "minecraft:stick"
+      "tag": "minecraft:planks"
     },
     "X": {
-      "item": "minecraft:string"
+      "item": "minecraft:gold_ingot"
     }
   },
   "pattern": [
     "###",
-    "#X#",
     "#X#"
   ],
   "result": {
-    "item": "lilis_lucky_lures:hanging_frame"
+    "id": "lilis_lucky_lures:fish_trophy_frame"
   }
 }

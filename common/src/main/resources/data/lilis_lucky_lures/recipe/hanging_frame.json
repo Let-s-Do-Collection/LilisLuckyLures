@@ -9,11 +9,11 @@
     }
   },
   "pattern": [
-    "#XX",
-    "#XX",
-    "#  "
+    "###",
+    "#X#",
+    "#X#"
   ],
   "result": {
-    "item": "lilis_lucky_lures:fishing_net"
+    "id": "lilis_lucky_lures:hanging_frame"
   }
 }
