@@ -1,5 +1,6 @@
 package net.satisfy.lilis_lucky_lures.core.block;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -50,6 +51,13 @@ public class FishNetFenceBlock extends CrossCollisionBlock {
                 .setValue(WATERLOGGED, false));
     }
 
+    public static final MapCodec<FishNetFenceBlock> CODEC = simpleCodec(FishNetFenceBlock::new);
+
+    @Override
+    protected MapCodec<? extends CrossCollisionBlock> codec() {
+        return CODEC;
+    }
+
     @Override
     public @NotNull VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         VoxelShape shape = POST_SHAPE;
@@ -61,7 +69,7 @@ public class FishNetFenceBlock extends CrossCollisionBlock {
     }
 
     @Override
-    public boolean isPathfindable(BlockState state, BlockGetter world, BlockPos pos, PathComputationType type) {
+    protected boolean isPathfindable(BlockState blockState, PathComputationType pathComputationType) {
         return false;
     }
 
@@ -83,7 +91,7 @@ public class FishNetFenceBlock extends CrossCollisionBlock {
     }
 
     @Override
-    public @NotNull InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult blockHitResult) {
         if (!level.isClientSide) {
             if (hasBellAbove(level, pos)) {
                 level.playSound(null, pos, SoundEvents.BELL_RESONATE, SoundSource.BLOCKS, 1.0F, 1.0F);

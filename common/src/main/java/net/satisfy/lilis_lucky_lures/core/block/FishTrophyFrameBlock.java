@@ -7,6 +7,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -89,9 +90,9 @@ public class FishTrophyFrameBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public @NotNull InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected ItemInteractionResult useItemOn(ItemStack itemStack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (!(blockEntity instanceof FishTrophyFrameBlockEntity displayBlockEntity)) return InteractionResult.PASS;
+        if (!(blockEntity instanceof FishTrophyFrameBlockEntity displayBlockEntity)) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
         ItemStack stackInHand = player.getItemInHand(hand);
 
@@ -104,10 +105,10 @@ public class FishTrophyFrameBlock extends Block implements EntityBlock {
                         stackInHand.shrink(1);
                     }
                     level.playSound(null, pos, SoundEvents.ITEM_FRAME_ADD_ITEM, SoundSource.BLOCKS, 1.0F, 1.0F);
-                    return InteractionResult.SUCCESS;
+                    return ItemInteractionResult.SUCCESS;
                 }
             }
-            return InteractionResult.CONSUME;
+            return ItemInteractionResult.CONSUME;
         }
 
         if (!displayBlockEntity.getDisplayedItem().isEmpty()) {
@@ -119,11 +120,11 @@ public class FishTrophyFrameBlock extends Block implements EntityBlock {
                 }
                 displayBlockEntity.removeDisplayedItem(1);
                 level.playSound(null, pos, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 1.0F, 1.0F);
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
         }
 
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     @Override

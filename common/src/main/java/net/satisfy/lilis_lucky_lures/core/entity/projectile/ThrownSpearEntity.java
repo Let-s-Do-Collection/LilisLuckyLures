@@ -4,9 +4,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
@@ -38,6 +40,12 @@ public class ThrownSpearEntity extends AbstractArrow {
         super(EntityTypeRegistry.THROWN_SPEAR.get(), livingEntity, level);
         this.spearItem = itemStack.copy();
         this.entityData.set(ID_LOYALTY, (byte) EnchantmentHelper.getLoyalty(itemStack));
+        this.entityData.set(ID_FOIL, itemStack.hasFoil());
+    }
+
+    public ThrownSpearEntity(Level level, double x, double y, double z, ItemStack itemStack) {
+        super(EntityTypeRegistry.THROWN_SPEAR.get(), x, y, z, level, itemStack, itemStack);
+        this.entityData.set(ID_LOYALTY, this.getLoyaltyFromItem(itemStack));
         this.entityData.set(ID_FOIL, itemStack.hasFoil());
     }
 
@@ -171,5 +179,14 @@ public class ThrownSpearEntity extends AbstractArrow {
     @Override
     public boolean shouldRender(double cameraX, double cameraY, double cameraZ) {
         return true;
+    }
+
+    private byte getLoyaltyFromItem(ItemStack itemStack) {
+        Level var3 = this.level();
+        if (var3 instanceof ServerLevel serverLevel) {
+            return (byte) Mth.clamp(EnchantmentHelper.getTridentReturnToOwnerAcceleration(serverLevel, itemStack, this), 0, 127);
+        } else {
+            return 0;
+        }
     }
 }

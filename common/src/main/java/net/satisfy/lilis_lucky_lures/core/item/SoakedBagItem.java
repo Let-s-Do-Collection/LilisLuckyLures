@@ -1,8 +1,10 @@
 package net.satisfy.lilis_lucky_lures.core.item;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -20,6 +22,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.satisfy.lilis_lucky_lures.LilisLuckyLures;
+import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresIdentifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,7 +45,7 @@ public class SoakedBagItem extends Item {
                         .withParameter(LootContextParams.THIS_ENTITY, player)
                         .withParameter(LootContextParams.ORIGIN, player.position())
                         .create(LootContextParamSets.GIFT);
-                LootTable treasure = minecraftServer.getLootData().getLootTable(new ResourceLocation(LilisLuckyLures.MOD_ID, "gameplay/soaked_bag"));
+                LootTable treasure = minecraftServer.reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, LilisLuckyLuresIdentifier.identifier("gameplay/soaked_bag")));
 
                 List<ItemStack> lootItems = treasure.getRandomItems(lootContext);
 
@@ -59,9 +62,8 @@ public class SoakedBagItem extends Item {
         return InteractionResultHolder.success(stack);
     }
 
-
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack itemStack, TooltipContext tooltipContext, List<Component> tooltip, TooltipFlag tooltipFlag) {
         Style actionStyle = Style.EMPTY.withColor(TextColor.fromRgb(0xffecb3));
         Style descriptionStyle = Style.EMPTY.withColor(TextColor.fromRgb(0x52A3CC));
 

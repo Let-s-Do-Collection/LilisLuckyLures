@@ -1,6 +1,7 @@
 package net.satisfy.lilis_lucky_lures.core.block.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -42,21 +43,20 @@ public class RedstoneCoilBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
+    protected void saveAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
+        super.saveAdditional(compoundTag, provider);
         if (owner != null) {
-            tag.putUUID("Owner", owner);
+            compoundTag.putUUID("Owner", owner);
         }
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        if (tag.hasUUID("Owner")) {
-            owner = tag.getUUID("Owner");
+    protected void loadAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
+        super.loadAdditional(compoundTag, provider);
+        if (compoundTag.hasUUID("Owner")) {
+            owner = compoundTag.getUUID("Owner");
         }
     }
-
 
     public void setOwner(UUID owner) {
         this.owner = owner;
@@ -166,7 +166,7 @@ public class RedstoneCoilBlockEntity extends BlockEntity {
                                 hand = InteractionHand.OFF_HAND;
                             }
                             int shieldDamage = serverLevel.random.nextInt(10) + 4;
-                            shieldStack.hurtAndBreak(shieldDamage, player, p -> p.broadcastBreakEvent(hand));
+                            shieldStack.hurtAndBreak(shieldDamage, player, player.getEquipmentSlotForItem(shieldStack));
                             Vector3d shieldPos;
                             Vector3d look = new Vector3d(player.getLookAngle().x, player.getLookAngle().y, player.getLookAngle().z);
                             Vector3d right = new Vector3d();
@@ -209,13 +209,13 @@ public class RedstoneCoilBlockEntity extends BlockEntity {
         }
         boolean hasIronArmor = false;
         for (EquipmentSlot slot : EquipmentSlot.values()) {
-            if (slot.getType() == EquipmentSlot.Type.ARMOR) {
+            if (slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
                 net.minecraft.world.item.ItemStack armorStack = livingTarget.getItemBySlot(slot);
                 if (!armorStack.isEmpty() && armorStack.getItem() instanceof ArmorItem armorItem) {
                     if (armorItem.getMaterial() == ArmorMaterials.IRON) {
                         hasIronArmor = true;
                         int armorDamage = serverLevel.random.nextInt(5) + 3;
-                        armorStack.hurtAndBreak(armorDamage, livingTarget, e -> e.broadcastBreakEvent(slot));
+                        armorStack.hurtAndBreak(armorDamage, livingTarget, slot);
                     }
                 }
             }
@@ -224,7 +224,7 @@ public class RedstoneCoilBlockEntity extends BlockEntity {
             damage *= 1.12F;
         }
         livingTarget.hurt(serverLevel.damageSources().magic(), damage);
-        livingTarget.setSecondsOnFire(5);
+        livingTarget.igniteForTicks(5);
         setFireAround(serverLevel, be.targetPos);
         spawnImpactParticles(serverLevel, be.targetPos);
     }

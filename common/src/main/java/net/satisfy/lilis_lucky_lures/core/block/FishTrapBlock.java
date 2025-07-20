@@ -1,5 +1,6 @@
 package net.satisfy.lilis_lucky_lures.core.block;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -7,7 +8,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -45,7 +46,7 @@ public class FishTrapBlock extends BaseEntityBlock {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final BooleanProperty HANGING = BooleanProperty.create("hanging");
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-    public static final TagKey<Block> ROPES = TagKey.create(Registries.BLOCK, new LilisLuckyLuresIdentifier("ropes"));
+    public static final TagKey<Block> ROPES = TagKey.create(Registries.BLOCK, LilisLuckyLuresIdentifier.identifier("ropes"));
 
     private static final VoxelShape SHAPE_NORMAL = Shapes.box(0.0625, 0.0, 0.0625, 0.9375, 0.625, 0.9375);
     private static final VoxelShape SHAPE_HANGING = Shapes.box(0.0625, 0.125, 0.0625, 0.9375, 0.75, 0.9375);
@@ -59,6 +60,13 @@ public class FishTrapBlock extends BaseEntityBlock {
                 .setValue(WATERLOGGED, false)
                 .setValue(HANGING, false)
                 .setValue(FACING, Direction.NORTH));
+    }
+
+    public static final MapCodec<FishTrapBlock> CODEC = simpleCodec(FishTrapBlock::new);
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
     }
 
     @Override
@@ -118,7 +126,7 @@ public class FishTrapBlock extends BaseEntityBlock {
     }
 
     @Override
-    public @NotNull InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected ItemInteractionResult useItemOn(ItemStack itemStack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof FishTrapBlockEntity fishTrap) {
             if (!level.isClientSide) {
@@ -158,9 +166,9 @@ public class FishTrapBlock extends BaseEntityBlock {
                     }
                 }
             }
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
-        return InteractionResult.PASS;
+        return ItemInteractionResult.SUCCESS;
     }
 
     @Override

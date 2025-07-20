@@ -19,7 +19,6 @@ import net.satisfy.lilis_lucky_lures.core.entity.FloatingDebrisEntity;
 import net.satisfy.lilis_lucky_lures.core.registry.EntityTypeRegistry;
 import net.satisfy.lilis_lucky_lures.core.registry.ObjectRegistry;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -85,7 +84,7 @@ public class FloatingPoolsItem extends Item {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack itemStack, TooltipContext tooltipContext, List<Component> tooltip, TooltipFlag tooltipFlag) {
         tooltip.add(Component.translatable("tooltip.lilis_lucky_lures.item.not_obtainable").setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xD27D46)).withItalic(true)));
     }
 }

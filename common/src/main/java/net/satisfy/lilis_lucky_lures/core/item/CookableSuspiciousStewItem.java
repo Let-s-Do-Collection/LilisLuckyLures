@@ -1,5 +1,6 @@
 package net.satisfy.lilis_lucky_lures.core.item;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
@@ -19,7 +20,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Random;
@@ -60,37 +60,37 @@ public class CookableSuspiciousStewItem extends Item {
 
     private static MobEffectInstance getRandomEffect() {
         MobEffect[] possibleEffects = {
-                MobEffects.REGENERATION,
-                MobEffects.MOVEMENT_SPEED,
-                MobEffects.DAMAGE_BOOST,
-                MobEffects.ABSORPTION,
-                MobEffects.LUCK,
-                MobEffects.DAMAGE_RESISTANCE,
-                MobEffects.JUMP,
-                MobEffects.FIRE_RESISTANCE,
-                MobEffects.WATER_BREATHING,
-                MobEffects.NIGHT_VISION,
-                MobEffects.SLOW_FALLING,
-                MobEffects.CONDUIT_POWER,
-                MobEffects.DOLPHINS_GRACE,
-                MobEffects.MOVEMENT_SLOWDOWN,
-                MobEffects.DIG_SLOWDOWN,
-                MobEffects.CONFUSION,
-                MobEffects.BLINDNESS,
-                MobEffects.HUNGER,
-                MobEffects.WEAKNESS,
-                MobEffects.POISON
+                MobEffects.REGENERATION.value(),
+                MobEffects.MOVEMENT_SPEED.value(),
+                MobEffects.DAMAGE_BOOST.value(),
+                MobEffects.ABSORPTION.value(),
+                MobEffects.LUCK.value(),
+                MobEffects.DAMAGE_RESISTANCE.value(),
+                MobEffects.JUMP.value(),
+                MobEffects.FIRE_RESISTANCE.value(),
+                MobEffects.WATER_BREATHING.value(),
+                MobEffects.NIGHT_VISION.value(),
+                MobEffects.SLOW_FALLING.value(),
+                MobEffects.CONDUIT_POWER.value(),
+                MobEffects.DOLPHINS_GRACE.value(),
+                MobEffects.MOVEMENT_SLOWDOWN.value(),
+                MobEffects.DIG_SLOWDOWN.value(),
+                MobEffects.CONFUSION.value(),
+                MobEffects.BLINDNESS.value(),
+                MobEffects.HUNGER.value(),
+                MobEffects.WEAKNESS.value(),
+                MobEffects.POISON.value()
         };
 
         Random random = new Random();
         MobEffect effect = possibleEffects[random.nextInt(possibleEffects.length)];
         int duration = 100 + random.nextInt(201);
 
-        return new MobEffectInstance(effect, duration);
+        return new MobEffectInstance(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect), duration);
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack itemStack, TooltipContext tooltipContext, List<Component> tooltip, TooltipFlag tooltipFlag) {
         if (!cooked) {
             tooltip.add(Component.translatable("tooltip.lilis_lucky_lures.item.uncooked").setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xD27D46))));
         }

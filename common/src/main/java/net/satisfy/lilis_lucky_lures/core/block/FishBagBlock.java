@@ -1,5 +1,6 @@
 package net.satisfy.lilis_lucky_lures.core.block;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -10,6 +11,12 @@ import org.jetbrains.annotations.Nullable;
 public class FishBagBlock extends HorizontalDirectionalBlock {
     public FishBagBlock(Properties settings) {
         super(settings);
+    }
+    public static final MapCodec<FishBagBlock> CODEC = simpleCodec(FishBagBlock::new);
+
+    @Override
+    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
+        return CODEC;
     }
 
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext ctx) {
