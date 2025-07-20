@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("unused")
 public class OceanFishPoolModel<T extends OceanFishPoolEntity> extends HierarchicalModel<T> {
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new LilisLuckyLuresIdentifier("ocean_fish_pool"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(LilisLuckyLuresIdentifier.identifier("ocean_fish_pool"), "main");
 	private final ModelPart ocean_swarm;
 
 	public OceanFishPoolModel(ModelPart root) {
@@ -212,7 +212,7 @@ public class OceanFishPoolModel<T extends OceanFishPoolEntity> extends Hierarchi
 	}
 
 	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		ocean_swarm.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int red) {
+		ocean_swarm.render(poseStack, vertexConsumer, packedLight, packedOverlay, red);
 	}
 }

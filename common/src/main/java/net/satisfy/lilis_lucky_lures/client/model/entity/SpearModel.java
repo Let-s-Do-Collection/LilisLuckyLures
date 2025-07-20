@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresIdentifier;
 
 public class SpearModel extends Model {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new LilisLuckyLuresIdentifier("thrown_spear"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(LilisLuckyLuresIdentifier.identifier("thrown_spear"), "main");
     private final ModelPart spear;
 
     public SpearModel(ModelPart modelPart) {
@@ -38,7 +38,8 @@ public class SpearModel extends Model {
         return LayerDefinition.create(meshdefinition, 64, 64);
     }
 
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int i, int j, float f, float g, float h, float k) {
-        this.spear.render(poseStack, vertexConsumer, i, j, f, g, h, k);
+    @Override
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int i, int j, int k) {
+        this.spear.render(poseStack, vertexConsumer, i, j, k);
     }
 }

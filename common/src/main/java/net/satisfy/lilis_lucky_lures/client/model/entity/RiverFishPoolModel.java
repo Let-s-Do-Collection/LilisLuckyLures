@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("unused")
 public class RiverFishPoolModel<T extends RiverFishPoolEntity> extends HierarchicalModel<T> {
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new LilisLuckyLuresIdentifier("river_fish_pool"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(LilisLuckyLuresIdentifier.identifier("river_fish_pool"), "main");
 	private final ModelPart river_swarm;
 
 	public RiverFishPoolModel(ModelPart root) {
@@ -168,7 +168,7 @@ public class RiverFishPoolModel<T extends RiverFishPoolEntity> extends Hierarchi
 	}
 
 	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		river_swarm.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
+		river_swarm.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 	}
 }

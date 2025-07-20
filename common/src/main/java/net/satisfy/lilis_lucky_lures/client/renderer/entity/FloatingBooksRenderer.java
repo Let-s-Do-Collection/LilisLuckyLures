@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 
 public class FloatingBooksRenderer extends EntityRenderer<FloatingBooksEntity> {
-    private static final ResourceLocation TEXTURE = new LilisLuckyLuresIdentifier("textures/entity/floating_books.png");
+    private static final ResourceLocation TEXTURE = LilisLuckyLuresIdentifier.identifier("textures/entity/floating_books.png");
     private final FloatingBooksModel<FloatingBooksEntity> model;
 
     public FloatingBooksRenderer(EntityRendererProvider.Context context) {
@@ -35,7 +35,7 @@ public class FloatingBooksRenderer extends EntityRenderer<FloatingBooksEntity> {
         float ageInTicks = entity.tickCount + partialTicks;
         model.setupAnim(entity, 0.0f, 0.0f, ageInTicks, entityYaw, 0.0f);
         int overlay = entity.getHurtTime() > 0 ? OverlayTexture.RED_OVERLAY_V : OverlayTexture.NO_OVERLAY;
-        model.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityTranslucent(TEXTURE)), packedLight, overlay, 1.0f, 1.0f, 1.0f, 1.0f);
+        model.renderToBuffer(poseStack, buffer.getBuffer(RenderType.entityTranslucent(TEXTURE)), packedLight, overlay);
         poseStack.popPose();
         super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
     }

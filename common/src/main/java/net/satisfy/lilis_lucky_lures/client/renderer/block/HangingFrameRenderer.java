@@ -30,8 +30,8 @@ public class HangingFrameRenderer implements BlockEntityRenderer<HangingFrameBlo
             if (!stack.isEmpty()) {
                 poseStack.pushPose();
                 poseStack.translate(0.5, 0.5, 0.5);
-                poseStack.mulPoseMatrix(new Matrix4f().rotateY((float) Math.toRadians(-dir.toYRot())));
-                poseStack.mulPoseMatrix(new Matrix4f().rotateZ((float) Math.toRadians(45)));
+                poseStack.mulPose(new Matrix4f().rotateY((float) Math.toRadians(-dir.toYRot())));
+                poseStack.mulPose(new Matrix4f().rotateZ((float) Math.toRadians(45)));
 
                 switch (slot) {
                     case 0 -> poseStack.translate(0.21, -0.1, 0);

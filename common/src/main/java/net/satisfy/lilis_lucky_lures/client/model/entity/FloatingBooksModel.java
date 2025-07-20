@@ -12,7 +12,7 @@ import net.satisfy.lilis_lucky_lures.core.entity.FloatingDebrisEntity;
 import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresIdentifier;
 
 public class FloatingBooksModel<T extends Entity> extends EntityModel<T> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new LilisLuckyLuresIdentifier("floating_books"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(LilisLuckyLuresIdentifier.identifier("floating_books"), "main");
     private final ModelPart book_1;
     private final ModelPart book_2;
     private final ModelPart lectern;
@@ -92,11 +92,10 @@ public class FloatingBooksModel<T extends Entity> extends EntityModel<T> {
         }
     }
 
-
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        book_1.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        book_2.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        lectern.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int red) {
+        book_1.render(poseStack, vertexConsumer, packedLight, packedOverlay, red);
+        book_2.render(poseStack, vertexConsumer, packedLight, packedOverlay, red);
+        lectern.render(poseStack, vertexConsumer, packedLight, packedOverlay, red);
     }
 }
