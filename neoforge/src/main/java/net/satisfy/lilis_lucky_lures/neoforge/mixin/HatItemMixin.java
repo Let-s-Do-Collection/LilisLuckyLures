@@ -1,4 +1,4 @@
-package net.satisfy.lilis_lucky_lures.forge.mixin;
+package net.satisfy.lilis_lucky_lures.neoforge.mixin;
 
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.Model;

@@ -1,4 +1,4 @@
-package net.satisfy.lilis_lucky_lures.forge.client;
+package net.satisfy.lilis_lucky_lures.neoforge.client;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -9,7 +9,7 @@ import net.satisfy.lilis_lucky_lures.LilisLuckyLures;
 import net.satisfy.lilis_lucky_lures.client.LilisLuckyLuresClient;
 
 @Mod.EventBusSubscriber(modid = LilisLuckyLures.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class LilisLuckyLuresClientForge {
+public class LilisLuckyLuresClientNeoForge {
 
     @SubscribeEvent
     public static void beforeClientSetup(RegisterEvent event) {
