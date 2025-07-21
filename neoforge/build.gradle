@@ -8,7 +8,7 @@ architectury {
 }
 
 
-def jarFileName = 'letsdo-lilis_lucky_lures-forge'
+def jarFileName = 'letsdo-lilis_lucky_lures-neoforge'
 
 archivesBaseName = jarFileName
 
@@ -18,14 +18,6 @@ loom {
 
     neoForge {
     }
-    /*
-    forge {
-        convertAccessWideners = true
-        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
-
-        mixinConfig "lilis_lucky_lures-common.mixins.json"
-        mixinConfig "lilis_lucky_lures.mixins.json"
-    }*/
 }
 
 configurations {
