@@ -93,8 +93,8 @@ public class FishNetFenceBlock extends CrossCollisionBlock {
     @Override
     protected InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult blockHitResult) {
         if (!level.isClientSide) {
-            if (hasBellAbove(level, pos)) {
-                level.playSound(null, pos, SoundEvents.BELL_RESONATE, SoundSource.BLOCKS, 1.0F, 1.0F);
+            if (hasBellAbove(level, blockPos)) {
+                level.playSound(null, blockPos, SoundEvents.BELL_RESONATE, SoundSource.BLOCKS, 1.0F, 1.0F);
                 return InteractionResult.SUCCESS;
             }
         }

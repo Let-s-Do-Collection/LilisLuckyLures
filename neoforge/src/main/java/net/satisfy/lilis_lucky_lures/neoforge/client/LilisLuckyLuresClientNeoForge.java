@@ -1,14 +1,14 @@
 package net.satisfy.lilis_lucky_lures.neoforge.client;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.registries.RegisterEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import net.satisfy.lilis_lucky_lures.LilisLuckyLures;
 import net.satisfy.lilis_lucky_lures.client.LilisLuckyLuresClient;
 
-@Mod.EventBusSubscriber(modid = LilisLuckyLures.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = LilisLuckyLures.MOD_ID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public class LilisLuckyLuresClientNeoForge {
 
     @SubscribeEvent

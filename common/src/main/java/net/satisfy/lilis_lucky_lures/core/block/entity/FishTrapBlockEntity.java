@@ -2,6 +2,7 @@ package net.satisfy.lilis_lucky_lures.core.block.entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -11,8 +12,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.satisfy.lilis_lucky_lures.core.block.FishTrapBlock;
@@ -20,6 +20,8 @@ import net.satisfy.lilis_lucky_lures.core.recipe.FishTrapRecipe;
 import net.satisfy.lilis_lucky_lures.core.registry.EntityTypeRegistry;
 import net.satisfy.lilis_lucky_lures.core.registry.RecipeTypeRegistry;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 public class FishTrapBlockEntity extends BlockEntity implements WorldlyContainer, Clearable {
     private final NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
@@ -39,8 +41,7 @@ public class FishTrapBlockEntity extends BlockEntity implements WorldlyContainer
             if (recipe == null && !inputItem.isEmpty()) {
                 SimpleContainer container = new SimpleContainer(1);
                 container.setItem(0, inputItem);
-                RecipeManager recipeManager = level.getRecipeManager();
-                Recipe<?> currentRecipe = recipeManager.getRecipeFor(RecipeTypeRegistry.FISH_TRAP_RECIPE_TYPE.get(), container, level).orElse(null);
+                FishTrapRecipe currentRecipe = getRecipe(level, inputItem).get();
                 if (currentRecipe instanceof FishTrapRecipe fishTrapRecipe) {
                     recipe = fishTrapRecipe;
                 }
@@ -85,7 +86,7 @@ public class FishTrapBlockEntity extends BlockEntity implements WorldlyContainer
         ItemStack existingOutput = inventory.get(1);
         if (existingOutput.isEmpty()) {
             inventory.set(1, output);
-        } else if (ItemStack.isSameItemSameTags(existingOutput, output)) {
+        } else if (ItemStack.isSameItemSameComponents(existingOutput, output)) {
             existingOutput.grow(output.getCount());
             inventory.set(1, existingOutput);
         }
@@ -104,27 +105,27 @@ public class FishTrapBlockEntity extends BlockEntity implements WorldlyContainer
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        ContainerHelper.loadAllItems(tag, inventory);
-        timer = tag.getInt("Timer");
-        duration = tag.getInt("Duration");
-        processing = tag.getBoolean("Processing");
+    protected void loadAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
+        super.loadAdditional(compoundTag, provider);
+        ContainerHelper.loadAllItems(compoundTag, inventory, provider);
+        timer = compoundTag.getInt("Timer");
+        duration = compoundTag.getInt("Duration");
+        processing = compoundTag.getBoolean("Processing");
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        ContainerHelper.saveAllItems(tag, inventory);
-        tag.putInt("Timer", timer);
-        tag.putInt("Duration", duration);
-        tag.putBoolean("Processing", processing);
+    protected void saveAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
+        super.saveAdditional(compoundTag, provider);
+        ContainerHelper.saveAllItems(compoundTag, inventory, provider);
+        compoundTag.putInt("Timer", timer);
+        compoundTag.putInt("Duration", duration);
+        compoundTag.putBoolean("Processing", processing);
     }
 
     @Override
-    public @NotNull CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
-        ContainerHelper.saveAllItems(tag, inventory);
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+        CompoundTag tag = super.getUpdateTag(provider);
+        ContainerHelper.saveAllItems(tag, inventory, provider);
         return tag;
     }
 
@@ -203,10 +204,12 @@ public class FishTrapBlockEntity extends BlockEntity implements WorldlyContainer
     public boolean canPlaceItem(int slot, ItemStack stack) {
         if (slot == 0) {
             SimpleContainer container = new SimpleContainer(stack);
-            return level != null && level.getRecipeManager()
-                    .getRecipeFor(RecipeTypeRegistry.FISH_TRAP_RECIPE_TYPE.get(), container, level)
-                    .isPresent();
+            return level != null && getRecipe(level, stack).isPresent();
         }
         return false;
+    }
+
+    public static Optional<FishTrapRecipe> getRecipe(Level level, ItemStack itemStack) {
+        return Optional.of(level.getRecipeManager().getAllRecipesFor(RecipeTypeRegistry.FISH_TRAP_RECIPE_TYPE.get()).stream().filter(fishTrapRecipeRecipeHolder -> fishTrapRecipeRecipeHolder.value().getBaitItem().test(itemStack)).findFirst().get().value());
     }
 }

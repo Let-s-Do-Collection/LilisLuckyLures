@@ -3,14 +3,10 @@
   "bait_item": {
     "item": "minecraft:beetroot_seeds"
   },
-  "catch": {
-    "result": {
-      "id": "minecraft:pufferfish",
-      "count": 2
-    }
+  "catch_result": {
+    "id": "minecraft:pufferfish"
   },
-  "catch_duration": {
-    "min": 800,
-    "max": 1200
-  }
+  "catch_count": 2,
+  "catch_duration_min": 800,
+  "catch_duration_max": 1200
 }

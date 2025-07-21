@@ -1,6 +1,7 @@
 package net.satisfy.lilis_lucky_lures.core.block.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.Clearable;
@@ -25,24 +26,25 @@ public class FishTrophyFrameBlockEntity extends BlockEntity implements Clearable
     }
 
     @Override
-    public void load(CompoundTag tag) {
-        super.load(tag);
-        this.displayedItem = ItemStack.of(tag.getCompound("DisplayedItem"));
+    protected void loadAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
+        super.loadAdditional(compoundTag, provider);
+        this.displayedItem = ItemStack.parseOptional(provider, compoundTag.getCompound("DisplayedItem"));
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
-        tag.put("DisplayedItem", this.displayedItem.save(new CompoundTag()));
+    protected void saveAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
+        super.saveAdditional(compoundTag, provider);
+        compoundTag.put("DisplayedItem", this.displayedItem.save(provider, new CompoundTag()));
     }
 
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    public @NotNull CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
-        compoundTag.put("DisplayedItem", this.displayedItem.save(new CompoundTag()));
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+        CompoundTag compoundTag = super.getUpdateTag(provider);
+        compoundTag.put("DisplayedItem", this.displayedItem.save(provider, new CompoundTag()));
         return compoundTag;
     }
 

@@ -19,7 +19,7 @@
         "item": "minecraft:bowl"
       }
     ],
-    "item": "lilis_lucky_lures:puffer_plater",
+    "id": "lilis_lucky_lures:puffer_plater",
     "count": 1,
     "experience": 0.5
   }

@@ -3,14 +3,10 @@
   "bait_item": {
     "item": "minecraft:melon_seeds"
   },
-  "catch": {
-    "result": {
-      "id": "minecraft:tropical_fish",
-      "count": 2
-    }
+  "catch_result": {
+    "id": "minecraft:tropical_fish"
   },
-  "catch_duration": {
-    "min": 900,
-    "max": 1400
-  }
+  "catch_count": 2,
+  "catch_duration_min": 900,
+  "catch_duration_max": 1400
 }

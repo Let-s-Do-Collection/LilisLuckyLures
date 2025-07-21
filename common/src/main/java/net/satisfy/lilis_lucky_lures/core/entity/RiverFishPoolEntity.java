@@ -1,5 +1,7 @@
 package net.satisfy.lilis_lucky_lures.core.entity;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.EntityType;
@@ -17,7 +19,7 @@ public class RiverFishPoolEntity extends FloatingDebrisEntity {
 
     @Override
     public LootTable getLootTable(ServerLevel serverLevel) {
-        return serverLevel.getServer().getLootData().getLootTable(new LilisLuckyLuresIdentifier("gameplay/fishing_pools/river_fish_pool"));
+        return serverLevel.getServer().reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, LilisLuckyLuresIdentifier.identifier("gameplay/fishing_pools/river_fish_pool")));
     }
 
     @Override

@@ -3,14 +3,10 @@
   "bait_item": {
     "item": "minecraft:sweet_berries"
   },
-  "catch": {
-    "result": {
-      "id": "minecraft:salmon",
-      "count": 3
-    }
+  "catch_result": {
+    "id": "minecraft:salmon"
   },
-  "catch_duration": {
-    "min": 1200,
-    "max": 1800
-  }
+  "catch_count": 3,
+  "catch_duration_min": 1200,
+  "catch_duration_max": 1800
 }

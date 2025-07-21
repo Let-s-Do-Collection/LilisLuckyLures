@@ -23,7 +23,7 @@ public class RecipeTypeRegistry {
     public static final RegistrySupplier<RecipeSerializer<Recipe<?>>> CONDITIONAL_RECIPE_SERIALIZER = create("conditional", SimpleConditionalRecipe.Serializer::new);
 
     private static <T extends Recipe<?>> RegistrySupplier<RecipeSerializer<T>> create(String name, Supplier<RecipeSerializer<T>> serializer) {
-        return RECIPE_SERIALIZERS.register(new LilisLuckyLuresIdentifier(name), serializer);
+        return RECIPE_SERIALIZERS.register(LilisLuckyLuresIdentifier.identifier(name), serializer);
     }
 
     private static <T extends Recipe<?>> RegistrySupplier<RecipeType<T>> create(String name) {
@@ -33,7 +33,7 @@ public class RecipeTypeRegistry {
                 return name;
             }
         };
-        return RECIPE_TYPES.register(new LilisLuckyLuresIdentifier(name), type);
+        return RECIPE_TYPES.register(LilisLuckyLuresIdentifier.identifier(name), type);
     }
 
     public static void init() {

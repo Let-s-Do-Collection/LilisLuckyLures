@@ -37,9 +37,9 @@ public class ThrownSpearEntity extends AbstractArrow {
     }
 
     public ThrownSpearEntity(Level level, LivingEntity livingEntity, ItemStack itemStack) {
-        super(EntityTypeRegistry.THROWN_SPEAR.get(), livingEntity, level);
+        super(EntityTypeRegistry.THROWN_SPEAR.get(), livingEntity, level, itemStack, null);
         this.spearItem = itemStack.copy();
-        this.entityData.set(ID_LOYALTY, (byte) EnchantmentHelper.getLoyalty(itemStack));
+        this.entityData.set(ID_LOYALTY, getLoyaltyFromItem(itemStack));
         this.entityData.set(ID_FOIL, itemStack.hasFoil());
     }
 
@@ -50,10 +50,10 @@ public class ThrownSpearEntity extends AbstractArrow {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(ID_LOYALTY, (byte) 0);
-        this.entityData.define(ID_FOIL, false);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        this.entityData.set(ID_LOYALTY, (byte) 0);
+        this.entityData.set(ID_FOIL, false);
         this.setBoundingBox(new AABB(-0.25, -0.25, -0.25, 0.25, 0.25, 0.25));
     }
 
@@ -99,6 +99,11 @@ public class ThrownSpearEntity extends AbstractArrow {
     }
 
     @Override
+    protected ItemStack getDefaultPickupItem() {
+        return new ItemStack(ObjectRegistry.SPEAR.get());
+    }
+
+    @Override
     @Nullable
     protected EntityHitResult findHitEntity(Vec3 startVec, Vec3 endVec) {
         return this.dealtDamage ? null : super.findHitEntity(startVec, endVec);
@@ -108,8 +113,9 @@ public class ThrownSpearEntity extends AbstractArrow {
     protected void onHitEntity(EntityHitResult result) {
         Entity target = result.getEntity();
         float damage = 8.0F;
-        if (target instanceof LivingEntity livingTarget) {
-            damage += EnchantmentHelper.getDamageBonus(this.spearItem, livingTarget.getMobType());
+        if (target instanceof LivingEntity livingTarget && this.level() instanceof ServerLevel serverLevel) {
+            DamageSource damageSource = this.damageSources().trident(this, (Entity)(livingTarget == null ? this : livingTarget));
+            damage +=  EnchantmentHelper.modifyDamage(serverLevel, this.spearItem, livingTarget, damageSource, damage);
 
             if (livingTarget.isInWater()) {
                 damage *= 1.35F;
@@ -121,11 +127,10 @@ public class ThrownSpearEntity extends AbstractArrow {
         this.dealtDamage = true;
         SoundEvent sound = SoundEvents.TRIDENT_HIT;
 
-        if (target.hurt(damageSource, damage) && target instanceof LivingEntity livingTarget) {
+        if (target.hurt(damageSource, damage) && target instanceof LivingEntity livingTarget && this.level() instanceof ServerLevel serverLevel) {
             if (target.getType() == EntityType.ENDERMAN) return;
             if (owner instanceof LivingEntity livingOwner) {
-                EnchantmentHelper.doPostHurtEffects(livingTarget, livingOwner);
-                EnchantmentHelper.doPostDamageEffects(livingOwner, livingTarget);
+                EnchantmentHelper.doPostAttackEffectsWithItemSource(serverLevel, livingOwner, damageSource, this.spearItem);
             }
             this.doPostHurtEffects(livingTarget);
         }
@@ -154,15 +159,15 @@ public class ThrownSpearEntity extends AbstractArrow {
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        if (tag.contains("Spear", 10)) this.spearItem = ItemStack.of(tag.getCompound("Spear"));
+        if (tag.contains("Spear", 10)) this.spearItem = ItemStack.parseOptional(this.level().registryAccess(), tag.getCompound("Spear"));
         this.dealtDamage = tag.getBoolean("DealtDamage");
-        this.entityData.set(ID_LOYALTY, (byte) EnchantmentHelper.getLoyalty(this.spearItem));
+        this.entityData.set(ID_LOYALTY, (getLoyaltyFromItem(this.spearItem)));
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
-        tag.put("Spear", this.spearItem.save(new CompoundTag()));
+        tag.put("Spear", this.spearItem.save(this.level().registryAccess()));
         tag.putBoolean("DealtDamage", this.dealtDamage);
     }
 
