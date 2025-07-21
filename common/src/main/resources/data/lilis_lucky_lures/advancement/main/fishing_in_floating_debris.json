@@ -20,7 +20,8 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "lilis_lucky_lures:fishing_net"
+      "id": "lilis_lucky_lures:fishing_net",
+      "count": 1
     },
     "show_toast": true,
     "title": {

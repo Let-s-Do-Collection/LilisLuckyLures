@@ -21,7 +21,8 @@
     "frame": "goal",
     "hidden": false,
     "icon": {
-      "item": "lilis_lucky_lures:fish_trap"
+      "id": "lilis_lucky_lures:fish_trap",
+      "count": 1
     },
     "show_toast": true,
     "title": {

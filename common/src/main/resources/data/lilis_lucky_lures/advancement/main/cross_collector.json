@@ -2,7 +2,8 @@
   "parent": "lilis_lucky_lures:main/throw_spear",
   "display": {
     "icon": {
-      "item": "lilis_lucky_lures:anglers_hat"
+      "id": "lilis_lucky_lures:anglers_hat",
+      "count": 1
     },
     "title": {
       "translate": "advancement.lilis_lucky_lures.cross_collector"

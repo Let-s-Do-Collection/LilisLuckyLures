@@ -2,7 +2,8 @@
   "parent": "lilis_lucky_lures:main/fishing_in_floating_debris",
   "display": {
     "icon": {
-      "item": "lilis_lucky_lures:soaked_bag"
+      "id": "lilis_lucky_lures:soaked_bag",
+      "count": 1
     },
     "title": {
       "translate": "advancement.lilis_lucky_lures.get_soaked_bag"

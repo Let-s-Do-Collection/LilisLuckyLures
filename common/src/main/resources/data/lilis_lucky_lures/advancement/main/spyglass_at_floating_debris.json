@@ -34,7 +34,8 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "lilis_lucky_lures:floating_debris"
+      "id": "lilis_lucky_lures:floating_debris",
+      "count": 1
     },
     "show_toast": true,
     "title": {

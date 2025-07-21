@@ -28,7 +28,8 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "lilis_lucky_lures:spear",
+      "id": "lilis_lucky_lures:spear",
+      "count": 1,
       "nbt": "{Damage:0}"
     },
     "show_toast": true,

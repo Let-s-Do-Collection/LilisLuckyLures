@@ -35,7 +35,8 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "lilis_lucky_lures:ocean_fish_pool"
+      "id": "lilis_lucky_lures:ocean_fish_pool",
+      "count": 1
     },
     "show_toast": true,
     "title": {
