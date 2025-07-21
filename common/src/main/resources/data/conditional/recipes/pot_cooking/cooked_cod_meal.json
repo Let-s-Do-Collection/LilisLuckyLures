@@ -1,5 +1,5 @@
 {
-  "type": "lilis_lucky_lures:conditional",
+  "type": "doapi:conditional",
   "conditions": [
     {
       "type": "forge:mod_loaded",

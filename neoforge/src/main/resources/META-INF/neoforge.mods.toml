@@ -40,3 +40,10 @@ mandatory = true
 versionRange = "[13.0.0,)"
 ordering = "AFTER"
 side = "BOTH"
+
+[[dependencies.lilis_lucky_lures]]
+modId = "doapi"
+type = "required"
+versionRange = "[1.2.0,)"
+ordering = "NONE"
+side = "BOTH"
