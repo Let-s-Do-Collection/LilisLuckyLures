@@ -6,7 +6,10 @@ license = "All Rights Reserved"
 
 credits = "CR-055"
 [[mixins]]
-config = "lilis_lucky_lures-common.mixins.json, lilis_lucky_lures.mixins.json"
+config =  [
+    "lilis_lucky_lures-common.mixins.json",
+    "lilis_lucky_lures.mixins.json"
+]
 
 [[mods]]
 modId = "lilis_lucky_lures"
