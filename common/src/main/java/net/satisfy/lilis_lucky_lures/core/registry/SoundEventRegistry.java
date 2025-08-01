@@ -17,7 +17,7 @@ public class SoundEventRegistry {
     public static void init() {}
 
     private static RegistrySupplier<SoundEvent> create() {
-        ResourceLocation id = new LilisLuckyLuresIdentifier("tea_kettle_boiling");
+        ResourceLocation id = LilisLuckyLuresIdentifier.identifier("tea_kettle_boiling");
 
         return SOUND_EVENTS.register(id, () -> SoundEvent.createVariableRangeEvent(id));
     }

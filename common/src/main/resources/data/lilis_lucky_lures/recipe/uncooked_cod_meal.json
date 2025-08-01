@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ACB",
+    " # "
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:bowl"
+    },
+    "B": {
+      "item": "minecraft:cod"
+    },
+    "A": {
+      "item": "minecraft:potato"
+    },
+    "C": {
+      "item": "minecraft:kelp"
+    }
+  },
+  "result": {
+    "id": "lilis_lucky_lures:uncooked_cod_meal"
+  }
+}

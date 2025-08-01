@@ -12,7 +12,7 @@ import net.satisfy.lilis_lucky_lures.core.entity.FloatingDebrisEntity;
 import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresIdentifier;
 
 public class FloatingDebrisModel<T extends Entity> extends EntityModel<T> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new LilisLuckyLuresIdentifier("floating_debris"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(LilisLuckyLuresIdentifier.identifier("floating_debris"), "main");
     private final ModelPart button;
     private final ModelPart planks;
     private final ModelPart barrel;
@@ -88,11 +88,10 @@ public class FloatingDebrisModel<T extends Entity> extends EntityModel<T> {
         }
     }
 
-
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        button.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        planks.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        barrel.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int red) {
+        button.render(poseStack, vertexConsumer, packedLight, packedOverlay, red);
+        planks.render(poseStack, vertexConsumer, packedLight, packedOverlay, red);
+        barrel.render(poseStack, vertexConsumer, packedLight, packedOverlay, red);
     }
 }

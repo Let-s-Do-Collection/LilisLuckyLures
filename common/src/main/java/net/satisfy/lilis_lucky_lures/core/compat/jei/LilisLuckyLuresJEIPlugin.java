@@ -7,6 +7,7 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.satisfy.lilis_lucky_lures.core.compat.jei.category.FishTrapCategory;
 import net.satisfy.lilis_lucky_lures.core.recipe.FishTrapRecipe;
@@ -15,6 +16,7 @@ import net.satisfy.lilis_lucky_lures.core.registry.RecipeTypeRegistry;
 import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresIdentifier;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,13 +32,17 @@ public class LilisLuckyLuresJEIPlugin implements IModPlugin {
     public void registerRecipes(IRecipeRegistration registration) {
         RecipeManager rm = Objects.requireNonNull(Minecraft.getInstance().level).getRecipeManager();
 
-        List<FishTrapRecipe> siloRecipes = rm.getAllRecipesFor(RecipeTypeRegistry.FISH_TRAP_RECIPE_TYPE.get());
-        registration.addRecipes(FishTrapCategory.BAITING_TYPE, siloRecipes);
+        List<RecipeHolder<FishTrapRecipe>> fishTrapRecipeHolders = rm.getAllRecipesFor(RecipeTypeRegistry.FISH_TRAP_RECIPE_TYPE.get());
+        List<FishTrapRecipe> fishTrapRecipes = new ArrayList<>();
+        fishTrapRecipeHolders.forEach(fishTrapRecipe -> {
+            fishTrapRecipes.add(fishTrapRecipe.value());
+        });
+        registration.addRecipes(FishTrapCategory.BAITING_TYPE, fishTrapRecipes);
     }
 
     @Override
     public @NotNull ResourceLocation getPluginUid() {
-        return new LilisLuckyLuresIdentifier("jei_plugin");
+        return LilisLuckyLuresIdentifier.identifier("jei_plugin");
     }
 
     @Override

@@ -1,6 +1,7 @@
 package net.satisfy.lilis_lucky_lures.core.item;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -15,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -86,28 +88,28 @@ public class FishNetBlockItem extends Item {
     private void toggleMode(ItemStack stack, ServerLevel level, Player player) {
         String mode = getMode(stack);
         String newMode = mode.equals("net") ? "fence" : "net";
-        CompoundTag tag = stack.getOrCreateTag();
-        tag.putString(MODE_KEY, newMode);
+        CustomData customData = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.of(new CompoundTag().getCompound(MODE_KEY)));
+        customData.copyTag().putString(MODE_KEY, newMode);
 
         level.playSound(null, player.getX(), player.getY(), player.getZ(),
                 SoundEvents.ARMOR_EQUIP_GENERIC, SoundSource.PLAYERS, 1.0F, 1.0F);
 
         if (newMode.equals("net")) {
-            tag.putInt("CustomModelData", 0);
+            customData.copyTag().putInt("CustomModelData", 0);
         } else {
-            tag.putInt("CustomModelData", 1);
+            customData.copyTag().putInt("CustomModelData", 1);
         }
-        stack.setTag(tag);
+        stack.set(DataComponents.CUSTOM_DATA, customData);
     }
 
     private String getMode(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
-        return (tag != null && tag.contains(MODE_KEY)) ? tag.getString(MODE_KEY) : "net";
+        CustomData customData = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.of(new CompoundTag().getCompound(MODE_KEY)));
+        return (customData.copyTag() != null && customData.contains(MODE_KEY)) ? customData.copyTag().getString(MODE_KEY) : "net";
     }
 
 
-@Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    @Override
+    public void appendHoverText(ItemStack itemStack, TooltipContext tooltipContext, List<Component> tooltip, TooltipFlag tooltipFlag) {
         Style actionStyle = Style.EMPTY.withColor(TextColor.fromRgb(0xffecb3));
         Style descriptionStyle = Style.EMPTY.withColor(TextColor.fromRgb(0x52A3CC));
 

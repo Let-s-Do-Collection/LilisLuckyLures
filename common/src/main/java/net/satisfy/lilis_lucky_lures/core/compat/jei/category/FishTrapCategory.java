@@ -15,11 +15,12 @@ import net.minecraft.world.item.ItemStack;
 import net.satisfy.lilis_lucky_lures.LilisLuckyLures;
 import net.satisfy.lilis_lucky_lures.core.recipe.FishTrapRecipe;
 import net.satisfy.lilis_lucky_lures.core.registry.ObjectRegistry;
+import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresIdentifier;
 import org.jetbrains.annotations.NotNull;
 
 public class FishTrapCategory implements IRecipeCategory<FishTrapRecipe> {
     public static final RecipeType<FishTrapRecipe> BAITING_TYPE = RecipeType.create(LilisLuckyLures.MOD_ID, "baiting", FishTrapRecipe.class);
-    public final static ResourceLocation TEXTURE = new ResourceLocation(LilisLuckyLures.MOD_ID, "textures/gui/fish_trap.png");
+    public final static ResourceLocation TEXTURE = LilisLuckyLuresIdentifier.identifier("textures/gui/fish_trap.png");
 
     private final IDrawable background;
     private final IDrawable icon;

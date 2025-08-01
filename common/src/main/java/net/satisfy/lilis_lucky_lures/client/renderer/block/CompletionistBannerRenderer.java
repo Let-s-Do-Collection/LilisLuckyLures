@@ -20,9 +20,10 @@ import net.satisfy.lilis_lucky_lures.LilisLuckyLures;
 import net.satisfy.lilis_lucky_lures.core.block.CompletionistBannerBlock;
 import net.satisfy.lilis_lucky_lures.core.block.CompletionistWallBannerBlock;
 import net.satisfy.lilis_lucky_lures.core.block.entity.CompletionistBannerEntity;
+import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresIdentifier;
 
 public class CompletionistBannerRenderer implements BlockEntityRenderer<CompletionistBannerEntity> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(LilisLuckyLures.MOD_ID, "banner"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(LilisLuckyLuresIdentifier.identifier("banner"), "main");
 
     public static final String FLAG = "flag";
     private static final String POLE = "pole";

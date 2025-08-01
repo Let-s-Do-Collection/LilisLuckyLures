@@ -20,7 +20,7 @@ public class LilisLuckyLuresClientFabric implements ClientModInitializer {
     }
 
     private static void registerItemProperties() {
-        ItemProperties.register(ObjectRegistry.BAMBOO_FISHING_ROD.get(), new ResourceLocation("cast"),
+        ItemProperties.register(ObjectRegistry.BAMBOO_FISHING_ROD.get(), ResourceLocation.parse("cast"),
                 (itemStack, clientWorld, livingEntity, seed) -> {
                     if (livingEntity instanceof Player player) {
                         return (player.getMainHandItem() == itemStack || player.getOffhandItem() == itemStack)

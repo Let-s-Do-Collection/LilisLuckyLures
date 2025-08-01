@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAB",
+    " # "
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:bowl"
+    },
+    "B": {
+      "item": "minecraft:pufferfish"
+    },
+    "A": {
+      "item": "minecraft:potato"
+    }
+  },
+  "result": {
+    "id": "lilis_lucky_lures:uncooked_puffer_plater"
+  }
+}

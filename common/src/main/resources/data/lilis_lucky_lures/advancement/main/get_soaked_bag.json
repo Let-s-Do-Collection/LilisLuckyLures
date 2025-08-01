@@ -1,0 +1,38 @@
+{
+  "parent": "lilis_lucky_lures:main/fishing_in_floating_debris",
+  "display": {
+    "icon": {
+      "id": "lilis_lucky_lures:soaked_bag",
+      "count": 1
+    },
+    "title": {
+      "translate": "advancement.lilis_lucky_lures.get_soaked_bag"
+    },
+    "description": {
+      "translate": "advancement.lilis_lucky_lures.get_soaked_bag.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "get_soaked_bag": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "lilis_lucky_lures:soaked_bag"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "get_soaked_bag"
+    ]
+  ]
+}

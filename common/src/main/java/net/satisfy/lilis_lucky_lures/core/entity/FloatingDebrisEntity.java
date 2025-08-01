@@ -1,10 +1,12 @@
 package net.satisfy.lilis_lucky_lures.core.entity;
 
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -48,10 +50,10 @@ public class FloatingDebrisEntity extends Entity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        this.entityData.define(IS_DESTROYING, false);
-        this.entityData.define(DESTRUCTION_PROGRESS, 0.0F);
-        this.entityData.define(HURT_TIME, 0);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        this.entityData.set(IS_DESTROYING, false);
+        this.entityData.set(DESTRUCTION_PROGRESS, 0.0F);
+        this.entityData.set(HURT_TIME, 0);
     }
 
     @Override
@@ -123,7 +125,7 @@ public class FloatingDebrisEntity extends Entity {
     }
 
     public LootTable getLootTable(ServerLevel serverLevel) {
-        return serverLevel.getServer().getLootData().getLootTable(new LilisLuckyLuresIdentifier("gameplay/fishing_pools/floating_debris"));
+        return serverLevel.getServer().reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, LilisLuckyLuresIdentifier.identifier("gameplay/fishing_pools/floating_debris")));
     }
 
     public void onFishHookInteract(Player player) {
@@ -132,7 +134,7 @@ public class FloatingDebrisEntity extends Entity {
             LootParams lootParams = new LootParams.Builder(serverLevel)
                     .withParameter(LootContextParams.THIS_ENTITY, this)
                     .withParameter(LootContextParams.ORIGIN, position())
-                    .withParameter(LootContextParams.KILLER_ENTITY, player)
+                    .withParameter(LootContextParams.ATTACKING_ENTITY, player)
                     .withParameter(LootContextParams.DAMAGE_SOURCE, serverLevel.damageSources().generic())
                     .create(LootContextParamSets.ENTITY);
             List<ItemStack> loot = lootTable.getRandomItems(lootParams);

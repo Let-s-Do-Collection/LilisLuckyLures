@@ -1,8 +1,11 @@
 package net.satisfy.lilis_lucky_lures.core.item;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -14,6 +17,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -86,15 +91,15 @@ public class FishingNetItem extends Item {
 
                     List<ItemStack> entityLoot = entityLootTable.getRandomItems(lootParams);
 
-                    CompoundTag tag = stack.getOrCreateTag();
+                    CustomData customData = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.of(new CompoundTag().getCompound(TAG_ENTITY_LOOT)));
                     ListTag lootListTag = new ListTag();
                     for (ItemStack item : entityLoot) {
                         CompoundTag itemTag = new CompoundTag();
-                        item.save(itemTag);
+                        item.save(level.registryAccess());
                         lootListTag.add(itemTag);
                     }
-                    tag.put(TAG_ENTITY_LOOT, lootListTag);
-                    stack.setTag(tag);
+                    customData.copyTag().put(TAG_ENTITY_LOOT, lootListTag);
+                    stack.set(DataComponents.CUSTOM_DATA, customData);
 
                     level.playSound(null, player.getX(), player.getY(), player.getZ(),
                             SoundEvents.GENERIC_SWIM, SoundSource.PLAYERS, 1.0F, 1.0F);
@@ -112,8 +117,8 @@ public class FishingNetItem extends Item {
     private void retrieveLoot(Level level, Player player, ItemStack stack) {
         ServerLevel serverLevel = (ServerLevel) level;
 
-        LootTable fishingNetLootTable = serverLevel.getServer().getLootData()
-                .getLootTable(new LilisLuckyLuresIdentifier("gameplay/fishing_net"));
+        LootTable fishingNetLootTable = serverLevel.getServer().reloadableRegistries()
+                .getLootTable(ResourceKey.create(Registries.LOOT_TABLE, LilisLuckyLuresIdentifier.identifier("gameplay/fishing_net")));
 
         LootParams fishingNetLootParams = new LootParams.Builder(serverLevel)
                 .withParameter(LootContextParams.THIS_ENTITY, player)
@@ -123,16 +128,17 @@ public class FishingNetItem extends Item {
         List<ItemStack> fishingNetLoot = fishingNetLootTable.getRandomItems(fishingNetLootParams);
         fishingNetLoot.forEach(player::addItem);
 
-        CompoundTag tag = stack.getTag();
-        if (tag != null && tag.contains(TAG_ENTITY_LOOT, 9)) {
-            ListTag lootListTag = tag.getList(TAG_ENTITY_LOOT, 10);
+        CustomData customData = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.of(new CompoundTag().getCompound(TAG_ENTITY_LOOT)));
+        if (customData.copyTag() != null && customData.copyTag().contains(TAG_ENTITY_LOOT, 9)) {
+            ListTag lootListTag = customData.copyTag().getList(TAG_ENTITY_LOOT, 10);
             for (int i = 0; i < lootListTag.size(); i++) {
                 CompoundTag itemTag = lootListTag.getCompound(i);
-                ItemStack entityLootItem = ItemStack.of(itemTag);
+                ItemStack entityLootItem = ItemStack.parse(level.registryAccess(), itemTag).orElseGet(() -> ItemStack.EMPTY);
                 player.addItem(entityLootItem);
             }
-            tag.remove(TAG_ENTITY_LOOT);
+            customData.copyTag().remove(TAG_ENTITY_LOOT);
         }
+        stack.set(DataComponents.CUSTOM_DATA, customData);
 
         level.playSound(null, player.getX(), player.getY(), player.getZ(),
                 SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1.0F, 1.0F);
@@ -166,7 +172,7 @@ public class FishingNetItem extends Item {
     }
 
     @Override
-    public int getUseDuration(ItemStack stack) {
+    public int getUseDuration(ItemStack itemStack, LivingEntity livingEntity) {
         return USE_DURATION;
     }
 
@@ -176,21 +182,21 @@ public class FishingNetItem extends Item {
     }
 
     private int getState(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
-        if (tag != null && tag.contains(TAG_STATE)) {
-            return tag.getInt(TAG_STATE);
+        CustomData customData = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.of(new CompoundTag().getCompound(TAG_STATE)));
+        if (customData.copyTag() != null && customData.contains(TAG_STATE)) {
+            return customData.copyTag().getInt(TAG_STATE);
         }
         return STATE_EMPTY;
     }
 
     private void setState(ItemStack stack, int state) {
-        CompoundTag tag = stack.getOrCreateTag();
-        tag.putInt(TAG_STATE, state);
+        CustomData customData = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.of(new CompoundTag().getCompound(TAG_STATE)));
+        customData.copyTag().putInt(TAG_STATE, state);
         if (state == STATE_FULL) {
-            tag.putInt("CustomModelData", 1);
+            stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(1));
         } else {
-            tag.remove("CustomModelData");
+            stack.remove(DataComponents.CUSTOM_MODEL_DATA);
         }
-        stack.setTag(tag);
+        stack.set(DataComponents.CUSTOM_DATA, customData);
     }
 }

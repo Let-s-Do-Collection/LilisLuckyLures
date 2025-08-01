@@ -12,7 +12,7 @@ import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresIdentifier;
 import org.joml.Matrix4f;
 
 public class AnglersHatModel<T extends Entity> extends EntityModel<T> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new LilisLuckyLuresIdentifier("anglers_hat"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(LilisLuckyLuresIdentifier.identifier("anglers_hat"), "main");
     private final ModelPart anglersHat;
 
     public AnglersHatModel(ModelPart root) {
@@ -33,19 +33,19 @@ public class AnglersHatModel<T extends Entity> extends EntityModel<T> {
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        poseStack.pushPose();
-        Matrix4f scaleMatrix = new Matrix4f().scaling(1.05F, 1.05F, 1.05F);
-        poseStack.mulPoseMatrix(scaleMatrix);
-        anglersHat.render(poseStack, buffer, packedLight, packedOverlay);
-        poseStack.popPose();
-    }
-
-    @Override
     public void setupAnim(T entity, float f, float g, float h, float i, float j) {
     }
 
     public void copyHead(ModelPart model) {
         anglersHat.copyFrom(model);
+    }
+
+    @Override
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int i, int j, int k) {
+        poseStack.pushPose();
+        Matrix4f scaleMatrix = new Matrix4f().scaling(1.05F, 1.05F, 1.05F);
+        poseStack.mulPose(scaleMatrix);
+        anglersHat.render(poseStack, vertexConsumer, i, j, k);
+        poseStack.popPose();
     }
 }

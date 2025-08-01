@@ -8,6 +8,7 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -154,20 +155,20 @@ public class HangingFrameBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public @NotNull InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected ItemInteractionResult useItemOn(ItemStack item, BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (!(blockEntity instanceof HangingFrameBlockEntity shelfBlockEntity)) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
 
         Optional<Tuple<Float, Float>> optional = LilisLuckyLuresUtil.getRelativeHitCoordinatesForBlockFace(hit, state.getValue(FACING), new Direction[]{Direction.DOWN, Direction.UP});
         if (optional.isEmpty()) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
 
         int i = 2 - (int) (optional.get().getA() * 3);
         if (i < 0 || i >= shelfBlockEntity.getInventory().size()) {
-            return InteractionResult.PASS;
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
 
         if (!shelfBlockEntity.getInventory().get(i).isEmpty()) {
@@ -179,7 +180,7 @@ public class HangingFrameBlock extends Block implements EntityBlock {
                 }
                 world.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
             }
-            return InteractionResult.sidedSuccess(world.isClientSide);
+            return ItemInteractionResult.sidedSuccess(world.isClientSide);
         }
 
         ItemStack stack = player.getItemInHand(hand);
@@ -192,9 +193,9 @@ public class HangingFrameBlock extends Block implements EntityBlock {
                 }
                 world.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
             }
-            return InteractionResult.sidedSuccess(world.isClientSide);
+            return ItemInteractionResult.sidedSuccess(world.isClientSide);
         }
 
-        return InteractionResult.CONSUME;
+        return ItemInteractionResult.CONSUME;
     }
 }

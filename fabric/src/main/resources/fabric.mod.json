@@ -32,13 +32,13 @@
     ]
   },
   "mixins": [
-    "lilis_lucky_lures.mixins.json",
     "lilis_lucky_lures-common.mixins.json"
   ],
   "depends": {
     "fabric": "*",
-    "minecraft": ">=1.20.1",
-    "architectury": ">=9.1.12"
+    "minecraft": ">=1.21.1",
+    "architectury": ">=13.0.0",
+    "doapi": ">=1.2.11"
   }
 }
 

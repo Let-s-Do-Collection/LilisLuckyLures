@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 @Environment(EnvType.CLIENT)
 public class ThrownSpearRenderer extends EntityRenderer<ThrownSpearEntity> {
-    private static final ResourceLocation TEXTURE = new LilisLuckyLuresIdentifier("textures/entity/spear.png");
+    private static final ResourceLocation TEXTURE = LilisLuckyLuresIdentifier.identifier("textures/entity/spear.png");
     private final SpearModel model;
 
     public ThrownSpearRenderer(EntityRendererProvider.Context context) {
@@ -36,7 +36,7 @@ public class ThrownSpearRenderer extends EntityRenderer<ThrownSpearEntity> {
         poseStack.translate(-0.7, -0.75, 0);
 
         VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.entityTranslucent(this.getTextureLocation(thrownSpear)));
-        this.model.renderToBuffer(poseStack, vertexConsumer, i, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        this.model.renderToBuffer(poseStack, vertexConsumer, i, OverlayTexture.NO_OVERLAY);
         poseStack.popPose();
         super.render(thrownSpear, f, g, poseStack, multiBufferSource, i);
     }

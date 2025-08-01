@@ -1,12 +1,13 @@
 package net.satisfy.lilis_lucky_lures.core.recipe;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
@@ -16,8 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Random;
 
 @SuppressWarnings("unused")
-public class FishTrapRecipe implements Recipe<Container> {
-    final ResourceLocation id;
+public class FishTrapRecipe implements Recipe<RecipeInput> {
     private final Ingredient baitItem;
     private final ItemStack catchItem;
     private final int catchCount;
@@ -25,8 +25,7 @@ public class FishTrapRecipe implements Recipe<Container> {
     private final int maxDuration;
     private final Random random = new Random();
 
-    public FishTrapRecipe(ResourceLocation id, Ingredient baitItem, ItemStack catchItem, int catchCount, int minDuration, int maxDuration) {
-        this.id = id;
+    public FishTrapRecipe(Ingredient baitItem, ItemStack catchItem, int catchCount, int minDuration, int maxDuration) {
         this.baitItem = baitItem;
         this.catchItem = catchItem;
         this.catchCount = catchCount;
@@ -66,12 +65,12 @@ public class FishTrapRecipe implements Recipe<Container> {
     }
 
     @Override
-    public boolean matches(Container inventory, Level world) {
-        return baitItem.test(inventory.getItem(0));
+    public boolean matches(RecipeInput recipeInput, Level level) {
+        return baitItem.test(recipeInput.getItem(0));
     }
 
     @Override
-    public @NotNull ItemStack assemble(Container container, RegistryAccess registryAccess) {
+    public ItemStack assemble(RecipeInput recipeInput, HolderLookup.Provider provider) {
         return catchItem.copy();
     }
 
@@ -81,13 +80,12 @@ public class FishTrapRecipe implements Recipe<Container> {
     }
 
     @Override
-    public @NotNull ItemStack getResultItem(RegistryAccess registryAccess) {
+    public ItemStack getResultItem(HolderLookup.Provider provider) {
         return catchItem.copy();
     }
 
-    @Override
     public @NotNull ResourceLocation getId() {
-        return id;
+        return RecipeTypeRegistry.FISH_TRAP_RECIPE_TYPE.getId();
     }
 
     @Override
@@ -107,35 +105,43 @@ public class FishTrapRecipe implements Recipe<Container> {
 
     public static class Serializer implements RecipeSerializer<FishTrapRecipe> {
 
-        @Override
-        public @NotNull FishTrapRecipe fromJson(ResourceLocation id, JsonObject json) {
-            Ingredient baitItem = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "bait_item"));
-            JsonObject result = GsonHelper.getAsJsonObject(json, "catch").getAsJsonObject("result");
-            ItemStack catchItem = ShapedRecipe.itemStackFromJson(result);
-            int catchCount = GsonHelper.getAsInt(result, "count", 1);
-            JsonObject duration = GsonHelper.getAsJsonObject(json, "catch_duration");
-            int minDuration = GsonHelper.getAsInt(duration, "min");
-            int maxDuration = GsonHelper.getAsInt(duration, "max");
-            return new FishTrapRecipe(id, baitItem, catchItem, catchCount, minDuration, maxDuration);
-        }
+        public static final StreamCodec<RegistryFriendlyByteBuf, FishTrapRecipe> STREAM_CODEC =
+                StreamCodec.of(Serializer::toNetwork, Serializer::fromNetwork);
 
-        @Override
-        public @NotNull FishTrapRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
-            Ingredient baitItem = Ingredient.fromNetwork(buf);
-            ItemStack catchItem = buf.readItem();
+        private static final MapCodec<FishTrapRecipe> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
+            return instance.group(Ingredient.CODEC.fieldOf("bait_item").forGetter(FishTrapRecipe::getBaitItem),
+                    ItemStack.STRICT_CODEC.fieldOf("catch_result").forGetter(FishTrapRecipe::getCatchItem),
+                    Codec.INT.fieldOf("catch_count").forGetter(FishTrapRecipe::getCatchCount),
+                    Codec.INT.fieldOf("catch_duration_min").forGetter(FishTrapRecipe::getMinDuration),
+                    Codec.INT.fieldOf("catch_duration_max").forGetter(FishTrapRecipe::getMinDuration))
+                    .apply(instance, FishTrapRecipe::new);
+        });
+
+        public static @NotNull FishTrapRecipe fromNetwork(RegistryFriendlyByteBuf buf) {
+            Ingredient baitItem = Ingredient.CONTENTS_STREAM_CODEC.decode(buf);
+            ItemStack catchItem = ItemStack.STREAM_CODEC.decode(buf);
             int catchCount = buf.readInt();
             int minDuration = buf.readInt();
             int maxDuration = buf.readInt();
-            return new FishTrapRecipe(id, baitItem, catchItem, catchCount, minDuration, maxDuration);
+            return new FishTrapRecipe(baitItem, catchItem, catchCount, minDuration, maxDuration);
         }
 
-        @Override
-        public void toNetwork(FriendlyByteBuf buf, FishTrapRecipe recipe) {
-            recipe.baitItem.toNetwork(buf);
-            buf.writeItem(recipe.catchItem);
+        public static void toNetwork(RegistryFriendlyByteBuf buf, FishTrapRecipe recipe) {
+            Ingredient.CONTENTS_STREAM_CODEC.encode(buf, recipe.baitItem);
+            ItemStack.STREAM_CODEC.encode(buf, recipe.catchItem);
             buf.writeInt(recipe.catchCount);
             buf.writeInt(recipe.minDuration);
             buf.writeInt(recipe.maxDuration);
+        }
+
+        @Override
+        public MapCodec<FishTrapRecipe> codec() {
+            return CODEC;
+        }
+
+        @Override
+        public StreamCodec<RegistryFriendlyByteBuf, FishTrapRecipe> streamCodec() {
+            return STREAM_CODEC;
         }
     }
 }

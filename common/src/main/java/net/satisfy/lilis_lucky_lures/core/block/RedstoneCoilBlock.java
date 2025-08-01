@@ -1,5 +1,6 @@
 package net.satisfy.lilis_lucky_lures.core.block;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -14,6 +15,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -75,6 +77,13 @@ public class RedstoneCoilBlock extends BaseEntityBlock {
     public RedstoneCoilBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(ACTIVE, false).setValue(FACING, Direction.NORTH).setValue(HALF, DoubleBlockHalf.LOWER).setValue(TARGET, RedstoneCoilTarget.NONE));
+    }
+
+    public static final MapCodec<RedstoneCoilBlock> CODEC = simpleCodec(RedstoneCoilBlock::new);
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
     }
 
     @Override
@@ -184,7 +193,7 @@ public class RedstoneCoilBlock extends BaseEntityBlock {
     }
 
     @Override
-    public @NotNull InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult blockHitResult) {
         if (level.isClientSide()) return InteractionResult.SUCCESS;
         BlockPos basePos = state.getValue(HALF) == DoubleBlockHalf.UPPER ? pos.below() : pos;
         BlockState baseState = level.getBlockState(basePos);
@@ -231,7 +240,7 @@ public class RedstoneCoilBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, @Nullable BlockGetter blockGetter, List<Component> list, TooltipFlag tooltipFlag) {
+    public void appendHoverText(ItemStack itemStack, Item.TooltipContext tooltipContext, List<Component> list, TooltipFlag tooltipFlag) {
         Style defaultStyle = Style.EMPTY.withColor(TextColor.fromRgb(0x52A3CC));
         Style actionStyle = Style.EMPTY.withColor(TextColor.fromRgb(0xffecb3));
         Style noteStyle = Style.EMPTY.withColor(TextColor.fromRgb(0xDAFFFF));

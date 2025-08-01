@@ -17,7 +17,6 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -65,25 +64,25 @@ public class FoodEffectItem extends Item {
     }
 
     @Override
-    public int getUseDuration(ItemStack stack) {
+    public int getUseDuration(ItemStack itemStack, LivingEntity livingEntity) {
         return 32;
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack itemStack, TooltipContext tooltipContext, List<Component> tooltip, TooltipFlag tooltipFlag) {
         if (cooked) {
             MobEffectInstance effectInstance = new MobEffectInstance(MobEffects.LUCK, effectDuration);
             int effectLevel = effectInstance.getAmplifier();
-            MutableComponent effectName = Component.translatable(effectInstance.getEffect().getDescriptionId());
+            MutableComponent effectName = Component.translatable(effectInstance.getEffect().value().getDescriptionId());
 
             if (effectLevel > 0) {
                 effectName.append(" ").append(Component.translatable("potion.potency." + effectLevel));
             }
 
-            String durationText = MobEffectUtil.formatDuration(effectInstance, 1.0f).getString();
+            String durationText = MobEffectUtil.formatDuration(effectInstance, 1.0f, 1.0f).getString();
             MutableComponent effectDuration = Component.translatable(" (").append(Component.literal(durationText)).append(Component.literal(")"));
 
-            tooltip.add(effectName.append(effectDuration).withStyle(effectInstance.getEffect().getCategory().getTooltipFormatting()));
+            tooltip.add(effectName.append(effectDuration).withStyle(effectInstance.getEffect().value().getCategory().getTooltipFormatting()));
         } else {
             tooltip.add(Component.translatable("tooltip.lilis_lucky_lures.item.uncooked").setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xD27D46))));
 

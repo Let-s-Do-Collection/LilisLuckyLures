@@ -1,5 +1,6 @@
 package net.satisfy.lilis_lucky_lures.core.item;
 
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
@@ -22,7 +23,7 @@ import java.util.List;
 public class AnglersHatItem extends ArmorItem {
     private final ResourceLocation hatTexture;
 
-    public AnglersHatItem(ArmorMaterial armorMaterial, Type type, Properties properties, ResourceLocation hatTexture) {
+    public AnglersHatItem(Holder<ArmorMaterial> armorMaterial, Type type, Properties properties, ResourceLocation hatTexture) {
         super(armorMaterial, type, properties);
         this.hatTexture = hatTexture;
     }
@@ -37,7 +38,7 @@ public class AnglersHatItem extends ArmorItem {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void appendHoverText(ItemStack itemStack, TooltipContext tooltipContext, List<Component> tooltip, TooltipFlag tooltipFlag) {
         tooltip.add(Component.translatable("tooltip.lilis_lucky_lures.item.anglers_hat_worn").setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xDAFFFF))).append(Component.literal(" ")).append(Component.translatable("tooltip.lilis_lucky_lures.item.anglers_hat_effect").setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x52A3CC)))));
     }
 

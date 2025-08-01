@@ -1,0 +1,38 @@
+{
+  "parent": "lilis_lucky_lures:main/use_melon_seeds_on_fish_trap",
+  "criteria": {
+    "place_fish_bag": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": [
+          {
+            "block": "lilis_lucky_lures:fish_bag",
+            "condition": "minecraft:block_state_property"
+          }
+        ]
+      }
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.lilis_lucky_lures.place_fish_bag.desc"
+    },
+    "frame": "goal",
+    "hidden": false,
+    "icon": {
+      "id": "lilis_lucky_lures:fish_bag",
+      "count": 1
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.lilis_lucky_lures.place_fish_bag"
+    }
+  },
+  "requirements": [
+    [
+      "place_fish_bag"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

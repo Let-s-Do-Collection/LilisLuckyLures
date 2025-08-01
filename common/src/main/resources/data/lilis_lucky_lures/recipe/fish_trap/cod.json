@@ -1,0 +1,12 @@
+{
+  "type": "lilis_lucky_lures:fish_trap",
+  "bait_item": {
+    "item": "minecraft:wheat_seeds"
+  },
+  "catch_result": {
+    "id": "minecraft:cod"
+  },
+  "catch_count": 3,
+  "catch_duration_min": 1200,
+  "catch_duration_max": 1800
+}

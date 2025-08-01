@@ -9,7 +9,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.satisfy.lilis_lucky_lures.LilisLuckyLures;
 import net.satisfy.lilis_lucky_lures.core.recipe.FishTrapRecipe;
-import net.satisfy.lilis_lucky_lures.core.recipe.SimpleConditionalRecipe;
 import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresIdentifier;
 
 import java.util.function.Supplier;
@@ -20,10 +19,9 @@ public class RecipeTypeRegistry {
 
     public static final RegistrySupplier<RecipeType<FishTrapRecipe>> FISH_TRAP_RECIPE_TYPE = create("fish_trap");
     public static final RegistrySupplier<RecipeSerializer<FishTrapRecipe>> FISH_TRAP_RECIPE_SERIALIZER = create("fish_trap", FishTrapRecipe.Serializer::new);
-    public static final RegistrySupplier<RecipeSerializer<Recipe<?>>> CONDITIONAL_RECIPE_SERIALIZER = create("conditional", SimpleConditionalRecipe.Serializer::new);
 
     private static <T extends Recipe<?>> RegistrySupplier<RecipeSerializer<T>> create(String name, Supplier<RecipeSerializer<T>> serializer) {
-        return RECIPE_SERIALIZERS.register(new LilisLuckyLuresIdentifier(name), serializer);
+        return RECIPE_SERIALIZERS.register(LilisLuckyLuresIdentifier.identifier(name), serializer);
     }
 
     private static <T extends Recipe<?>> RegistrySupplier<RecipeType<T>> create(String name) {
@@ -33,7 +31,7 @@ public class RecipeTypeRegistry {
                 return name;
             }
         };
-        return RECIPE_TYPES.register(new LilisLuckyLuresIdentifier(name), type);
+        return RECIPE_TYPES.register(LilisLuckyLuresIdentifier.identifier(name), type);
     }
 
     public static void init() {
