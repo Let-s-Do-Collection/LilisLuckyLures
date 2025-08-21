@@ -23,7 +23,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -86,27 +85,19 @@ public class FishNetBlockItem extends Item {
     }
 
     private void toggleMode(ItemStack stack, ServerLevel level, Player player) {
-        String mode = getMode(stack);
+        CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+        String mode = tag.contains(MODE_KEY) ? tag.getString(MODE_KEY) : "net";
         String newMode = mode.equals("net") ? "fence" : "net";
-        CustomData customData = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.of(new CompoundTag().getCompound(MODE_KEY)));
-        customData.copyTag().putString(MODE_KEY, newMode);
-
-        level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                SoundEvents.ARMOR_EQUIP_GENERIC, SoundSource.PLAYERS, 1.0F, 1.0F);
-
-        if (newMode.equals("net")) {
-            customData.copyTag().putInt("CustomModelData", 0);
-        } else {
-            customData.copyTag().putInt("CustomModelData", 1);
-        }
-        stack.set(DataComponents.CUSTOM_DATA, customData);
+        tag.putString(MODE_KEY, newMode);
+        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+        stack.set(DataComponents.CUSTOM_MODEL_DATA, new net.minecraft.world.item.component.CustomModelData(newMode.equals("net") ? 0 : 1));
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ARMOR_EQUIP_GENERIC, SoundSource.PLAYERS, 1.0F, 1.0F);
     }
 
     private String getMode(ItemStack stack) {
-        CustomData customData = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.of(new CompoundTag().getCompound(MODE_KEY)));
-        return (customData.copyTag() != null && customData.contains(MODE_KEY)) ? customData.copyTag().getString(MODE_KEY) : "net";
+        CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+        return tag.contains(MODE_KEY) ? tag.getString(MODE_KEY) : "net";
     }
-
 
     @Override
     public void appendHoverText(ItemStack itemStack, TooltipContext tooltipContext, List<Component> tooltip, TooltipFlag tooltipFlag) {

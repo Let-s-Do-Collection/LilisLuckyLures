@@ -28,7 +28,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings("deprecation, unused")
 public class FishNetFenceBlock extends CrossCollisionBlock {
     private static final VoxelShape POST_SHAPE = Block.box(7, 0, 7, 9, 16, 9);
     private static final VoxelShape NORTH_SHAPE = Block.box(7, 0, 0, 9, 16, 7);
@@ -54,7 +53,7 @@ public class FishNetFenceBlock extends CrossCollisionBlock {
     public static final MapCodec<FishNetFenceBlock> CODEC = simpleCodec(FishNetFenceBlock::new);
 
     @Override
-    protected MapCodec<? extends CrossCollisionBlock> codec() {
+    protected @NotNull MapCodec<? extends CrossCollisionBlock> codec() {
         return CODEC;
     }
 
@@ -73,7 +72,7 @@ public class FishNetFenceBlock extends CrossCollisionBlock {
         return false;
     }
 
-    private boolean connectsTo(BlockState state, Direction direction) {
+    private boolean connectsTo(BlockState state) {
         return state.getBlock() instanceof FishNetFenceBlock || state.isSolidRender(null, null);
     }
 
@@ -91,7 +90,7 @@ public class FishNetFenceBlock extends CrossCollisionBlock {
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult blockHitResult) {
+    protected @NotNull InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult blockHitResult) {
         if (!level.isClientSide) {
             if (hasBellAbove(level, blockPos)) {
                 level.playSound(null, blockPos, SoundEvents.BELL_RESONATE, SoundSource.BLOCKS, 1.0F, 1.0F);
@@ -113,10 +112,10 @@ public class FishNetFenceBlock extends CrossCollisionBlock {
         FluidState fluidState = world.getFluidState(pos);
 
         return this.defaultBlockState()
-                .setValue(NORTH, this.connectsTo(world.getBlockState(pos.north()), Direction.SOUTH))
-                .setValue(EAST, this.connectsTo(world.getBlockState(pos.east()), Direction.WEST))
-                .setValue(SOUTH, this.connectsTo(world.getBlockState(pos.south()), Direction.NORTH))
-                .setValue(WEST, this.connectsTo(world.getBlockState(pos.west()), Direction.EAST))
+                .setValue(NORTH, this.connectsTo(world.getBlockState(pos.north())))
+                .setValue(EAST, this.connectsTo(world.getBlockState(pos.east())))
+                .setValue(SOUTH, this.connectsTo(world.getBlockState(pos.south())))
+                .setValue(WEST, this.connectsTo(world.getBlockState(pos.west())))
                 .setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
     }
 
@@ -126,7 +125,7 @@ public class FishNetFenceBlock extends CrossCollisionBlock {
             world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
         }
         if (direction.getAxis().isHorizontal()) {
-            return state.setValue(PROPERTY_BY_DIRECTION.get(direction), this.connectsTo(newState, direction.getOpposite()));
+            return state.setValue(PROPERTY_BY_DIRECTION.get(direction), this.connectsTo(newState));
         }
         return super.updateShape(state, direction, newState, world, pos, neighborPos);
     }

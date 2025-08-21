@@ -28,13 +28,17 @@ public class FishTrophyFrameBlockEntity extends BlockEntity implements Clearable
     @Override
     protected void loadAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
         super.loadAdditional(compoundTag, provider);
-        this.displayedItem = ItemStack.parseOptional(provider, compoundTag.getCompound("DisplayedItem"));
+        this.displayedItem = compoundTag.contains("DisplayedItem", 10)
+                ? ItemStack.parseOptional(provider, compoundTag.getCompound("DisplayedItem"))
+                : ItemStack.EMPTY;
     }
 
     @Override
     protected void saveAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
         super.saveAdditional(compoundTag, provider);
-        compoundTag.put("DisplayedItem", this.displayedItem.save(provider, new CompoundTag()));
+        if (!this.displayedItem.isEmpty()) {
+            compoundTag.put("DisplayedItem", this.displayedItem.save(provider, new CompoundTag()));
+        }
     }
 
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
@@ -42,9 +46,11 @@ public class FishTrophyFrameBlockEntity extends BlockEntity implements Clearable
     }
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+    public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider provider) {
         CompoundTag compoundTag = super.getUpdateTag(provider);
-        compoundTag.put("DisplayedItem", this.displayedItem.save(provider, new CompoundTag()));
+        if (!this.displayedItem.isEmpty()) {
+            compoundTag.put("DisplayedItem", this.displayedItem.save(provider, new CompoundTag()));
+        }
         return compoundTag;
     }
 

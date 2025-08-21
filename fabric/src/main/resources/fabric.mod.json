@@ -3,12 +3,10 @@
   "id": "lilis_lucky_lures",
   "version": "${version}",
   "name": "Lilis' Lucky Lures",
-  "description": "Let's go fishing! We pack our Gear: A Fishing Fod, Fishing Hat, Dynamite... Dynamite? Lili's Lucky Lures adds extra ways to catch Fish, complete with Fish & Rubble Pools and a modest Collection of Decorative Blocks.",
+  "description": "Let's go fishing! We pack our Gear: A Fishing Rod, Fishing Hat, Dynamite... Dynamite? Lili's Lucky Lures adds extra ways to catch Fish, complete with Fish & Rubble Pools and a modest Collection of Decorative Blocks.",
   "authors": [
-    "satisfy, MissLilitu"
-  ],
-  "credits": [
-    "CR-055"
+    "satisfy",
+    "MissLilitu"
   ],
   "contact": {
     "issues": "https://github.com/satisfyu/Let-s-Do-Hub",
@@ -23,7 +21,9 @@
     ],
     "client": [
       "net.satisfy.lilis_lucky_lures.fabric.client.LilisLuckyLuresClientFabric"
-    ],
+    ]
+  },
+  "custom": {
     "jei_mod_plugin": [
       "net.satisfy.lilis_lucky_lures.core.compat.jei.LilisLuckyLuresJEIPlugin"
     ],
@@ -37,9 +37,6 @@
   "depends": {
     "fabric": "*",
     "minecraft": ">=1.21.1",
-    "architectury": ">=13.0.0",
-    "doapi": ">=1.2.11"
+    "architectury": ">=13.0.0"
   }
 }
-
-

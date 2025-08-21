@@ -51,9 +51,9 @@ public class FloatingDebrisEntity extends Entity {
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        this.entityData.set(IS_DESTROYING, false);
-        this.entityData.set(DESTRUCTION_PROGRESS, 0.0F);
-        this.entityData.set(HURT_TIME, 0);
+        builder.define(IS_DESTROYING, false);
+        builder.define(DESTRUCTION_PROGRESS, 0.0F);
+        builder.define(HURT_TIME, 0);
     }
 
     @Override
