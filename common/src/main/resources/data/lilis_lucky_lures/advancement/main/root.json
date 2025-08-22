@@ -1,7 +1,7 @@
 {
   "display": {
-    "id": {
-      "item": "lilis_lucky_lures:river_fish_pool",
+    "icon": {
+      "id": "lilis_lucky_lures:river_fish_pool",
       "count": 1
     },
     "title": {

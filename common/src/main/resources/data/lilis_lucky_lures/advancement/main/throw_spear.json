@@ -1,23 +1,18 @@
 {
-  "parent": "lilis_lucky_lures:main/root",
+  "parent": "lilis_lucky_lures:main/get_soaked_bag",
   "criteria": {
     "shot_spear": {
+      "trigger": "minecraft:player_hurt_entity",
       "conditions": {
         "damage": {
           "type": {
             "direct_entity": {
               "type": "lilis_lucky_lures:thrown_spear"
             },
-            "tags": [
-              {
-                "expected": true,
-                "id": "minecraft:is_projectile"
-              }
-            ]
+            "is_projectile": true
           }
         }
-      },
-      "trigger": "minecraft:player_hurt_entity"
+      }
     }
   },
   "display": {

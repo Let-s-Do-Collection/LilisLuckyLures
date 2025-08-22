@@ -1,5 +1,6 @@
 package net.satisfy.lilis_lucky_lures;
 
+import net.minecraft.resources.ResourceLocation;
 import net.satisfy.lilis_lucky_lures.core.registry.*;
 
 
@@ -13,4 +14,6 @@ public class LilisLuckyLures {
         SoundEventRegistry.init();
         TabRegistry.init();
     }
+
+
 }

@@ -16,7 +16,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -47,6 +46,11 @@ public class AnglersHatItem extends ArmorItem {
         if (entity instanceof Player player) {
             applyLuckBonus(player);
         }
+    }
+
+    @Override
+    public boolean isEnchantable(@NotNull ItemStack stack) {
+        return true;
     }
 
     public static void applyLuckBonus(Player player) {

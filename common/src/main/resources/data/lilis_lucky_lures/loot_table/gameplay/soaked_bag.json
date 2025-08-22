@@ -1,8 +1,9 @@
 {
-  "type": "minecraft:entity",
+  "type": "minecraft:gift",
   "pools": [
     {
       "rolls": 1,
+      "bonus_rolls": 0,
       "entries": [
         {
           "type": "minecraft:item",
@@ -34,17 +35,6 @@
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:enchanted_book",
-          "functions": [
-            {
-              "function": "minecraft:set_nbt",
-              "tag": "{StoredEnchantments:[{id:\"minecraft:mending\",lvl:1}]}"
-            }
-          ],
-          "weight": 1
-        },
-        {
-          "type": "minecraft:item",
           "name": "minecraft:iron_ingot",
           "functions": [
             {
@@ -56,6 +46,17 @@
             }
           ],
           "weight": 5
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:enchant_with_levels",
+              "levels": 30.0,
+              "options": "#minecraft:on_random_loot"
+            }
+          ],
+          "name": "minecraft:book"
         },
         {
           "type": "minecraft:item",
@@ -125,13 +126,11 @@
             {
               "function": "minecraft:set_damage",
               "damage": {
+                "type": "minecraft:uniform",
                 "min": 0.2,
                 "max": 0.8
-              }
-            },
-            {
-              "function": "minecraft:enchant_randomly",
-              "chance": 0.4
+              },
+              "add": false
             }
           ],
           "weight": 12
@@ -143,9 +142,11 @@
             {
               "function": "minecraft:set_damage",
               "damage": {
+                "type": "minecraft:uniform",
                 "min": 0.4,
                 "max": 0.8
-              }
+              },
+              "add": false
             },
             {
               "function": "minecraft:enchant_randomly",
@@ -161,13 +162,11 @@
             {
               "function": "minecraft:set_damage",
               "damage": {
+                "type": "minecraft:uniform",
                 "min": 0.4,
                 "max": 0.8
-              }
-            },
-            {
-              "function": "minecraft:enchant_randomly",
-              "chance": 0.4
+              },
+              "add": false
             }
           ],
           "weight": 1
@@ -179,9 +178,11 @@
             {
               "function": "minecraft:set_damage",
               "damage": {
+                "type": "minecraft:uniform",
                 "min": 0.4,
                 "max": 0.8
-              }
+              },
+              "add": false
             },
             {
               "function": "minecraft:enchant_randomly",
@@ -197,9 +198,11 @@
             {
               "function": "minecraft:set_damage",
               "damage": {
+                "type": "minecraft:uniform",
                 "min": 0.4,
                 "max": 0.8
-              }
+              },
+              "add": false
             },
             {
               "function": "minecraft:enchant_randomly",
@@ -215,9 +218,11 @@
             {
               "function": "minecraft:set_damage",
               "damage": {
+                "type": "minecraft:uniform",
                 "min": 0.4,
                 "max": 0.8
-              }
+              },
+              "add": false
             },
             {
               "function": "minecraft:enchant_randomly",
@@ -233,9 +238,11 @@
             {
               "function": "minecraft:set_damage",
               "damage": {
+                "type": "minecraft:uniform",
                 "min": 0.4,
                 "max": 0.8
-              }
+              },
+              "add": false
             },
             {
               "function": "minecraft:enchant_randomly",
@@ -251,9 +258,11 @@
             {
               "function": "minecraft:set_damage",
               "damage": {
+                "type": "minecraft:uniform",
                 "min": 0.4,
                 "max": 0.8
-              }
+              },
+              "add": false
             },
             {
               "function": "minecraft:enchant_randomly",
@@ -269,9 +278,11 @@
             {
               "function": "minecraft:set_damage",
               "damage": {
+                "type": "minecraft:uniform",
                 "min": 0.4,
                 "max": 0.8
-              }
+              },
+              "add": false
             },
             {
               "function": "minecraft:enchant_randomly",
@@ -287,9 +298,11 @@
             {
               "function": "minecraft:set_damage",
               "damage": {
+                "type": "minecraft:uniform",
                 "min": 0.4,
                 "max": 0.8
-              }
+              },
+              "add": false
             },
             {
               "function": "minecraft:enchant_randomly",
@@ -300,5 +313,6 @@
         }
       ]
     }
-  ]
+  ],
+  "random_sequence": "lilis_lucky_lures:gameplay/soaked_bag"
 }

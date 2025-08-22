@@ -86,7 +86,7 @@ public class SpearItem extends Item implements ProjectileItem {
                                 }
 
                                 level.addFreshEntity(thrownSpear);
-                                level.playSound((Player)null, thrownSpear, (SoundEvent)holder.value(), SoundSource.PLAYERS, 1.0F, 1.0F);
+                                level.playSound(null, thrownSpear, holder.value(), SoundSource.PLAYERS, 1.0F, 1.0F);
                                 if (!player.hasInfiniteMaterials()) {
                                     player.getInventory().removeItem(itemStack);
                                 }
@@ -110,7 +110,7 @@ public class SpearItem extends Item implements ProjectileItem {
                                 player.move(MoverType.SELF, new Vec3(0.0, 1.1999999284744263, 0.0));
                             }
 
-                            level.playSound((Player)null, player, (SoundEvent)holder.value(), SoundSource.PLAYERS, 1.0F, 1.0F);
+                            level.playSound(null, player, holder.value(), SoundSource.PLAYERS, 1.0F, 1.0F);
                         }
 
                     }
@@ -132,6 +132,11 @@ public class SpearItem extends Item implements ProjectileItem {
 
     private static boolean isTooDamagedToUse(ItemStack itemStack) {
         return itemStack.getDamageValue() >= itemStack.getMaxDamage() - 1;
+    }
+
+    @Override
+    public boolean isEnchantable(@NotNull ItemStack stack) {
+        return true;
     }
 
     @Override
@@ -158,7 +163,7 @@ public class SpearItem extends Item implements ProjectileItem {
     }
 
     @Override
-    public Projectile asProjectile(Level level, Position position, ItemStack itemStack, Direction direction) {
+    public @NotNull Projectile asProjectile(Level level, Position position, ItemStack itemStack, Direction direction) {
         ThrownSpearEntity spearEntity = new ThrownSpearEntity(level, position.x(), position.y(), position.z(), itemStack.copyWithCount(1));
         spearEntity.pickup = AbstractArrow.Pickup.ALLOWED;
         return spearEntity;

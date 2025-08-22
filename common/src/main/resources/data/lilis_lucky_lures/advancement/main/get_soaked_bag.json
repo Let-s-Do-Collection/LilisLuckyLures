@@ -1,5 +1,5 @@
 {
-  "parent": "lilis_lucky_lures:main/fishing_in_floating_debris",
+  "parent": "lilis_lucky_lures:main/root",
   "display": {
     "icon": {
       "id": "lilis_lucky_lures:soaked_bag",
@@ -22,9 +22,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "lilis_lucky_lures:soaked_bag"
-            ]
+            "id": "lilis_lucky_lures:soaked_bag"
           }
         ]
       }
