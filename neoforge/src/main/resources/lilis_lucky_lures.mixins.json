@@ -6,7 +6,11 @@
   "client": [
   ],
   "mixins": [
-    "HatItemMixin"
+    "FishingHookMixin",
+    "FishingHookRendererMixin",
+    "HatItemMixin",
+    "LivingEntityAccessor",
+    "ServerLevelTickMixin"
   ],
   "injectors": {
     "defaultRequire": 1

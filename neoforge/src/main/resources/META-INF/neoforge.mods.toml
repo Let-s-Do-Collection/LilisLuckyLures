@@ -3,13 +3,10 @@ loaderVersion="[4,)"
 source = "https://github.com/Let-s-Do-Collection/LilisLuckyLures"
 issueTrackerURL = "https://github.com/satisfyu/Let-s-Do-Hub"
 license = "All Rights Reserved"
-
 credits = "CR-055"
+
 [[mixins]]
-config =  [
-    "lilis_lucky_lures-common.mixins.json",
-    "lilis_lucky_lures.mixins.json"
-]
+config = "lilis_lucky_lures.mixins.json"
 
 [[mods]]
 modId = "lilis_lucky_lures"
@@ -42,11 +39,4 @@ modId = "architectury"
 mandatory = true
 versionRange = "[13.0.0,)"
 ordering = "AFTER"
-side = "BOTH"
-
-[[dependencies.lilis_lucky_lures]]
-modId = "doapi"
-type = "required"
-versionRange = "[1.2.0,)"
-ordering = "NONE"
 side = "BOTH"

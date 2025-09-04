@@ -91,15 +91,14 @@ public class FishingNetItem extends Item {
 
                     List<ItemStack> entityLoot = entityLootTable.getRandomItems(lootParams);
 
-                    CustomData customData = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.of(new CompoundTag().getCompound(TAG_ENTITY_LOOT)));
                     ListTag lootListTag = new ListTag();
                     for (ItemStack item : entityLoot) {
-                        CompoundTag itemTag = new CompoundTag();
-                        item.save(level.registryAccess());
-                        lootListTag.add(itemTag);
+                        lootListTag.add(item.save(level.registryAccess()));
                     }
-                    customData.copyTag().put(TAG_ENTITY_LOOT, lootListTag);
-                    stack.set(DataComponents.CUSTOM_DATA, customData);
+
+                    CustomData data = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+                    data = data.update(tag -> tag.put(TAG_ENTITY_LOOT, lootListTag));
+                    stack.set(DataComponents.CUSTOM_DATA, data);
 
                     level.playSound(null, player.getX(), player.getY(), player.getZ(),
                             SoundEvents.GENERIC_SWIM, SoundSource.PLAYERS, 1.0F, 1.0F);
@@ -128,22 +127,44 @@ public class FishingNetItem extends Item {
         List<ItemStack> fishingNetLoot = fishingNetLootTable.getRandomItems(fishingNetLootParams);
         fishingNetLoot.forEach(player::addItem);
 
-        CustomData customData = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.of(new CompoundTag().getCompound(TAG_ENTITY_LOOT)));
-        if (customData.copyTag() != null && customData.copyTag().contains(TAG_ENTITY_LOOT, 9)) {
-            ListTag lootListTag = customData.copyTag().getList(TAG_ENTITY_LOOT, 10);
+        CustomData data = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+        CompoundTag tag = data.copyTag();
+        if (!tag.isEmpty() && tag.contains(TAG_ENTITY_LOOT, 9)) {
+            ListTag lootListTag = tag.getList(TAG_ENTITY_LOOT, 10);
             for (int i = 0; i < lootListTag.size(); i++) {
                 CompoundTag itemTag = lootListTag.getCompound(i);
                 ItemStack entityLootItem = ItemStack.parse(level.registryAccess(), itemTag).orElseGet(() -> ItemStack.EMPTY);
-                player.addItem(entityLootItem);
+                if (!entityLootItem.isEmpty()) {
+                    player.addItem(entityLootItem);
+                }
             }
-            customData.copyTag().remove(TAG_ENTITY_LOOT);
+            data = data.update(t -> t.remove(TAG_ENTITY_LOOT));
+            stack.set(DataComponents.CUSTOM_DATA, data);
         }
-        stack.set(DataComponents.CUSTOM_DATA, customData);
 
         level.playSound(null, player.getX(), player.getY(), player.getZ(),
                 SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1.0F, 1.0F);
         setState(stack, STATE_EMPTY);
     }
+
+    private int getState(ItemStack stack) {
+        CustomData data = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+        if (data.isEmpty()) return STATE_EMPTY;
+        CompoundTag tag = data.copyTag();
+        return tag.contains(TAG_STATE) ? tag.getInt(TAG_STATE) : STATE_EMPTY;
+    }
+
+    private void setState(ItemStack stack, int state) {
+        CustomData data = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+        data = data.update(tag -> tag.putInt(TAG_STATE, state));
+        if (state == STATE_FULL) {
+            stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(1));
+        } else {
+            stack.remove(DataComponents.CUSTOM_MODEL_DATA);
+        }
+        stack.set(DataComponents.CUSTOM_DATA, data);
+    }
+
 
     private FloatingDebrisEntity getTargetDebris(Level level, Player player) {
         List<FloatingDebrisEntity> debris = level.getEntitiesOfClass(FloatingDebrisEntity.class,
@@ -179,24 +200,5 @@ public class FishingNetItem extends Item {
     @Override
     public @NotNull UseAnim getUseAnimation(ItemStack stack) {
         return UseAnim.BRUSH;
-    }
-
-    private int getState(ItemStack stack) {
-        CustomData customData = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.of(new CompoundTag().getCompound(TAG_STATE)));
-        if (customData.copyTag() != null && customData.contains(TAG_STATE)) {
-            return customData.copyTag().getInt(TAG_STATE);
-        }
-        return STATE_EMPTY;
-    }
-
-    private void setState(ItemStack stack, int state) {
-        CustomData customData = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.of(new CompoundTag().getCompound(TAG_STATE)));
-        customData.copyTag().putInt(TAG_STATE, state);
-        if (state == STATE_FULL) {
-            stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(1));
-        } else {
-            stack.remove(DataComponents.CUSTOM_MODEL_DATA);
-        }
-        stack.set(DataComponents.CUSTOM_DATA, customData);
     }
 }

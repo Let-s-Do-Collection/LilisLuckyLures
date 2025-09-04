@@ -1,4 +1,18 @@
-[1.0.2] - 2025.02.15
+[1.1.1]
+
+**Fixed**
+* Fishing Net can now be emptied with right-click when full
+* Floating Debris now correctly spawns again on NeoForge
+* 
+***
+
+[1.1.0]
+
+** Ported to 1.21.1 **
+
+***
+
+[1.0.2]
 
 **Added**
 -
@@ -15,8 +29,9 @@
 * Content from Fish Frame not dropping after breaking it 
 * Food now properly restores nutrition and saturation
 
+***
 
-[1.0.1] - 2025.02.10
+[1.0.1] 
 
 **Added**
 -
