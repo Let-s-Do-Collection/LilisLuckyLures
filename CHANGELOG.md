@@ -3,6 +3,8 @@
 **Fixed**
 * Fishing Net can now be emptied with right-click when full
 * Floating Debris now correctly spawns again on NeoForge
+* Fish Trophy Frame now properly updates and clears its renderer when items are removed
+* Display state synced via new blockstate property instead of packet updates
 
 **Changed**
 * `placed_block` criteria additionally require the matching BlockItem via `"item": { "items": [...] }`.
