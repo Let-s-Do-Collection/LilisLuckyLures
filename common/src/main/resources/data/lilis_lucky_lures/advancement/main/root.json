@@ -1,8 +1,7 @@
 {
   "display": {
     "icon": {
-      "id": "lilis_lucky_lures:river_fish_pool",
-      "count": 1
+      "id": "lilis_lucky_lures:river_fish_pool"
     },
     "title": {
       "translate": "advancement.lilis_lucky_lures.root"
@@ -17,14 +16,14 @@
     "background": "minecraft:textures/block/gravel.png"
   },
   "criteria": {
-    "lilis_lucky_lures": {
+    "seeds": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {}
     }
   },
   "requirements": [
     [
-      "lilis_lucky_lures"
+      "seeds"
     ]
   ]
 }

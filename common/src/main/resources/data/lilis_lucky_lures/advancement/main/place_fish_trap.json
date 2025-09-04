@@ -4,7 +4,12 @@
     "place_fish_trap": {
       "trigger": "minecraft:placed_block",
       "conditions": {
-        "block": "lilis_lucky_lures:fish_trap"
+        "location": [
+          {
+            "condition": "minecraft:block_state_property",
+            "block": "lilis_lucky_lures:fish_trap"
+          }
+        ]
       }
     }
   },
@@ -16,8 +21,7 @@
     "frame": "goal",
     "hidden": false,
     "icon": {
-      "id": "lilis_lucky_lures:fish_trap",
-      "count": 1
+      "id": "lilis_lucky_lures:fish_trap"
     },
     "show_toast": true,
     "title": {

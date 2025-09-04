@@ -4,10 +4,26 @@
     "use_melon_seeds_on_fish_trap": {
       "trigger": "minecraft:item_used_on_block",
       "conditions": {
-        "block": "lilis_lucky_lures:fish_trap",
-        "item": {
-          "id": "minecraft:melon_seeds"
-        }
+        "location": [
+          {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "items": [
+                "minecraft:melon_seeds"
+              ]
+            }
+          },
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": [
+                  "lilis_lucky_lures:fish_trap"
+                ]
+              }
+            }
+          }
+        ]
       }
     }
   },

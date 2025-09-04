@@ -2,8 +2,7 @@
   "parent": "lilis_lucky_lures:main/root",
   "display": {
     "icon": {
-      "id": "lilis_lucky_lures:soaked_bag",
-      "count": 1
+      "id": "lilis_lucky_lures:soaked_bag"
     },
     "title": {
       "translate": "advancement.lilis_lucky_lures.get_soaked_bag"
@@ -11,9 +10,9 @@
     "description": {
       "translate": "advancement.lilis_lucky_lures.get_soaked_bag.desc"
     },
-    "frame": "task",
+    "frame": "goal",
     "show_toast": true,
-    "announce_to_chat": true,
+    "announce_to_chat": false,
     "hidden": false
   },
   "criteria": {
@@ -22,7 +21,9 @@
       "conditions": {
         "items": [
           {
-            "id": "lilis_lucky_lures:soaked_bag"
+            "items": [
+              "lilis_lucky_lures:soaked_bag"
+            ]
           }
         ]
       }

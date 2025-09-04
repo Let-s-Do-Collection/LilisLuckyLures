@@ -5,7 +5,9 @@
       "trigger": "minecraft:using_item",
       "conditions": {
         "item": {
-          "id": "minecraft:spyglass"
+          "items": [
+            "minecraft:spyglass"
+          ]
         },
         "player": {
           "condition": "minecraft:entity_properties",
@@ -30,7 +32,7 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "id": "lilis_lucky_lures:floating_debris",
+      "id": "minecraft:spyglass",
       "count": 1
     },
     "show_toast": true,

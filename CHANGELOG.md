@@ -3,7 +3,14 @@
 **Fixed**
 * Fishing Net can now be emptied with right-click when full
 * Floating Debris now correctly spawns again on NeoForge
-* 
+
+**Changed**
+* `placed_block` criteria additionally require the matching BlockItem via `"item": { "items": [...] }`.
+* Spyglass-at-floating-debris uses a valid item icon.
+
+**Added**
+* Optional item tag `#lilis_lucky_lures:advancement_starters` to gate the root unlock.
+
 ***
 
 [1.1.0]
