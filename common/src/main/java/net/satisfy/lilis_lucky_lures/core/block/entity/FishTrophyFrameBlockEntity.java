@@ -9,6 +9,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.satisfy.lilis_lucky_lures.core.block.FishTrophyFrameBlock;
 import net.satisfy.lilis_lucky_lures.core.registry.EntityTypeRegistry;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,8 +18,8 @@ import java.util.Objects;
 public class FishTrophyFrameBlockEntity extends BlockEntity implements Clearable {
     private ItemStack displayedItem = ItemStack.EMPTY;
 
-    public FishTrophyFrameBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(EntityTypeRegistry.FISH_TROPHY_FRAME.get(), blockPos, blockState);
+    public FishTrophyFrameBlockEntity(BlockPos pos, BlockState state) {
+        super(EntityTypeRegistry.FISH_TROPHY_FRAME.get(), pos, state);
     }
 
     public ItemStack getDisplayedItem() {
@@ -26,39 +27,37 @@ public class FishTrophyFrameBlockEntity extends BlockEntity implements Clearable
     }
 
     @Override
-    protected void loadAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
-        super.loadAdditional(compoundTag, provider);
-        this.displayedItem = compoundTag.contains("DisplayedItem", 10)
-                ? ItemStack.parseOptional(provider, compoundTag.getCompound("DisplayedItem"))
-                : ItemStack.EMPTY;
+    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+        this.displayedItem = tag.contains("DisplayedItem", 10) ? ItemStack.parseOptional(provider, tag.getCompound("DisplayedItem")) : ItemStack.EMPTY;
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
-        super.saveAdditional(compoundTag, provider);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
         if (!this.displayedItem.isEmpty()) {
-            compoundTag.put("DisplayedItem", this.displayedItem.save(provider, new CompoundTag()));
+            tag.put("DisplayedItem", this.displayedItem.save(provider, new CompoundTag()));
         }
     }
 
+    @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
     public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider provider) {
-        CompoundTag compoundTag = super.getUpdateTag(provider);
+        CompoundTag tag = super.getUpdateTag(provider);
         if (!this.displayedItem.isEmpty()) {
-            compoundTag.put("DisplayedItem", this.displayedItem.save(provider, new CompoundTag()));
+            tag.put("DisplayedItem", this.displayedItem.save(provider, new CompoundTag()));
         }
-        return compoundTag;
+        return tag;
     }
 
     public boolean setDisplayedItem(ItemStack stack) {
         if (!this.displayedItem.isEmpty()) return false;
-
-        this.displayedItem = stack;
-        this.markUpdated();
+        this.displayedItem = stack.copyWithCount(1);
+        this.updateBlockState(true);
         return true;
     }
 
@@ -67,19 +66,33 @@ public class FishTrophyFrameBlockEntity extends BlockEntity implements Clearable
             this.displayedItem.shrink(count);
             if (this.displayedItem.isEmpty()) {
                 this.displayedItem = ItemStack.EMPTY;
+                this.updateBlockState(false);
+            } else {
+                this.markUpdated();
             }
-            this.markUpdated();
         }
     }
 
     public void dropContents() {
         if (!this.displayedItem.isEmpty()) {
             assert this.level != null;
-            ItemEntity itemEntity = new ItemEntity(this.level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), this.displayedItem);
-            this.level.addFreshEntity(itemEntity);
+            ItemEntity e = new ItemEntity(this.level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), this.displayedItem);
+            this.level.addFreshEntity(e);
             this.displayedItem = ItemStack.EMPTY;
+            this.updateBlockState(false);
+        } else {
+            this.markUpdated();
         }
-        this.markUpdated();
+    }
+
+    private void updateBlockState(boolean hasItem) {
+        if (level != null) {
+            BlockState s = level.getBlockState(worldPosition);
+            if (s.hasProperty(FishTrophyFrameBlock.HAS_ITEM)) {
+                level.setBlock(worldPosition, s.setValue(FishTrophyFrameBlock.HAS_ITEM, hasItem), 3);
+            }
+            this.markUpdated();
+        }
     }
 
     private void markUpdated() {
@@ -87,7 +100,9 @@ public class FishTrophyFrameBlockEntity extends BlockEntity implements Clearable
         Objects.requireNonNull(this.getLevel()).sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
     }
 
+    @Override
     public void clearContent() {
         this.displayedItem = ItemStack.EMPTY;
+        this.updateBlockState(false);
     }
 }
