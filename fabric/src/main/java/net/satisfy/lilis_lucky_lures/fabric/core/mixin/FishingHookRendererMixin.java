@@ -1,8 +1,8 @@
-package net.satisfy.lilis_lucky_lures.core.mixin;
+package net.satisfy.lilis_lucky_lures.fabric.core.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.CameraType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.FishingHookRenderer;
 import net.minecraft.world.entity.HumanoidArm;

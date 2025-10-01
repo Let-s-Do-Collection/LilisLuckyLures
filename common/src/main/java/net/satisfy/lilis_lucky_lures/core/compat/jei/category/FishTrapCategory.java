@@ -41,6 +41,7 @@ public class FishTrapCategory implements IRecipeCategory<FishTrapRecipe> {
     }
 
     @Override
+    @SuppressWarnings("removal")
     public @NotNull IDrawable getBackground() {
         return this.background;
     }

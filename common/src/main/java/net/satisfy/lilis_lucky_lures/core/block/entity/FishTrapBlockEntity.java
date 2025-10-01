@@ -8,10 +8,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -37,28 +37,19 @@ public class FishTrapBlockEntity extends BlockEntity implements WorldlyContainer
     public void tick() {
         if (level != null && !level.isClientSide) {
             ItemStack inputItem = inventory.get(0);
-
             if (recipe == null && !inputItem.isEmpty()) {
-                SimpleContainer container = new SimpleContainer(1);
-                container.setItem(0, inputItem);
-                FishTrapRecipe currentRecipe = getRecipe(level, inputItem).get();
-                if (currentRecipe instanceof FishTrapRecipe fishTrapRecipe) {
-                    recipe = fishTrapRecipe;
-                }
+                getRecipe(level, inputItem).ifPresent(currentRecipe -> recipe = currentRecipe);
             }
-
             if (recipe == null || inputItem.isEmpty()) {
                 processing = false;
                 timer = 0;
                 return;
             }
-
             if (processing) {
                 timer++;
                 if (timer >= duration) {
                     processing = false;
                     timer = 0;
-
                     ItemStack stack = inventory.get(0);
                     if (!stack.isEmpty()) {
                         stack.shrink(1);
@@ -66,7 +57,6 @@ public class FishTrapBlockEntity extends BlockEntity implements WorldlyContainer
                             inventory.set(0, ItemStack.EMPTY);
                         }
                     }
-
                     addCatchToOutput();
                     recipe = null;
                     setChanged();
@@ -75,7 +65,6 @@ public class FishTrapBlockEntity extends BlockEntity implements WorldlyContainer
                 processing = true;
                 duration = recipe.getRandomDuration();
             }
-
             updateBlockState();
         }
     }
@@ -123,7 +112,7 @@ public class FishTrapBlockEntity extends BlockEntity implements WorldlyContainer
     }
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+    public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider provider) {
         CompoundTag tag = super.getUpdateTag(provider);
         ContainerHelper.saveAllItems(tag, inventory, provider);
         return tag;
@@ -203,13 +192,12 @@ public class FishTrapBlockEntity extends BlockEntity implements WorldlyContainer
     @Override
     public boolean canPlaceItem(int slot, ItemStack stack) {
         if (slot == 0) {
-            SimpleContainer container = new SimpleContainer(stack);
             return level != null && getRecipe(level, stack).isPresent();
         }
         return false;
     }
 
     public static Optional<FishTrapRecipe> getRecipe(Level level, ItemStack itemStack) {
-        return Optional.of(level.getRecipeManager().getAllRecipesFor(RecipeTypeRegistry.FISH_TRAP_RECIPE_TYPE.get()).stream().filter(fishTrapRecipeRecipeHolder -> fishTrapRecipeRecipeHolder.value().getBaitItem().test(itemStack)).findFirst().get().value());
+        return level.getRecipeManager().getAllRecipesFor(RecipeTypeRegistry.FISH_TRAP_RECIPE_TYPE.get()).stream().map(RecipeHolder::value).filter(r -> r.getBaitItem().test(itemStack)).findFirst();
     }
 }

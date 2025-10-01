@@ -1,4 +1,4 @@
-package net.satisfy.lilis_lucky_lures.core.mixin;
+package net.satisfy.lilis_lucky_lures.fabric.core.mixin;
 
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;

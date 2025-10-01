@@ -8,8 +8,10 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -39,7 +41,6 @@ import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresIdentifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@SuppressWarnings("deprecation")
 public class FishTrapBlock extends BaseEntityBlock {
     public static final BooleanProperty FULL = BooleanProperty.create("full");
     public static final BooleanProperty HAS_BAIT = BooleanProperty.create("has_bait");
@@ -54,18 +55,13 @@ public class FishTrapBlock extends BaseEntityBlock {
 
     public FishTrapBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any()
-                .setValue(FULL, false)
-                .setValue(HAS_BAIT, false)
-                .setValue(WATERLOGGED, false)
-                .setValue(HANGING, false)
-                .setValue(FACING, Direction.NORTH));
+        this.registerDefaultState(this.stateDefinition.any().setValue(FULL, false).setValue(HAS_BAIT, false).setValue(WATERLOGGED, false).setValue(HANGING, false).setValue(FACING, Direction.NORTH));
     }
 
     public static final MapCodec<FishTrapBlock> CODEC = simpleCodec(FishTrapBlock::new);
 
     @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
+    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
         return CODEC;
     }
 
@@ -80,10 +76,7 @@ public class FishTrapBlock extends BaseEntityBlock {
         BlockPos pos = context.getClickedPos();
         boolean hanging = isHanging(level, pos.above());
 
-        return this.defaultBlockState()
-                .setValue(FACING, context.getHorizontalDirection().getOpposite())
-                .setValue(WATERLOGGED, level.getFluidState(pos).getType() == Fluids.WATER)
-                .setValue(HANGING, hanging);
+        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite()).setValue(WATERLOGGED, level.getFluidState(pos).getType() == Fluids.WATER).setValue(HANGING, hanging);
     }
 
     @Override
@@ -126,50 +119,61 @@ public class FishTrapBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack itemStack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult blockHitResult) {
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof FishTrapBlockEntity fishTrap) {
-            if (!level.isClientSide) {
-                if (player.isShiftKeyDown()) {
-                    ItemStack slot0 = fishTrap.getItem(0);
-                    if (!slot0.isEmpty()) {
-                        boolean added = player.getInventory().add(slot0.copy());
-                        if (added) {
-                            fishTrap.removeItem(0, slot0.getCount());
-                        } else {
-                            popResource(level, pos, slot0.copy());
-                            fishTrap.removeItem(0, slot0.getCount());
-                        }
-                    }
-                } else {
-                    ItemStack heldItem = player.getItemInHand(hand);
-                    if (!heldItem.isEmpty() && state.getValue(WATERLOGGED)) {
-                        if (fishTrap.getItem(0).isEmpty()) {
-                            ItemStack toInsert = heldItem.copy();
-                            toInsert.setCount(1);
-                            fishTrap.setItem(0, toInsert);
-                            if (!player.isCreative()) {
-                                heldItem.shrink(1);
-                            }
-                        }
-                    } else if (heldItem.isEmpty()) {
-                        ItemStack output = fishTrap.getItem(1);
-                        if (!output.isEmpty()) {
-                            boolean added = player.getInventory().add(output.copy());
-                            if (added) {
-                                fishTrap.removeItem(1, output.getCount());
-                            } else {
-                                popResource(level, pos, output.copy());
-                                fishTrap.removeItem(1, output.getCount());
-                            }
-                        }
-                    }
-                }
+    protected @NotNull ItemInteractionResult useItemOn(ItemStack itemStack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (hand != InteractionHand.MAIN_HAND) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        BlockEntity be = level.getBlockEntity(pos);
+        if (!(be instanceof FishTrapBlockEntity fishTrap)) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+
+        ItemStack inHand = player.getItemInHand(hand);
+
+        if (!inHand.isEmpty()) {
+            if (!level.isClientSide && state.getValue(WATERLOGGED) && fishTrap.getItem(0).isEmpty()) {
+                ItemStack one = inHand.copy();
+                one.setCount(1);
+                fishTrap.setItem(0, one);
+                if (!player.getAbilities().instabuild) inHand.shrink(1);
+                fishTrap.setChanged();
+                level.blockEntityChanged(pos);
+                updateBlockState(level, pos, !fishTrap.getItem(1).isEmpty(), !fishTrap.getItem(0).isEmpty());
+                return ItemInteractionResult.SUCCESS;
             }
-            return ItemInteractionResult.SUCCESS;
+            return ItemInteractionResult.CONSUME;
         }
-        return ItemInteractionResult.SUCCESS;
+
+        if (!level.isClientSide) {
+            ItemStack output = fishTrap.getItem(1);
+            if (!output.isEmpty()) {
+                int n = output.getCount();
+                ItemStack give = output.copy();
+                if (!player.addItem(give)) {
+                    ItemEntity e = new ItemEntity(level, player.getX(), player.getY(), player.getZ(), give);
+                    level.addFreshEntity(e);
+                }
+                fishTrap.removeItem(1, n);
+                fishTrap.setChanged();
+                level.blockEntityChanged(pos);
+                updateBlockState(level, pos, !fishTrap.getItem(1).isEmpty(), !fishTrap.getItem(0).isEmpty());
+                return ItemInteractionResult.SUCCESS;
+            }
+            ItemStack bait = fishTrap.getItem(0);
+            if (!bait.isEmpty()) {
+                int n = bait.getCount();
+                ItemStack give = bait.copy();
+                if (!player.addItem(give)) {
+                    ItemEntity e = new ItemEntity(level, player.getX(), player.getY(), player.getZ(), give);
+                    level.addFreshEntity(e);
+                }
+                fishTrap.removeItem(0, n);
+                fishTrap.setChanged();
+                level.blockEntityChanged(pos);
+                updateBlockState(level, pos, !fishTrap.getItem(1).isEmpty(), !fishTrap.getItem(0).isEmpty());
+                return ItemInteractionResult.SUCCESS;
+            }
+        }
+
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
+
 
     @Override
     public @NotNull RenderShape getRenderShape(BlockState blockState) {
@@ -229,8 +233,10 @@ public class FishTrapBlock extends BaseEntityBlock {
     public void updateBlockState(Level level, BlockPos pos, boolean full, boolean hasBait) {
         BlockState state = level.getBlockState(pos);
         BlockState newState = state.setValue(FULL, full).setValue(HAS_BAIT, hasBait);
-        if (state != newState) {
-            level.setBlock(pos, newState, 3);
+        if (!state.equals(newState)) {
+            level.setBlock(pos, newState, 11);
+        } else {
+            level.sendBlockUpdated(pos, state, newState, 11);
         }
     }
 

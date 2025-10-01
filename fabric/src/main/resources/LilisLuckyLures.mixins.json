@@ -1,8 +1,9 @@
 {
   "required": true,
-  "package": "net.satisfy.lilis_lucky_lures.core.mixin",
+  "package": "net.satisfy.lilis_lucky_lures.fabric.core.mixin",
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
+  "refmap": "lilis_lucky_lures-refmap.json",
   "client": [
     "FishingHookRendererMixin"
   ],

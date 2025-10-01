@@ -32,7 +32,7 @@
     ]
   },
   "mixins": [
-    "lilis_lucky_lures-common.mixins.json"
+    "LilisLuckyLures.mixins.json"
   ],
   "depends": {
     "fabric": "*",

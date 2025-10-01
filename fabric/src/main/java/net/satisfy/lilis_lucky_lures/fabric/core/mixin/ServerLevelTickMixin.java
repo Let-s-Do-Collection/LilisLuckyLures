@@ -1,4 +1,4 @@
-package net.satisfy.lilis_lucky_lures.core.mixin;
+package net.satisfy.lilis_lucky_lures.fabric.core.mixin;
 
 import net.minecraft.server.level.ServerLevel;
 import net.satisfy.lilis_lucky_lures.core.util.FloatingPoolsSpawner;
