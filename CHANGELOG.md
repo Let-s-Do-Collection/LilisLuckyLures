@@ -1,8 +1,15 @@
+[1.1.2-fabric]
+
+* Crash on Fabric client startup caused by missing refmap in mixin
+
+***
+
 [1.1.2]
 
 * Crash when ticking Fish Trap: `NoSuchElementException` in `FishTrapBlockEntity.getRecipe`
   is eliminated by guarding empty recipe lookups and null-guarding `tick()`. 
 * Fish Trap interactions: taking items could duplicate and `FULL` would not reset.
+
 ***
 
 [1.1.1]
