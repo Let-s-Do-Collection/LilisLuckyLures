@@ -1,3 +1,11 @@
+[1.1.3]
+
+**Fixed**
+- Hanging Frame could place its top half without proper interaction and spawn blocks automatically in certain situations (thanks to voxu-git)
+
+**Changed**
+- Floating world entities (Floating Debris, Floating Books, River Fish Pool, Ocean Fish Pool) are now registered as MISC instead of CREATURE
+
 [1.1.2-fabric]
 
 * Crash on Fabric client startup caused by missing refmap in mixin

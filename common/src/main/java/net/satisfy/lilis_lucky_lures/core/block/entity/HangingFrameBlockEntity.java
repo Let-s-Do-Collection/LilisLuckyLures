@@ -14,8 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.satisfy.lilis_lucky_lures.core.block.HangingFrameBlock;
 import net.satisfy.lilis_lucky_lures.core.registry.EntityTypeRegistry;
 import net.satisfy.lilis_lucky_lures.core.util.LilisLuckyLuresUtil;
 import org.jetbrains.annotations.NotNull;
@@ -49,17 +47,13 @@ public class HangingFrameBlockEntity extends BlockEntity {
 
     @Override
     public void setChanged() {
-        Level var2 = this.level;
-        if (var2 instanceof ServerLevel serverLevel) {
-            if (!this.level.isClientSide()) {
-                Packet<ClientGamePacketListener> updatePacket = this.getUpdatePacket();
-
-                for (ServerPlayer player : LilisLuckyLuresUtil.getTrackingPlayers(serverLevel, this.getBlockPos())) {
-                    player.connection.send(updatePacket);
-                }
+        Level level = this.level;
+        if (level instanceof ServerLevel serverLevel && !level.isClientSide()) {
+            Packet<ClientGamePacketListener> updatePacket = this.getUpdatePacket();
+            for (ServerPlayer player : LilisLuckyLuresUtil.getTrackingPlayers(serverLevel, this.getBlockPos())) {
+                player.connection.send(updatePacket);
             }
         }
-
         super.setChanged();
     }
 
@@ -90,9 +84,5 @@ public class HangingFrameBlockEntity extends BlockEntity {
 
     public NonNullList<ItemStack> getInventory() {
         return this.inventory;
-    }
-
-    public boolean isTop() {
-        return getBlockState().getValue(HangingFrameBlock.HALF) == DoubleBlockHalf.UPPER;
     }
 }
