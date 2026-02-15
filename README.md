@@ -1,4 +1,4 @@
-![Lili's Lucky Lures](https://lets-do.ch/assets/mod-logos/lucky_lures.png)
+![Lili's Lucky Lures](https://lets-do.ch/assets/mod-logos/lucky_lures.webp)
 
 <br>
 
