@@ -24,7 +24,7 @@ public class HangingFrameBlockEntity extends BlockEntity {
 
     public HangingFrameBlockEntity(BlockPos pos, BlockState state) {
         super(EntityTypeRegistry.HANGING_FRAME.get(), pos, state);
-        this.size = 3;
+        this.size = 6;
         this.inventory = NonNullList.withSize(this.size, ItemStack.EMPTY);
     }
 
@@ -60,7 +60,9 @@ public class HangingFrameBlockEntity extends BlockEntity {
     @Override
     protected void loadAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
         super.loadAdditional(compoundTag, provider);
-        this.size = compoundTag.getInt("size");
+        // Never shrink below the block's current slot count: older saves (or a lower size() in a
+        // previous mod version) must not permanently freeze an existing frame to fewer slots.
+        this.size = Math.max(compoundTag.getInt("size"), this.size);
         this.inventory = NonNullList.withSize(this.size, ItemStack.EMPTY);
         ContainerHelper.loadAllItems(compoundTag, this.inventory, provider);
     }

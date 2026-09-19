@@ -206,7 +206,7 @@ public class HangingFrameBlock extends Block implements EntityBlock {
     }
 
     public int size() {
-        return 3;
+        return 6;
     }
 
     @Override
@@ -227,8 +227,12 @@ public class HangingFrameBlock extends Block implements EntityBlock {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
 
-        int slotIndex = 2 - (int) (optional.get().getA() * 3);
-        if (slotIndex < 0 || slotIndex >= frameBlockEntity.getInventory().size()) {
+        int column = 2 - (int) (optional.get().getA() * 3);
+        if (column < 0 || column > 2) {
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        }
+        int slotIndex = state.getValue(HALF) == DoubleBlockHalf.UPPER ? column + 3 : column;
+        if (slotIndex >= frameBlockEntity.getInventory().size()) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
 

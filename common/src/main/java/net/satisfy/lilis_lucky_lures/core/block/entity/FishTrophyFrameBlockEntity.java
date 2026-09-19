@@ -76,8 +76,10 @@ public class FishTrophyFrameBlockEntity extends BlockEntity implements Clearable
     public void dropContents() {
         if (!this.displayedItem.isEmpty()) {
             assert this.level != null;
-            ItemEntity e = new ItemEntity(this.level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), this.displayedItem);
-            this.level.addFreshEntity(e);
+            if (!this.level.isClientSide) {
+                ItemEntity e = new ItemEntity(this.level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), this.displayedItem);
+                this.level.addFreshEntity(e);
+            }
             this.displayedItem = ItemStack.EMPTY;
             this.updateBlockState(false);
         } else {

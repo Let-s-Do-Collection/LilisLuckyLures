@@ -9,6 +9,8 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
@@ -97,6 +99,7 @@ public class RedstoneCoilBlock extends BaseEntityBlock {
                     if (be instanceof RedstoneCoilBlockEntity coil) {
                         coil.setActive(powered);
                     }
+                    level.playSound(null, pos, powered ? SoundEvents.BEACON_ACTIVATE : SoundEvents.BEACON_DEACTIVATE, SoundSource.BLOCKS, 1.0F, 1.2F);
                 }
                 BlockPos posAbove = pos.above();
                 BlockState stateAbove = level.getBlockState(posAbove);
@@ -132,10 +135,7 @@ public class RedstoneCoilBlock extends BaseEntityBlock {
             return null;
         }
         Direction facing = ctx.getHorizontalDirection().getOpposite();
-        BlockState baseState = defaultBlockState().setValue(FACING, facing).setValue(HALF, DoubleBlockHalf.LOWER).setValue(TARGET, RedstoneCoilTarget.NONE);
-        BlockState upperState = defaultBlockState().setValue(FACING, facing).setValue(HALF, DoubleBlockHalf.UPPER).setValue(TARGET, RedstoneCoilTarget.NONE);
-        level.setBlock(posAbove, upperState, 3);
-        return baseState;
+        return defaultBlockState().setValue(FACING, facing).setValue(HALF, DoubleBlockHalf.LOWER).setValue(TARGET, RedstoneCoilTarget.NONE);
     }
 
     @Override
@@ -206,11 +206,23 @@ public class RedstoneCoilBlock extends BaseEntityBlock {
             default -> RedstoneCoilTarget.NONE;
         };
         level.setBlock(basePos, baseState.setValue(TARGET, next), 3);
+        float pitch = switch (next) {
+            case NONE -> 0.7F;
+            case FISHES -> 0.9F;
+            case PLAYER -> 1.1F;
+            case MONSTER -> 1.3F;
+        };
+        level.playSound(null, basePos, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 0.6F, pitch);
         return InteractionResult.CONSUME;
     }
 
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        if (!level.isClientSide && state.getValue(HALF) == DoubleBlockHalf.LOWER) {
+            BlockPos posAbove = pos.above();
+            BlockState upperState = state.setValue(HALF, DoubleBlockHalf.UPPER);
+            level.setBlock(posAbove, upperState, 3);
+        }
         if (placer instanceof Player player) {
             BlockEntity be = level.getBlockEntity(pos);
             if (be instanceof RedstoneCoilBlockEntity coil) {

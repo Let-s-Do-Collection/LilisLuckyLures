@@ -79,7 +79,8 @@ public class LilisLuckyLuresUtil {
             }
         }
 
-        if (hitDirection != direction && hitDirection != Direction.UP && hitDirection != Direction.DOWN) {
+        if (hitDirection != direction && hitDirection != direction.getOpposite()
+                && hitDirection != Direction.UP && hitDirection != Direction.DOWN) {
             return Optional.empty();
         }
 
@@ -94,11 +95,10 @@ public class LilisLuckyLuresUtil {
         float z = (float) hitLocation.z();
         float y = (float) hitLocation.y();
 
-        Direction effectiveDirection = (hitDirection == Direction.UP || hitDirection == Direction.DOWN)
-                ? direction
-                : hitDirection;
-
-        return switch (effectiveDirection) {
+        // The column mapping is fixed by the block's own FACING, not by which face was actually
+        // hit - the raw x/z above is already hit-face-independent, so using FACING here keeps
+        // "left" the same physical slot whether interacted with from the front or the back.
+        return switch (direction) {
             case NORTH -> Optional.of(new Tuple<>(1.0f - x, y));
             case SOUTH -> Optional.of(new Tuple<>(x, y));
             case WEST -> Optional.of(new Tuple<>(z, y));

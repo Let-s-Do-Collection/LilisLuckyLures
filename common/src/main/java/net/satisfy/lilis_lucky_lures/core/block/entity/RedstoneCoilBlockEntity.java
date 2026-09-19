@@ -137,18 +137,36 @@ public class RedstoneCoilBlockEntity extends BlockEntity {
             Vector3d start = new Vector3d(pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5);
             Vector3d end = new Vector3d(be.targetPos.getX() + 0.5, be.targetPos.getY() + 0.5, be.targetPos.getZ() + 0.5);
             Vector3d dir = new Vector3d(end).sub(start);
-            Vector3d current = new Vector3d(dir).mul(progress).add(start);
             Vector3d arbitrary = new Vector3d(0, 1, 0);
             if (Math.abs(dir.dot(arbitrary)) > 0.99) arbitrary.set(1, 0, 0);
             Vector3d perp = new Vector3d();
             dir.cross(arbitrary, perp).normalize();
-            double wave = Math.sin(progress * Math.PI * 4) * 0.1;
-            perp.mul(wave);
-            current.add(perp);
-            serverLevel.sendParticles(ParticleTypes.END_ROD, current.x, current.y, current.z, 1, 0, 0, 0, 0);
-            serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, current.x, current.y, current.z, 1, 0, 0, 0, 0);
-            serverLevel.sendParticles(ParticleTypes.SMOKE, current.x, current.y, current.z, 1, 0, 0, 0, 0);
+            Vector3d perp2 = new Vector3d();
+            dir.cross(perp, perp2).normalize();
+
+            // Sample a short trailing stretch of the bolt each tick instead of a single dot,
+            // so the beam reads as a thick, crackling lightning bolt rather than a slow spark.
+            int samples = 6;
+            for (int s = 0; s < samples; s++) {
+                double localProgress = progress - s * 0.0075;
+                if (localProgress < 0) continue;
+                Vector3d point = new Vector3d(dir).mul(localProgress).add(start);
+                double wave = Math.sin(localProgress * Math.PI * 10 + be.beamProgress) * 0.18;
+                double wave2 = Math.cos(localProgress * Math.PI * 7 - be.beamProgress) * 0.12;
+                point.add(new Vector3d(perp).mul(wave)).add(new Vector3d(perp2).mul(wave2));
+                serverLevel.sendParticles(ParticleTypes.END_ROD, point.x, point.y, point.z, 1, 0, 0, 0, 0);
+                serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, point.x, point.y, point.z, 2, 0.03, 0.03, 0.03, 0.01);
+                if (s % 2 == 0) {
+                    serverLevel.sendParticles(ParticleTypes.SMOKE, point.x, point.y, point.z, 1, 0, 0, 0, 0);
+                }
+            }
+            if (serverLevel.random.nextFloat() < 0.4F) {
+                Vector3d flashPoint = new Vector3d(dir).mul(progress).add(start);
+                serverLevel.sendParticles(ParticleTypes.FLASH, flashPoint.x, flashPoint.y, flashPoint.z, 1, 0, 0, 0, 0);
+            }
             if (be.beamProgress >= 20) {
+                serverLevel.sendParticles(ParticleTypes.FLASH, end.x, end.y, end.z, 2, 0.1, 0.1, 0.1, 0.0);
+                serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, end.x, end.y, end.z, 25, 0.4, 0.4, 0.4, 0.15);
                 List<LivingEntity> targets = serverLevel.getEntitiesOfClass(LivingEntity.class, new AABB(be.targetPos).inflate(1.0), LivingEntity::isAlive);
                 if (!targets.isEmpty()) {
                     LivingEntity livingTarget = targets.get(0);
@@ -244,16 +262,19 @@ public class RedstoneCoilBlockEntity extends BlockEntity {
     }
 
     private static void spawnImpactParticles(ServerLevel level, BlockPos pos) {
-        for (int i = 0; i < 40; i++) {
+        double particleX = pos.getX() + 0.5;
+        double particleY = pos.getY() + 0.5;
+        double particleZ = pos.getZ() + 0.5;
+        level.sendParticles(ParticleTypes.FLASH, particleX, particleY, particleZ, 1, 0, 0, 0, 0);
+        level.sendParticles(ParticleTypes.EXPLOSION, particleX, particleY, particleZ, 1, 0, 0, 0, 0);
+        for (int i = 0; i < 70; i++) {
             Vector3d vec = new Vector3d(level.random.nextDouble() * 2 - 1, level.random.nextDouble() * 2 - 1, level.random.nextDouble() * 2 - 1);
             if (vec.lengthSquared() == 0)
                 continue;
             vec.normalize().mul(level.random.nextDouble() * 1.5 + 0.5);
-            double particleX = pos.getX() + 0.5;
-            double particleY = pos.getY() + 0.5;
-            double particleZ = pos.getZ() + 0.5;
             level.sendParticles(ParticleTypes.SMOKE, particleX, particleY, particleZ, 0, vec.x, vec.y, vec.z, 0.2);
             level.sendParticles(ParticleTypes.FLAME, particleX, particleY, particleZ, 0, vec.x * 1.2, vec.y * 1.2, vec.z * 1.2, 0.1);
+            level.sendParticles(ParticleTypes.ELECTRIC_SPARK, particleX, particleY, particleZ, 0, vec.x * 1.5, vec.y * 1.5, vec.z * 1.5, 0.25);
         }
     }
 }

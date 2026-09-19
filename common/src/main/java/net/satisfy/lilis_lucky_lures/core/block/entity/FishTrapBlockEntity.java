@@ -13,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.satisfy.lilis_lucky_lures.core.block.FishTrapBlock;
@@ -78,6 +79,8 @@ public class FishTrapBlockEntity extends BlockEntity implements WorldlyContainer
         } else if (ItemStack.isSameItemSameComponents(existingOutput, output)) {
             existingOutput.grow(output.getCount());
             inventory.set(1, existingOutput);
+        } else if (level != null) {
+            Block.popResource(level, worldPosition, output);
         }
         updateBlockState();
     }
