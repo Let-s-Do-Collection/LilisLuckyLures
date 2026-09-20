@@ -1,3 +1,16 @@
+[1.1.5]
+
+**Fixed**
+* Floating Pools now properly detect the actual water surface instead of relying on the raw world-surface heightmap. This also works with lily pads, flowers and other thin plants placed on top of the water by other mods, preventing debris from spawning noticeably above the water
+* Ponds and oases are no longer excluded just because their biome isn't tagged as a river or ocean. Any actual body of water can now be used as a valid spawn location
+* Spawn checks now pick a fresh nearby location instead of reusing the same cached position for two consecutive checks, making spawns feel more natural
+* Added proper clearance checks at the selected spawn position, preventing Floating Pools from spawning directly on top of or inside each other
+
+**Added**
+* Fishing Net now has 64 durability, worn down by 1 each time a catch is retrieved, and can be repaired with String on an anvil
+
+***
+
 [1.1.4]
 
 **Fixed**

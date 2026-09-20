@@ -41,7 +41,7 @@ public class ObjectRegistry {
     public static final RegistrySupplier<Item> BAMBOO_FISHING_ROD = registerItem("bamboo_fishing_rod", () -> new FishingRodItem(getSettings().stacksTo(1).durability(32)));
     public static final RegistrySupplier<Item> COOKED_COD_MEAL = registerItem("cooked_cod_meal", () -> new FoodEffectItem(getFoodSettings(8, 0.8f), 3600, true));
     public static final RegistrySupplier<Item> DYNAMITE = registerItem("dynamite", () -> new DynamiteItem(getSettings().rarity(Rarity.UNCOMMON)));
-    public static final RegistrySupplier<Item> FISHING_NET = registerItem("fishing_net", () -> new FishingNetItem(getSettings().stacksTo(1)));
+    public static final RegistrySupplier<Item> FISHING_NET = registerItem("fishing_net", () -> new FishingNetItem(getSettings().stacksTo(1).durability(64)));
     public static final RegistrySupplier<Item> FLOATING_BOOKS = registerItem("floating_books", () -> new FloatingPoolsItem(getSettings()));
     public static final RegistrySupplier<Item> FLOATING_DEBRIS = registerItem("floating_debris", () -> new FloatingPoolsItem(getSettings()));
     public static final RegistrySupplier<Item> FISH_NET = registerItem("fish_net", () -> new FishNetBlockItem(getSettings(), ELASTIC_FISHING_NET.get(), FISH_NET_FENCE.get()));

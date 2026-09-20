@@ -12,10 +12,12 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.CustomModelData;
@@ -145,6 +147,9 @@ public class FishingNetItem extends Item {
         level.playSound(null, player.getX(), player.getY(), player.getZ(),
                 SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1.0F, 1.0F);
         setState(stack, STATE_EMPTY);
+        // Damage only after the catch has already been handed to the player, so a net breaking
+        // on this exact use can never take an unretrieved catch down with it.
+        stack.hurtAndBreak(1, player, player.getEquipmentSlotForItem(stack));
     }
 
     private int getState(ItemStack stack) {
@@ -200,5 +205,10 @@ public class FishingNetItem extends Item {
     @Override
     public @NotNull UseAnim getUseAnimation(ItemStack stack) {
         return UseAnim.BRUSH;
+    }
+
+    @Override
+    public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
+        return repair.is(Items.STRING);
     }
 }
